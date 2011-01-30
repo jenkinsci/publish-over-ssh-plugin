@@ -1,0 +1,95 @@
+<?jelly escape-by-default='true'?>
+
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+    <j:set var="helpUrl" value="${rootURL}/plugin/publish-over-ssh/help/config/"/>
+
+    <f:entry title="${%publishers.section}">
+
+            <f:repeatable items="${instance.publishers}" var="publisher" name="publishers" minimum="1" header="${%publisher.dragAndDropLabel}" add="${%addPublisher.value}">
+
+                <table width="100%" padding="0">
+
+                    <f:entry title="${%hostconfig.title}" help="${helpUrl}configName.html">
+                        <select class="setting-input" name="bap-ftp.configName" description="${%hostconfig.description}">
+                            <j:forEach var="s" items="${descriptor.hostConfigurations}">
+                                <f:option selected="${s.name==publisher.configName}">${s.name}</f:option>
+                            </j:forEach>
+                        </select>
+                    </f:entry>
+
+                    <f:entry title="${%verbose.title}" help="${helpUrl}verbose.html">
+                        <f:checkbox name="bap-ftp.verbose" checked="${publisher.verbose}" />
+                    </f:entry>
+
+                    <f:entry title="${%ftpTransfers.section}" help="${helpUrl}ftpTransfers.html">
+                        <f:repeatable items="${publisher.transfers}" var="transfer" name="transfers" minimum="1" header="${%ftpTransfers.dragAndDropLabel}" add="${%addFtpTransfers.value}">
+                            <table width="100%" padding="0">
+
+                                <f:entry title="${%sourceFiles.title}" help="${helpUrl}sourceFiles.html">
+                                    <input name="bap-ftp.sourceFiles" class="setting-input"
+                                           type="text" value="${transfer.sourceFiles}" />
+                                </f:entry>
+
+                                <f:entry title="${%removePrefix.title}" help="${helpUrl}removePrefix.html">
+                                    <input name="bap-ftp.removePrefix" class="setting-input"
+                                           type="text" value="${transfer.removePrefix}" />
+                                </f:entry>
+
+                                <f:entry title="${%remoteDirectory.title}" help="${helpUrl}remoteDirectory.html">
+                                    <input name="bap-ftp.remoteDirectory" class="setting-input"
+                                           type="text" value="${transfer.remoteDirectory}" />
+                                </f:entry>
+
+                                <f:advanced>
+                                    <f:entry title="${%asciiMode.title}" help="${helpUrl}asciiMode.html">
+                                        <f:checkbox name="bap-ftp.asciiMode" checked="${transfer.asciiMode}"/>
+                                    </f:entry>
+
+                                    <f:entry title="${%flatten.title}" help="${helpUrl}flatten.html">
+                                        <f:checkbox name="bap-ftp.flatten" checked="${transfer.flatten}" />
+                                    </f:entry>
+
+                                    <f:entry title="${%remoteDirectorySDF.title}" help="${helpUrl}remoteDirectorySDF.html">
+                                        <f:checkbox name="bap-ftp.remoteDirectorySDF" checked="${transfer.remoteDirectorySDF}" />
+                                    </f:entry>
+
+                                </f:advanced>
+
+                                <f:entry title="">
+                                    <div align="right" class="show-if-not-only">
+                                        <f:repeatableDeleteButton value="${%deleteFtpTransfers.value}"/>
+                                    </div>
+                                </f:entry>
+
+                           </table>
+                        </f:repeatable>
+                    </f:entry>
+
+
+
+                    <f:entry title="">
+                        <div align="right" class="show-if-not-only">
+                            <f:repeatableDeleteButton value="${%deletePublisher.value}"/>
+                        </div>
+                    </f:entry>
+
+                </table>
+
+            </f:repeatable>
+
+            <f:advanced>
+                <f:entry title="${%continueOnError.title}" help="${helpUrl}continueOnError.html">
+                    <f:checkbox name="bap-ftp.continueOnError" checked="${instance.continueOnError}" />
+                </f:entry>
+                <f:entry title="${%failOnError.title}" help="${helpUrl}failOnError.html">
+                    <f:checkbox name="bap-ftp.failOnError" checked="${instance.failOnError}" />
+                </f:entry>
+                <f:entry title="${%alwaysFtpFromMaster.title}" help="${helpUrl}alwaysFtpFromMaster.html">
+                    <f:checkbox name="bap-ftp.alwaysPublishFromMaster" checked="${instance.alwaysPublishFromMaster}" />
+                </f:entry>
+            </f:advanced>
+
+    </f:entry>
+
+</j:jelly>

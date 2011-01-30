@@ -1,0 +1,10 @@
+<div>
+    <p>First part of the file path that should not be created on the remote FTP site.</p>
+    <p>If this prefix matches the start of a path to a file, then it will be removed from the file path.<br />
+    Directory structures are created relative to the base directory, which is usually the workspace.<br />
+    You normally do not want the full path to these files to be created on the server.<br />
+    For example if Source files were <code>target/deployment/images/**/*</code> then you may want Remove prefix to be <code>target/deployment</code>
+        This would create the images folder under the remote directory, and not target/deployment<br />
+    Hudson environment variables can be used in this path.</p>
+    <p><strong>If you use remove prefix, then ALL source file paths MUST start with the prefix.</strong></p>
+</div>

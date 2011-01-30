@@ -1,0 +1,32 @@
+<div>
+    <p>Select this to include the timestamp in the remote directory.</p>
+    <p>The timestamp is the date of build. If this publisher is being used during a promotion, then the timestamp is that of the build that is being promoted.
+    <br />This setting turns the remote directory option into a java SimpleDateFormat.
+    <br />The SimpleDateFormat(SDF) uses letters to represent components of the date, like the month, year, or day of the week. <a href="http://download.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html">Click here for more information about the date patterns.</a>
+    <br />As the SDF reserves all of the letters [A-Z][a-z], any that you want to appear literally in the directory that is created will need to be quoted.</p>
+    <p>Some examples follow - all examples are based on a build with a timestamp of 3:45 pm and 55 seconds on the 7th November 2010.
+    <br />
+    <table>
+    <tr>
+        <th>Remote directory</th>
+        <th>Directories created</th>
+    </tr>
+    <tr>
+        <td><code>'qa-approved/'yyyyMMddHHmmss</code></td>
+        <td><code>qa-approved/20101107154555</code></td>
+    </tr>
+    <tr>
+        <td><code>'builds/'yyyy/MM/dd/'build-${BUILD_NUMBER}'</code></td>
+        <td><code>builds/2010/11/07/build-456</code> (if the build was number 456)</td>
+    </tr>
+    <tr>
+        <td><code>yyyy_MM/'build'-EEE-d-HHmmss</code></td>
+        <td><code>2010_11/build-Sun-7-154555</code></td>
+    </tr>
+    <tr>
+        <td><code>yyyy-MM-dd_HH-mm-ss</code></td>
+        <td><code>2010-11-07_15-45-55</code></td>
+    </tr>
+    </table>
+    </p>
+</div>

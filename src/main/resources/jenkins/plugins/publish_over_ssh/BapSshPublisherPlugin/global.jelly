@@ -1,0 +1,50 @@
+<?jelly escape-by-default='true'?>
+
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+  <j:set var="helpUrl" value="${rootURL}/plugin/publish-over-ssh/help/global/"/>
+  <j:invokeStatic className="jenkins.plugins.publish_over_ssh.BapSshHostConfiguration" method="getDefaultPort" var="defaultPort"/>
+  <j:invokeStatic className="jenkins.plugins.publish_over_ssh.BapSshHostConfiguration" method="getDefaultTimeout" var="defaultTimeout"/>
+
+  <f:section title="${%hostconfig.section.title}" description="${%hostconfig.section.description}">
+    <f:entry title="${%hostconfig.entry.title}">
+      <f:repeatable var="hostconfig" items="${descriptor.hostConfigurations}" header="${%hostconfig.dragAndDrop}">
+        <table width="100%">
+          <f:entry title="${%name.title}" help="${helpUrl}name.html">
+            <f:textbox name="bap-pub.name" value="${hostconfig.name}"/>
+          </f:entry>
+          <f:entry title="${%hostname.title}" help="${helpUrl}hostname.html">
+            <f:textbox name="bap-pub.hostname" value="${hostconfig.hostname}"/>
+          </f:entry>
+          <f:entry title="${%username.title}" help="${helpUrl}username.html">
+            <f:textbox name="bap-pub.username" value="${hostconfig.username}" />
+          </f:entry>
+          <f:entry title="${%password.title}" help="${helpUrl}password.html">
+            <input class="setting-input" name="bap-pub.password" type="password" value="${hostconfig.password}" />
+          </f:entry>
+          <f:entry title="${%remotePath.title}" help="${helpUrl}remoteRootDir.html">
+            <f:textbox name="bap-pub.remoteRootDir" value="${hostconfig.remoteRootDir}"/>
+          </f:entry>
+          <f:advanced>
+            <f:entry title="${%port.title}" help="port.html">
+              <f:textbox name="bap-pub.port" value="${hostconfig.port}" default="${defaultPort}"/>
+            </f:entry>
+            <f:entry title="${%timeout.title}" help="${helpUrl}timeout.html">
+              <f:textbox name="bap-pub.timeout" value="${hostconfig.timeout}" default="${defaultTimeout}"/>
+            </f:entry>
+          </f:advanced>
+          <f:validateButton
+            title="${%test.title}" progress="${%test.progress}"
+            method="testConnection" with="bap-pub.name,bap-pub.hostname,bap-pub.username,bap-pub.password,bap-pub.remoteRootDir,bap-pub.port,bap-pub.timeout" />
+          <f:entry title="">
+            <div align="right">
+              <f:repeatableDeleteButton />
+            </div>
+          </f:entry>
+        </table>
+      </f:repeatable>
+    </f:entry>
+  </f:section>
+
+
+</j:jelly>
