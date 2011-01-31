@@ -33,7 +33,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.util.List;
 
-public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClient> {
+public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClient, BapSshCommonConfiguration> {
     
         private static BPPluginDescriptor.DescriptorMessages createDescriptorMessages() {
         return new BPPluginDescriptor.DescriptorMessages() {
@@ -50,8 +50,8 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
     }
 
     @Extension
-    public static final BPPluginDescriptor<BapSshHostConfiguration> DESCRIPTOR = new BPPluginDescriptor<BapSshHostConfiguration>(
-            createDescriptorMessages(), BapSshPublisherPlugin.class, BapSshHostConfiguration.class);
+    public static final BPPluginDescriptor<BapSshHostConfiguration, BapSshCommonConfiguration> DESCRIPTOR = new BPPluginDescriptor<BapSshHostConfiguration, BapSshCommonConfiguration>(
+            createDescriptorMessages(), BapSshPublisherPlugin.class, BapSshHostConfiguration.class, BapSshCommonConfiguration.class);
 
     @DataBoundConstructor
 	public BapSshPublisherPlugin(List<BapSshPublisher> publishers, boolean continueOnError, boolean failOnError, boolean alwaysPublishFromMaster) {

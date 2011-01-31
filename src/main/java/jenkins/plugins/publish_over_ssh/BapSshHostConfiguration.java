@@ -38,13 +38,16 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.util.Properties;
 
-public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient> {
+public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, BapSshCommonConfiguration> {
     
     static final long serialVersionUID = 1L;
     
     public static final int DEFAULT_PORT = 22;
     public static final int DEFAULT_TIMEOUT = 300000;
     private int timeout;
+    private String keyPath;
+    private String key;
+    private boolean overrideKey;
 
     public static int getDefaultPort() {
         return DEFAULT_PORT;
@@ -54,13 +57,25 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient> {
     }
     
     @DataBoundConstructor
-	public BapSshHostConfiguration(String name, String hostname, String username, String password, String remoteRootDir, int port, int timeout) {
+	public BapSshHostConfiguration(String name, String hostname, String username, String password, String remoteRootDir, int port, int timeout, boolean overrideKey, String keyPath, String key) {
         super(name, hostname, username, password, remoteRootDir, port);
         this.timeout = timeout;
+        this.overrideKey = overrideKey;
+        this.keyPath = keyPath;
+        this.key = key;
     }
 
     public int getTimeout() { return timeout; }
     public void setTimeout(int timeout) { this.timeout = timeout; }
+
+    public String getKeyPath() {return keyPath; }
+    public void setKeyPath(String keyPath) { this.keyPath = keyPath; }
+
+    public String getKey() { return key; }
+    public void setKey(String key) { this.key = key; }
+
+    public boolean isOverrideKey() { return overrideKey; }
+    public void setOverrideKey(boolean overrideKey) { this.overrideKey = overrideKey; }
 
     @Override
     public BapSshClient createClient(BPBuildInfo buildInfo) {
@@ -142,18 +157,27 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient> {
         
         return createEqualsBuilder(that)
             .append(timeout, that.timeout)
+            .append(keyPath, that.keyPath)
+            .append(key, that.key)
+            .append(overrideKey, that.overrideKey)
             .isEquals();
     }
 
     public int hashCode() {
         return createHashCodeBuilder()
             .append(timeout)
+            .append(keyPath)
+            .append(key)
+            .append(overrideKey)
             .toHashCode();
     }
     
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE))
             .append("timeout", timeout)
+            .append("keyPath", keyPath)
+            .append("key", "***")
+            .append("overrideKey", overrideKey)
             .toString();
     }
     

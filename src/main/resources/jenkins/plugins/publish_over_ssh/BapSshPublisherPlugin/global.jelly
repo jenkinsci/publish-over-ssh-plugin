@@ -30,7 +30,20 @@
   <j:invokeStatic className="jenkins.plugins.publish_over_ssh.BapSshHostConfiguration" method="getDefaultPort" var="defaultPort"/>
   <j:invokeStatic className="jenkins.plugins.publish_over_ssh.BapSshHostConfiguration" method="getDefaultTimeout" var="defaultTimeout"/>
 
-  <f:section title="${%hostconfig.section.title}" description="${%hostconfig.section.description}">
+  
+  <f:section title="${%section.title}" description="${%section.description}">
+    <f:entry title="${%common.entry.title}" help="${helpUrl}defaultKeySummary.html"/>
+      <f:rowSet name="common">
+        <f:entry title="${%default.passphrase.title}" help="${helpUrl}defaultPassphrase.html">
+          <input class="setting-input" name="common.passphrase" type="password" value="${descriptor.commonConfig.passphrase}" />
+        </f:entry>
+        <f:entry title="${%default.keyPath.title}" help="${helpUrl}defaultKeyPath.html">
+          <f:textbox name="common.keyPath" value="${descriptor.commonConfig.keyPath}"/>
+        </f:entry>
+        <f:entry title="${%default.key.title}" help="${helpUrl}defaultKey.html">
+          <f:textarea name="common.key" value="${descriptor.commonConfig.key}"/>
+        </f:entry>
+      </f:rowSet>
     <f:entry title="${%hostconfig.entry.title}">
       <f:repeatable var="hostconfig" items="${descriptor.hostConfigurations}" header="${%hostconfig.dragAndDrop}">
         <table width="100%">
@@ -42,15 +55,26 @@
           </f:entry>
           <f:entry title="${%username.title}" help="${helpUrl}username.html">
             <f:textbox name="bap-pub.username" value="${hostconfig.username}" />
-          </f:entry>
-          <f:entry title="${%password.title}" help="${helpUrl}password.html">
-            <input class="setting-input" name="bap-pub.password" type="password" value="${hostconfig.password}" />
-          </f:entry>
+          </f:entry>      
           <f:entry title="${%remotePath.title}" help="${helpUrl}remoteRootDir.html">
             <f:textbox name="bap-pub.remoteRootDir" value="${hostconfig.remoteRootDir}"/>
           </f:entry>
+          
           <f:advanced>
-            <f:entry title="${%port.title}" help="port.html">
+      
+            <f:optionalBlock inline="true" name="bap-pub.overrideKey" checked="${hostconfig.overrideKey}" title="${%override.default.key.title}" help="${helpUrl}overrideKey.html">
+              <f:entry title="${%password.title}" help="${helpUrl}password.html">
+                <input class="setting-input" name="bap-pub.password" type="password" value="${hostconfig.password}" />
+              </f:entry>
+              <f:entry title="${%keyPath.title}" help="${helpUrl}keyPath.html">
+                <f:textbox name="bap-pub.keyPath" value="${hostconfig.keyPath}"/>
+              </f:entry>
+              <f:entry title="${%key.title}" help="${helpUrl}key.html">
+                <f:textarea name="bap-pub.key" value="${hostconfig.key}"/>
+              </f:entry>
+            </f:optionalBlock>
+      
+            <f:entry title="${%port.title}" help="${helpUrl}port.html">
               <f:textbox name="bap-pub.port" value="${hostconfig.port}" default="${defaultPort}"/>
             </f:entry>
             <f:entry title="${%timeout.title}" help="${helpUrl}timeout.html">
@@ -59,7 +83,7 @@
           </f:advanced>
           <f:validateButton
             title="${%test.title}" progress="${%test.progress}"
-            method="testConnection" with="bap-pub.name,bap-pub.hostname,bap-pub.username,bap-pub.password,bap-pub.remoteRootDir,bap-pub.port,bap-pub.timeout" />
+            method="testConnection" with="bap-pub.name,bap-pub.hostname,bap-pub.username,bap-pub.password,bap-pub.remoteRootDir,bap-pub.port,bap-pub.timeout,bap-pub.keyPath,bap-pub.key,common.passphrase,common.key,common.keyPath"/>
           <f:entry title="">
             <div align="right">
               <f:repeatableDeleteButton />
@@ -69,6 +93,5 @@
       </f:repeatable>
     </f:entry>
   </f:section>
-
 
 </j:jelly>

@@ -160,7 +160,7 @@ public class BapSshHostConfigurationTest {
         }
 
         public BapSshHostConfigurationWithMockJSch(String name, String hostname, String username, String password, String remoteRootDir, int port, int timeout) {
-            super(name, hostname, username, password, remoteRootDir, port, timeout);
+            super(name, hostname, username, password, remoteRootDir, port, timeout, false, "", "");
         }
 
         @Override
