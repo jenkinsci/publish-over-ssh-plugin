@@ -22,35 +22,36 @@
  * THE SOFTWARE.
  */
 
-package jenkins.plugins.publish_over_ssh;
+package jenkins.plugins.publish_over_ssh.helper;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.kohsuke.stapler.DataBoundConstructor;
+import com.jcraft.jsch.UserInfo;
+import org.easymock.IArgumentMatcher;
+import org.easymock.classextension.EasyMock;
 
-public class BapSshCommonConfiguration extends BapSshConcreteKeyInfo {
+public class UserInfoPasswordMatcher implements IArgumentMatcher {
     
-    public BapSshCommonConfiguration() {}
-    
-    @DataBoundConstructor
-    public BapSshCommonConfiguration(String passphrase, String key, String keyPath) {
-        super(passphrase, key, keyPath);
+    public static UserInfo uiPassword(String password) {
+        EasyMock.reportMatcher(new UserInfoPasswordMatcher(password));
+        return null;
     }
+     
+    private String expectedPassword;
 
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BapSshCommonConfiguration that = (BapSshCommonConfiguration) o;
-        
-        return createEqualsBuilder(that).isEquals();
-    }
-
-    public int hashCode() {
-        return createHashCodeBuilder().toHashCode();
+    public UserInfoPasswordMatcher(String expectedPassword) {
+        this.expectedPassword = expectedPassword;
     }
     
-    public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+    public boolean matches(Object actual) {
+        if (!(actual instanceof UserInfo)) {
+            return false;
+        }
+        UserInfo actualUI = (UserInfo) actual;
+        return (expectedPassword == actualUI.getPassword()) && (expectedPassword == actualUI.getPassphrase());
     }
 
+    public void appendTo(StringBuffer stringBuffer) {
+        stringBuffer.append("uiPassword(\"")
+            .append(expectedPassword)
+            .append("\")");
+    }
 }

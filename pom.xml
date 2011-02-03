@@ -27,13 +27,15 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
+        <!-- <groupId>org.jenkins-ci.plugins</groupId> -->
 		<groupId>org.jvnet.hudson.plugins</groupId>
 		<artifactId>plugin</artifactId>
-		<version>1.395</version>
+		<version>1.388</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<groupId>org.jvnet.hudson.plugins</groupId>
+    <groupId>org.jvnet.hudson.plugins</groupId>
+    <!--<groupId>org.jenkins-ci.plugins</groupId>-->
 	<artifactId>publish-over-ssh</artifactId>
 	<packaging>hpi</packaging>
 	<name>Publish Over SSH</name>
@@ -43,7 +45,7 @@
 
 	<licenses>
 		<license>
-			<name>MIT license</name>
+			<name>The MIT license</name>
 			<comments>All source code is under the MIT license.</comments>
 		</license>
 	</licenses>
@@ -59,10 +61,11 @@
 		<dependency>
 			<groupId>com.jcraft</groupId>
 			<artifactId>jsch</artifactId>
-			<version>0.1.42</version>
+			<version>0.1.44</version>
 		</dependency>
 		<dependency>
-			<groupId>org.jvnet.hudson.plugins</groupId>
+            <groupId>org.jvnet.hudson.plugins</groupId>
+			<!--<groupId>org.jenkins-ci.plugins</groupId>-->
 			<artifactId>publish-over</artifactId>
 			<version>0.1-SNAPSHOT</version>
 		</dependency>
@@ -89,6 +92,7 @@
 	<build>
 		<plugins>
 			<plugin>
+                <!-- <groupId>org.jenkins-ci.plugins</groupId> -->
 				<groupId>org.jvnet.hudson.tools</groupId>
 				<artifactId>maven-hpi-plugin</artifactId>
 				<version>1.42</version>
@@ -99,5 +103,19 @@
 			</plugin>
 		</plugins>
 	</build>
+    
+    <repositories>
+        <repository>
+            <id>jcraft</id>
+                <url>http://jsch.sourceforge.net/maven2/</url>
+                <releases>
+                    <enabled>true</enabled>
+                </releases>
+                <snapshots>
+                    <enabled>false</enabled>
+                </snapshots>
+        </repository>
+    </repositories>
+    
 </project>
 

@@ -24,33 +24,26 @@
 
 package jenkins.plugins.publish_over_ssh;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.kohsuke.stapler.DataBoundConstructor;
+import hudson.FilePath;
+import jenkins.plugins.publish_over.BPBuildInfo;
+import jenkins.plugins.publish_over.BapPublisherException;
+import org.apache.commons.io.IOUtils;
 
-public class BapSshCommonConfiguration extends BapSshConcreteKeyInfo {
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+
+public class BapSshUtil {
     
-    public BapSshCommonConfiguration() {}
-    
-    @DataBoundConstructor
-    public BapSshCommonConfiguration(String passphrase, String key, String keyPath) {
-        super(passphrase, key, keyPath);
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BapSshCommonConfiguration that = (BapSshCommonConfiguration) o;
-        
-        return createEqualsBuilder(that).isEquals();
-    }
-
-    public int hashCode() {
-        return createHashCodeBuilder().toHashCode();
+    public static byte[] toBytes(String string) {
+        if (string == null)
+            return null;
+        try {
+            return string.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException uee) {
+            throw new BapPublisherException("Really? Really? You don't know what UTF-8 is? Really? ...", uee);
+        }
     }
     
-    public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
-    }
-
 }

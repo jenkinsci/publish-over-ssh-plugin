@@ -25,5 +25,5 @@
   -->
 
 <div>
-  Send build artifacts using SFTP
+    Send build artifacts over SSH
 </div>

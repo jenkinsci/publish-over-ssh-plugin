@@ -22,35 +22,54 @@
  * THE SOFTWARE.
  */
 
-package jenkins.plugins.publish_over_ssh;
+package jenkins.plugins.publish_over_ssh.helper;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.kohsuke.stapler.DataBoundConstructor;
+import org.apache.commons.io.FileUtils;
 
-public class BapSshCommonConfiguration extends BapSshConcreteKeyInfo {
-    
-    public BapSshCommonConfiguration() {}
-    
-    @DataBoundConstructor
-    public BapSshCommonConfiguration(String passphrase, String key, String keyPath) {
-        super(passphrase, key, keyPath);
+import java.io.File;
+import java.io.IOException;
+import java.util.Random;
+
+public class RandomFile {
+
+    private static Random random = new Random();
+
+    private File file;
+    private byte[] contents;
+
+    public RandomFile(File directory, String filename) {
+        this(new File(directory, filename));
     }
 
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BapSshCommonConfiguration that = (BapSshCommonConfiguration) o;
-        
-        return createEqualsBuilder(that).isEquals();
+    public RandomFile(File file) {
+        this(file, 200);
     }
 
-    public int hashCode() {
-        return createHashCodeBuilder().toHashCode();
+    public RandomFile(File file, int size) {
+        this.file = file;
+
+        contents = new byte[size];
+        random.nextBytes(contents);
+        File parent = file.getParentFile();
+        if (!parent.exists())
+            parent.mkdirs();
+        try {
+            FileUtils.writeByteArrayToFile(file, contents);
+        } catch (IOException ioe) {
+            throw new RuntimeException("Failed to create file [" + file.getAbsolutePath()  + "]", ioe);
+        }
     }
-    
-    public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+
+    public File getFile() {
+        return file;
+    }
+
+    public byte[] getContents() {
+        return contents;
+    }
+
+    public String getFileName() {
+        return file.getName();
     }
 
 }

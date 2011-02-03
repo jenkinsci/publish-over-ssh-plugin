@@ -24,33 +24,12 @@
 
 package jenkins.plugins.publish_over_ssh;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.kohsuke.stapler.DataBoundConstructor;
+import jenkins.plugins.publish_over.BPBuildInfo;
 
-public class BapSshCommonConfiguration extends BapSshConcreteKeyInfo {
+public interface BapSshKeyInfo {
+   
+    String getPassphrase();
+    byte[] getEffectiveKey(BPBuildInfo buildInfo);
+    boolean useKey();
     
-    public BapSshCommonConfiguration() {}
-    
-    @DataBoundConstructor
-    public BapSshCommonConfiguration(String passphrase, String key, String keyPath) {
-        super(passphrase, key, keyPath);
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BapSshCommonConfiguration that = (BapSshCommonConfiguration) o;
-        
-        return createEqualsBuilder(that).isEquals();
-    }
-
-    public int hashCode() {
-        return createHashCodeBuilder().toHashCode();
-    }
-    
-    public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
-    }
-
 }

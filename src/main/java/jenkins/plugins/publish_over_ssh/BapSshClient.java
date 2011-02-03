@@ -27,8 +27,12 @@ package jenkins.plugins.publish_over_ssh;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 import hudson.FilePath;
+import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPDefaultClient;
+import jenkins.plugins.publish_over.BapPublisherException;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -38,33 +42,69 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     
     private static Log LOG = LogFactory.getLog(BapSshClient.class);
     
+    private BPBuildInfo buildInfo;
     private JSch ssh;
     private Session session;
     private ChannelSftp sftp;
 
-    public BapSshClient(JSch ssh, Session session) {
+    public BapSshClient(BPBuildInfo buildInfo, JSch ssh, Session session) {
+        this.buildInfo = buildInfo;
         this.ssh = ssh;
         this.session = session;
     }
     
+    public BPBuildInfo getBuildInfo() {
+        return buildInfo;
+    }
+
     public void setSftp(ChannelSftp sftp) {
         this.sftp = sftp;
     }
 
-    public boolean changeToInitialDirectory() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    public boolean changeDirectory(String directory) {    
+        try {
+            if (!sftp.stat(directory).isDir()) return false;
+        } catch (SftpException sftpe) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.log_sftp_stat(directory, sftpe.getLocalizedMessage()));
+            }
+            return false;
+        }
+        try {
+            buildInfo.printIfVerbose(Messages.console_cd(directory));
+            sftp.cd(directory);
+            success();
+            return true;
+        } catch (SftpException sftpe) {
+            throw new BapPublisherException(Messages.exception_cwdException(directory, sftpe.getLocalizedMessage()), sftpe);
+        }
     }
 
-    public boolean changeDirectory(String s) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    public boolean makeDirectory(String directory) {
+        if (hasSubDirs(directory)) return false;
+        try {
+            buildInfo.printIfVerbose(Messages.console_mkdir(directory));
+            sftp.mkdir(directory);
+            success();
+            return true;
+        } catch (SftpException sftpe) {
+            buildInfo.printIfVerbose(Messages.console_failure(sftpe.getLocalizedMessage()));
+            return false;
+        }
     }
 
-    public boolean makeDirectory(String s) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    public void transferFile(BapSshTransfer bapSshTransfer, FilePath filePath, InputStream inputStream) throws SftpException {
+        buildInfo.printIfVerbose(Messages.console_put(filePath.getName()));
+        sftp.put(inputStream, filePath.getName());
+        success();
     }
-
-    public void transferFile(BapSshTransfer bapSshTransfer, FilePath filePath, InputStream inputStream) throws Exception {
-        //To change body of implemented methods use File | Settings | File Templates.
+    
+    private void success() {
+        buildInfo.printIfVerbose(Messages.console_success());
+    }
+    
+    private boolean hasSubDirs(String directory) {
+        return directory.contains("/") || directory.contains("\\");
     }
 
     public void disconnect() throws Exception {

@@ -35,27 +35,12 @@ import java.util.List;
 
 public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClient, BapSshCommonConfiguration> {
     
-        private static BPPluginDescriptor.DescriptorMessages createDescriptorMessages() {
-        return new BPPluginDescriptor.DescriptorMessages() {
-            public String displayName() {
-                return Messages.descriptor_displayName();
-            }
-            public String connectionOK() {
-                return Messages.descriptor_testConnection_ok();
-            }
-            public String connectionErr() {
-                return Messages.descriptor_testConnection_error();
-            }
-        };
-    }
-
     @Extension
-    public static final BPPluginDescriptor<BapSshHostConfiguration, BapSshCommonConfiguration> DESCRIPTOR = new BPPluginDescriptor<BapSshHostConfiguration, BapSshCommonConfiguration>(
-            createDescriptorMessages(), BapSshPublisherPlugin.class, BapSshHostConfiguration.class, BapSshCommonConfiguration.class);
+    public static final Descriptor DESCRIPTOR = new Descriptor();
 
     @DataBoundConstructor
-	public BapSshPublisherPlugin(List<BapSshPublisher> publishers, boolean continueOnError, boolean failOnError, boolean alwaysPublishFromMaster) {
-        super(Messages.console_message_prefix(), publishers, continueOnError, failOnError, alwaysPublishFromMaster);
+	public BapSshPublisherPlugin(List<BapSshPublisher> publishers, boolean continueOnError, boolean failOnError, boolean alwaysPublishFromMaster, String masterNodeName) {
+        super(Messages.console_message_prefix(), publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
     
     public boolean equals(Object o) {
@@ -76,5 +61,23 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
     public BapSshHostConfiguration getConfiguration(String name) {
 		return DESCRIPTOR.getConfiguration(name);
 	}
+    
+    public static class Descriptor extends BPPluginDescriptor<BapSshHostConfiguration, BapSshCommonConfiguration> {
+        public Descriptor() {
+            super(new DescriptorMessages(), BapSshPublisherPlugin.class, BapSshHostConfiguration.class, BapSshCommonConfiguration.class);
+        }
+    }
+    
+    public static class DescriptorMessages implements BPPluginDescriptor.BPDescriptorMessages {
+        public String displayName() {
+            return Messages.descriptor_displayName();
+        }
+        public String connectionOK() {
+            return Messages.descriptor_testConnection_ok();
+        }
+        public String connectionErr() {
+            return Messages.descriptor_testConnection_error();
+        }
+    }
     
 }

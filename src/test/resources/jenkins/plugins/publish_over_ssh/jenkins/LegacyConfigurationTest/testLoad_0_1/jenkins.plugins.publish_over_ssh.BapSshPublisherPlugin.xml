@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jenkins.plugins.publish__over__ssh.BapSshPublisherPlugin_-Descriptor>
+  <msg class="jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin$DescriptorMessages"/>
+  <commonConfigClass>jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration</commonConfigClass>
+  <hostConfigClass>jenkins.plugins.publish_over_ssh.BapSshHostConfiguration</hostConfigClass>
+  <commonConfig class="jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration">
+    <passphrase>hello</passphrase>
+    <key>-----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+DEK-Info: AES-128-CBC,8885F902F99146AA580E7A6D270020D4
+
+HFzZpIKKLghgZeDBXSFpgm3uoiMUSX/+zyNWRw0ifPXciPIz4DnFSkjVMTM+eCil
+/Jo03n7rzh9bO2hbvTxAFa+LImbQcp8T3dRBfJFP8G01ZnjtSobTJ/ykB38kOChc
+VyPF5uebIaKy56JECJ0AM7YI1+2VqKemaKNUwsWoAPG8efdK7w7v0x/loA6gZ8Fi
+IGOL3nAeLx1u6jaHANRikUi8232KeEDbfM8NzbrlJho16yNTniiVAwhZ0G+E6/Ks
+yA1779dDqoaYXgVtCZ04b8ZKC3VwMmzvQui6mONLvcuutX8wQ/zKOHaE8VrYWPx0
+2LQ0YpUX7jR8k31KGSySgSB87h2Xil1DGg09KN2MsPIJV1KAXj5hk0Z96UyJAMT3
+7kYMMcHUmGTxBbtAwAfp8xGfN+lepfwIgp1CtoW2jq/ZY0peao4FBSt3do2AlVu6
+zjcM1q+Q6Oigu5oNpsIhuwfvhyrqxN1KxE4chtJ+mQFnXrBvtVZzaLoJ9U7PEa1x
+Y1hFCjceovKZ+E9d0XNPTrjNVAa62oijCFF+bepMMzett9uKvJkOTugEwNqzUG+J
+GGfxBvJohYmzGEXfW2T5eBFMYfvLa5YERub6PzTF2UHItm6fymsviEWW3+5k3ESa
+RB2YVSXPkH2H0o7bg/tXdVk/uRj26q0FQahowW5TkKwVRKrqjlQY6jzRsYeY68aL
+hzEG6fwvPmrH9Edpf0F8Xeha0PGdavyBIY5lMPy6t/dPDRDtmkZwZqLsTw0T/Zht
+YeraJAOubc3OlYboZxWQ1ZpEEXha8UQj1/Tp4vh5f67+XVEjpsphZ7Ugey6n52bo
+CXioB6719qL9cYNE/1QuUO3SoNppIttP2AkS00RDufRrOEzdQtoWJ7gLOS/r/UTX
+C1XhFs0j69eJ6Kw/EUhj+ASiLz4XCzj9WGh5P0Sj1Y0YPI2XbqmoZnpPOnY+1rhl
+xDb52PlLGGOmve3GadYz9+5yrsDD7IwRPyWWghuWWKoWYhRpXPoQBHPFEZi2uxw6
+IjMBALDzPo+vHtGfD8OuGjUYBXGubo6MrUt7YspuzYGx/2RUwUM5H6jHj3XWNPNq
+HQHTeLE35WOxE0K+h22XBC/hbBQF3RJDu7dtNoBVQRHcoY6c7H1SPwYMXCBzbuMS
+odPv6W9UXPbUQAcSqknQ9D1pvjO5b+T3BCtIRQTSRIqGFKECeBO/cu5nPq8XGwtY
+Yp3KgFdQJ4kh7G9Woehw1kDBdBLX+qnwa0DCNMVUPYu7mBMg/QUZAFIL9lUceR2g
+ajIy+8Y6Xb0l91VEudC7tyPs7eet8aBorfjHPWkWePhCKtcrFmIr8wChV3qaQnvl
+8PyRf/DgdqTXRz1NOas7vTJoMm/ji5zdBrdVzS1GLvUj6+1PUp7YyY3N/oJaPHqH
+e8NAXq02aE3o0++kiQiK960/K5pJ2vRlNb/nYh0fsScJ0eID8Uoty/LZqvZNd6RI
+2iwiddkujpk/x/xi+DgiiL171DsAPk6Kdjl7UD+l/OCp1PON2YZy84eaHVyOk7W+
+dpXL/6h5McOOlG4Q8H6bpAvjcgtHlH99QVJIibI9pUAuzwaRPXtD6ivO+Xw2H3c7
+-----END RSA PRIVATE KEY-----
+</key>
+    <keyPath>/this/will/be/ignored</keyPath>
+  </commonConfig>
+  <hostConfigurations>
+    <jenkins.plugins.publish__over__ssh.BapSshHostConfiguration>
+      <name>config a</name>
+      <hostname>hostname.a</hostname>
+      <username>username.a</username>
+      <remoteRootDir>remoteDirectory.a</remoteRootDir>
+      <port>22</port>
+      <commonConfig class="jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration" reference="../../../commonConfig"/>
+      <timeout>300000</timeout>
+      <overrideKey>false</overrideKey>
+      <keyInfo>
+        <passphrase>password.a</passphrase>
+        <key></key>
+        <keyPath></keyPath>
+      </keyInfo>
+    </jenkins.plugins.publish__over__ssh.BapSshHostConfiguration>
+    <jenkins.plugins.publish__over__ssh.BapSshHostConfiguration>
+      <name>config b</name>
+      <hostname>hostname.b</hostname>
+      <username>username.b</username>
+      <remoteRootDir></remoteRootDir>
+      <port>22</port>
+      <commonConfig class="jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration" reference="../../../commonConfig"/>
+      <timeout>300000</timeout>
+      <overrideKey>true</overrideKey>
+      <keyInfo>
+        <passphrase></passphrase>
+        <key></key>
+        <keyPath>/an/unencrypted/key</keyPath>
+      </keyInfo>
+    </jenkins.plugins.publish__over__ssh.BapSshHostConfiguration>
+    <jenkins.plugins.publish__over__ssh.BapSshHostConfiguration>
+      <name>config c</name>
+      <hostname>hostname.c</hostname>
+      <username>username.c</username>
+      <remoteRootDir></remoteRootDir>
+      <port>22</port>
+      <commonConfig class="jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration" reference="../../../commonConfig"/>
+      <timeout>300000</timeout>
+      <overrideKey>true</overrideKey>
+      <keyInfo>
+        <passphrase></passphrase>
+        <key>-----BEGIN DSA PRIVATE KEY-----
+MIIBuwIBAAKBgQCCwrvPcyl0tJhXxbWGKgO966l/Vhxg8w+rlqVWXNqOsY+n7xdr
+vMNnos0qXV9+iYXJ0mBLeTLOO1q/ezTDEGXDyGdf3ubouF64YaBu0VU/us2rviQb
+quncWFbkmxiDJCPqeNMQBkIzDTwhDX4fFt8W5oiTupxNbUQLYEvhe49gVQIVAO23
+v9XGw29rYSXMLIgQ5614gxqLAoGAYYUGCNCPNjMAn07gYBKkpkGp3oo/m0SKyyP9
+tOX9XjNMFzEyPV/qgx5roky122OvHM85IDJJLLBPlFJzH3gXaEMqMdBrKgodF2B5
+IoOYq8RvUmsgWYtUjQZTKQNrRdMo7SEzfhZY9VwkxI/DBGgX0JIacqER6ToGT50C
+8MG/8u8CgYAbeOHfx0uAa26M0AhOc4neQs3rdgvTN3KZCBUhHHolRbj1HtAkLtcA
+HDlOpzD+53tp0zdjCenB8agOZ8QNVTIHEFtJXidmznNISUBnjR8OmjQgSnFxv/WR
+HDo8xcZZP8/VOhWx9vJRSD7Q68W9kIcrJqA9c+Al0hrEkuBDFkymlgIVALIwRRoV
+4xWDtv+JzBP0SclOU6Fz
+-----END DSA PRIVATE KEY-----
+</key>
+        <keyPath></keyPath>
+      </keyInfo>
+    </jenkins.plugins.publish__over__ssh.BapSshHostConfiguration>
+    <jenkins.plugins.publish__over__ssh.BapSshHostConfiguration>
+      <name>config d</name>
+      <hostname>hostname.d</hostname>
+      <username>username.d</username>
+      <remoteRootDir>remoteDirectory.d</remoteRootDir>
+      <port>8022</port>
+      <commonConfig class="jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration" reference="../../../commonConfig"/>
+      <timeout>10000</timeout>
+      <overrideKey>true</overrideKey>
+      <keyInfo>
+        <passphrase>passphrase</passphrase>
+        <key>-----BEGIN DSA PRIVATE KEY-----
+MIIBuwIBAAKBgQCCwrvPcyl0tJhXxbWGKgO966l/Vhxg8w+rlqVWXNqOsY+n7xdr
+vMNnos0qXV9+iYXJ0mBLeTLOO1q/ezTDEGXDyGdf3ubouF64YaBu0VU/us2rviQb
+quncWFbkmxiDJCPqeNMQBkIzDTwhDX4fFt8W5oiTupxNbUQLYEvhe49gVQIVAO23
+v9XGw29rYSXMLIgQ5614gxqLAoGAYYUGCNCPNjMAn07gYBKkpkGp3oo/m0SKyyP9
+tOX9XjNMFzEyPV/qgx5roky122OvHM85IDJJLLBPlFJzH3gXaEMqMdBrKgodF2B5
+IoOYq8RvUmsgWYtUjQZTKQNrRdMo7SEzfhZY9VwkxI/DBGgX0JIacqER6ToGT50C
+8MG/8u8CgYAbeOHfx0uAa26M0AhOc4neQs3rdgvTN3KZCBUhHHolRbj1HtAkLtcA
+HDlOpzD+53tp0zdjCenB8agOZ8QNVTIHEFtJXidmznNISUBnjR8OmjQgSnFxv/WR
+HDo8xcZZP8/VOhWx9vJRSD7Q68W9kIcrJqA9c+Al0hrEkuBDFkymlgIVALIwRRoV
+4xWDtv+JzBP0SclOU6Fz
+-----END DSA PRIVATE KEY-----
+</key>
+        <keyPath>path/to/key</keyPath>
+      </keyInfo>
+    </jenkins.plugins.publish__over__ssh.BapSshHostConfiguration>
+  </hostConfigurations>
+</jenkins.plugins.publish__over__ssh.BapSshPublisherPlugin_-Descriptor>

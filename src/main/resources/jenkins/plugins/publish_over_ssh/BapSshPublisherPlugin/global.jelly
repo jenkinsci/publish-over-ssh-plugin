@@ -83,7 +83,7 @@
           </f:advanced>
           <f:validateButton
             title="${%test.title}" progress="${%test.progress}"
-            method="testConnection" with="bap-pub.name,bap-pub.hostname,bap-pub.username,bap-pub.password,bap-pub.remoteRootDir,bap-pub.port,bap-pub.timeout,bap-pub.keyPath,bap-pub.key,common.passphrase,common.key,common.keyPath"/>
+            method="testConnection" with="bap-pub.name,bap-pub.hostname,bap-pub.username,bap-pub.password,bap-pub.remoteRootDir,bap-pub.port,bap-pub.timeout,bap-pub.keyPath,bap-pub.key,bap-pub.overrideKey,common.passphrase,common.key,common.keyPath"/>
           <f:entry title="">
             <div align="right">
               <f:repeatableDeleteButton />

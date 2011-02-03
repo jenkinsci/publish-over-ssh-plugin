@@ -28,7 +28,8 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import com.jcraft.jsch.UserInfo;
+import com.jcraft.jsch.SftpException;
+import hudson.Util;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPHostConfiguration;
 import jenkins.plugins.publish_over.BapPublisherException;
@@ -36,6 +37,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import java.io.IOException;
 import java.util.Properties;
 
 public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, BapSshCommonConfiguration> {
@@ -45,9 +47,8 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     public static final int DEFAULT_PORT = 22;
     public static final int DEFAULT_TIMEOUT = 300000;
     private int timeout;
-    private String keyPath;
-    private String key;
     private boolean overrideKey;
+    private BapSshConcreteKeyInfo keyInfo= new BapSshConcreteKeyInfo();
 
     public static int getDefaultPort() {
         return DEFAULT_PORT;
@@ -58,43 +59,92 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     
     @DataBoundConstructor
 	public BapSshHostConfiguration(String name, String hostname, String username, String password, String remoteRootDir, int port, int timeout, boolean overrideKey, String keyPath, String key) {
-        super(name, hostname, username, password, remoteRootDir, port);
+        super(name, hostname, username, null, remoteRootDir, port);
         this.timeout = timeout;
         this.overrideKey = overrideKey;
-        this.keyPath = keyPath;
-        this.key = key;
+        setPassword(password);
+        setKey(key);
+        setKeyPath(keyPath);
     }
 
     public int getTimeout() { return timeout; }
     public void setTimeout(int timeout) { this.timeout = timeout; }
 
-    public String getKeyPath() {return keyPath; }
-    public void setKeyPath(String keyPath) { this.keyPath = keyPath; }
+    public String getPassword() { return keyInfo.getPassphrase(); }
+    public void setPassword(String password) { keyInfo.setPassphrase(password); }
+    
+    public String getKeyPath() {return keyInfo.getKeyPath(); }
+    public void setKeyPath(String keyPath) { keyInfo.setKeyPath(keyPath); }
 
-    public String getKey() { return key; }
-    public void setKey(String key) { this.key = key; }
+    public String getKey() { return keyInfo.getKey(); }
+    public void setKey(String key) { keyInfo.setKey(key); }
 
     public boolean isOverrideKey() { return overrideKey; }
     public void setOverrideKey(boolean overrideKey) { this.overrideKey = overrideKey; }
+
+    BapSshKeyInfo getEffectiveKeyInfo() {
+        return overrideKey ? keyInfo : getCommonConfig();
+    }
 
     @Override
     public BapSshClient createClient(BPBuildInfo buildInfo) {
         JSch ssh = createJSch();
         Session session = createSession(buildInfo, ssh);
-        BapSshClient bapClient = new BapSshClient(ssh, session);
+        BapSshClient bapClient = new BapSshClient(buildInfo, ssh, session);
         try {
-            session.setUserInfo(new BapSshUserInfo(buildInfo, getPassword()));
-            session.setConfig(getSessionProperties());
+            BapSshKeyInfo keyInfo = getEffectiveKeyInfo();
+            Properties sessionProperties = getSessionProperties();
+            if (getEffectiveKeyInfo().useKey()) {
+                setKey(buildInfo, ssh, keyInfo);
+                sessionProperties.put("PreferredAuthentications", "publickey");
+            } else {
+                session.setPassword(Util.fixNull(keyInfo.getPassphrase()));
+            }        
+            session.setConfig(sessionProperties);
             connect(buildInfo, session);
             ChannelSftp sftp = openSftpChannel(buildInfo, session);
             bapClient.setSftp(sftp);
             connectSftpChannel(buildInfo, sftp);
-    //        TODO the exec
+            changeToRootDirectory(bapClient);
+            setRootDirectoryInClient(bapClient, sftp);            
+    //        TODO the exec - maybe not here?
     //        ChannelExec exec;
             return bapClient;
+        } catch (IOException ioe) {
+            bapClient.disconnectQuietly();
+            throw new BapPublisherException(Messages.exception_failedToCreateClient(ioe.getLocalizedMessage()), ioe);
         } catch (RuntimeException re) {
             bapClient.disconnectQuietly();
             throw re;
+        }
+    }
+    
+    private void setKey(BPBuildInfo buildInfo, JSch ssh, BapSshKeyInfo keyInfo) {
+        try {
+            ssh.addIdentity("TheKey", keyInfo.getEffectiveKey(buildInfo), null, BapSshUtil.toBytes(keyInfo.getPassphrase()));
+        } catch (JSchException jsche) {
+            throw new BapPublisherException(Messages.exception_addIdentity(jsche.getLocalizedMessage()), jsche);
+        }
+    }
+    
+    private void setRootDirectoryInClient(BapSshClient client, ChannelSftp sftp) throws IOException {
+        if (isDirectoryAbsolute(getRemoteRootDir())) {
+            client.setAbsoluteRemoteRoot(getRemoteRootDir());
+        } else {
+            client.setAbsoluteRemoteRoot(getRootDirectoryFromPwd(client, sftp));
+        }
+    }
+    
+    private String getRootDirectoryFromPwd(BapSshClient client, ChannelSftp sftp) {
+        BPBuildInfo buildInfo = client.getBuildInfo();
+        buildInfo.printIfVerbose(Messages.console_usingPwd());
+        try {
+            String pwd = sftp.pwd();
+            if (!isDirectoryAbsolute(pwd))
+                throw new BapPublisherException(Messages.exception_pwdNotAbsolute(pwd));
+            return pwd;
+        } catch (SftpException sftpe) {
+            throw new BapPublisherException(Messages.exception_pwd(sftpe.getLocalizedMessage()));
         }
     }
     
@@ -156,70 +206,26 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         BapSshHostConfiguration that = (BapSshHostConfiguration) o;
         
         return createEqualsBuilder(that)
+            .append(keyInfo, that.keyInfo)
             .append(timeout, that.timeout)
-            .append(keyPath, that.keyPath)
-            .append(key, that.key)
             .append(overrideKey, that.overrideKey)
             .isEquals();
     }
 
     public int hashCode() {
         return createHashCodeBuilder()
+            .append(keyInfo)
             .append(timeout)
-            .append(keyPath)
-            .append(key)
             .append(overrideKey)
             .toHashCode();
     }
     
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE))
+            .append("keyInfo", keyInfo)
             .append("timeout", timeout)
-            .append("keyPath", keyPath)
-            .append("key", "***")
             .append("overrideKey", overrideKey)
             .toString();
-    }
-    
-    public static class BapSshUserInfo implements UserInfo {
-
-        private final BPBuildInfo buildInfo;
-        private final String password;
-
-        public BapSshUserInfo(BPBuildInfo buildInfo, String password) {
-            this.buildInfo = buildInfo;
-            this.password = password;
-        }
-
-        public String getPassphrase() {
-            return password;
-        }
-        
-        public String getPassword() {
-            return password;
-        }
-        
-        public boolean promptPassword(String s) {
-            return printAndReturn(s, true);
-        }
-        
-        public boolean promptPassphrase(String s) {
-            return printAndReturn(s, true);
-        }
-        
-        public boolean promptYesNo(String s) {
-            return printAndReturn(s, true);
-        }
-        
-        private boolean printAndReturn(String message, boolean returning) {
-            buildInfo.printIfVerbose(message);
-            buildInfo.printIfVerbose(Messages.console_userInfo_returning(returning));
-            return returning;
-        }
-        
-        public void showMessage(String s) {
-            buildInfo.println(s);
-        }
     }
     
 }
