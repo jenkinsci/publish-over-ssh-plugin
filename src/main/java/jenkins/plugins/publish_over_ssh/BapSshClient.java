@@ -61,6 +61,11 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         this.sftp = sftp;
     }
 
+    public void beginTransfers(BapSshTransfer transfer) {
+        if (!transfer.hasConfiguredSourceFiles() && !transfer.hasExecCommand())
+            throw new BapPublisherException(Messages.exception_badTransferConfig());
+    }
+
     public boolean changeDirectory(String directory) {    
         try {
             if (!sftp.stat(directory).isDir()) return false;

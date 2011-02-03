@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_ssh;
 
+import hudson.Util;
 import jenkins.plugins.publish_over.BPTransfer;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -32,28 +33,52 @@ import org.kohsuke.stapler.DataBoundConstructor;
 public class BapSshTransfer extends BPTransfer {
 
     static final long serialVersionUID = 1L;
+    public static final int DEFAULT_EXEC_TIMEOUT = 120000;
+    
+    public static int getDefaultExecTimeout() { return DEFAULT_EXEC_TIMEOUT; }
+    
+    private String execCommand;
+    private int execTimeout;
     
     @DataBoundConstructor
-    public BapSshTransfer(String sourceFiles, String remoteDirectory, String removePrefix, boolean remoteDirectorySDF, boolean flatten) {
+    public BapSshTransfer(String sourceFiles, String remoteDirectory, String removePrefix, boolean remoteDirectorySDF, boolean flatten, String execCommand, int execTimeout) {
         super(sourceFiles, remoteDirectory, removePrefix, remoteDirectorySDF, flatten);
+        this.execCommand = execCommand;
+        this.execTimeout = execTimeout;
     }
     
+    public String getExecCommand() { return execCommand; }
+    public void setExecCommand(String execCommand) { this.execCommand = execCommand; }
+
+    public int getExecTimeout() { return execTimeout; }
+    public void setExecTimeout(int execTimeout) { this.execTimeout = execTimeout; }
+    
+    public boolean hasExecCommand() {
+        return Util.fixEmptyAndTrim(getExecCommand()) != null;
+    }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BapSshTransfer that = (BapSshTransfer) o;
         
         return createEqualsBuilder(that)
+            .append(execCommand, that.execCommand)
+            .append(execTimeout, that.execTimeout)
             .isEquals();
     }
 
     public int hashCode() {
         return createHashCodeBuilder()
+            .append(execCommand)
+            .append(execTimeout)
             .toHashCode();
     }
     
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE))
+            .append(execCommand)
+            .append(execTimeout)
             .toString();
     }
     

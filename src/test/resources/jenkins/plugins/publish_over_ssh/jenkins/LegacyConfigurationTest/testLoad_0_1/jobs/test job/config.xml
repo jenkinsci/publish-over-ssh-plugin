@@ -21,10 +21,12 @@
             <transfers>
               <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                 <remoteDirectory></remoteDirectory>
-                <sourceFiles>**/*</sourceFiles>
+                <sourceFiles></sourceFiles>
                 <removePrefix></removePrefix>
                 <remoteDirectorySDF>false</remoteDirectorySDF>
                 <flatten>false</flatten>
+                <execCommand>date</execCommand>
+                <execTimeout>120000</execTimeout>
               </jenkins.plugins.publish__over__ssh.BapSshTransfer>
               <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                 <remoteDirectory>&apos;builds/&apos;yyyy_MM_dd/&apos;build-${BUILD_NUMBER}&apos;</remoteDirectory>
@@ -32,6 +34,8 @@
                 <removePrefix>target</removePrefix>
                 <remoteDirectorySDF>true</remoteDirectorySDF>
                 <flatten>true</flatten>
+                <execCommand>ls -la /tmp</execCommand>
+                <execTimeout>15000</execTimeout>
               </jenkins.plugins.publish__over__ssh.BapSshTransfer>
             </transfers>
           </jenkins.plugins.publish__over__ssh.BapSshPublisher>
@@ -45,6 +49,8 @@
                 <removePrefix>out\dist</removePrefix>
                 <remoteDirectorySDF>false</remoteDirectorySDF>
                 <flatten>false</flatten>
+                <execCommand></execCommand>
+                <execTimeout>10000</execTimeout>
               </jenkins.plugins.publish__over__ssh.BapSshTransfer>
             </transfers>
           </jenkins.plugins.publish__over__ssh.BapSshPublisher>

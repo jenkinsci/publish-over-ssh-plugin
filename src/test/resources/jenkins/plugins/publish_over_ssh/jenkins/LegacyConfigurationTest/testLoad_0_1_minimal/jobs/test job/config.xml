@@ -49,6 +49,8 @@
                 <removePrefix></removePrefix>
                 <remoteDirectorySDF>false</remoteDirectorySDF>
                 <flatten>false</flatten>
+                <execCommand></execCommand>
+                <execTimeout>120000</execTimeout>
               </jenkins.plugins.publish__over__ssh.BapSshTransfer>
             </transfers>
           </jenkins.plugins.publish__over__ssh.BapSshPublisher>

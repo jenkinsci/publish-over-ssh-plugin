@@ -27,6 +27,7 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
     <j:set var="helpUrl" value="${rootURL}/plugin/publish-over-ssh/help/config/"/>
+    <j:invokeStatic className="jenkins.plugins.publish_over_ssh.BapSshTransfer" method="getDefaultExecTimeout" var="defaultExecTimeout"/>
 
     <f:entry title="${%publishers.section}">
 
@@ -62,6 +63,10 @@
                                     <f:textbox name="bap-ssh.remoteDirectory" value="${transfer.remoteDirectory}" />
                                 </f:entry>
 
+                                <f:entry title="${%execCommand.title}" help="${helpUrl}execCommand.html">
+                                    <f:textbox name="bap-ssh.execCommand" value="${transfer.execCommand}" />
+                                </f:entry>
+
                                 <f:advanced>
 
                                     <f:entry title="${%flatten.title}" help="${helpUrl}flatten.html">
@@ -72,6 +77,10 @@
                                         <f:checkbox name="bap-ssh.remoteDirectorySDF" checked="${transfer.remoteDirectorySDF}" />
                                     </f:entry>
 
+                                    <f:entry title="${%execTimeout.title}" help="${helpUrl}execTimeout.html">
+                                        <f:textbox name="bap-ssh.execTimeout" value="${transfer.execTimeout}" default="${defaultExecTimeout}"/>
+                                    </f:entry>
+                                
                                 </f:advanced>
 
                                 <f:entry title="">

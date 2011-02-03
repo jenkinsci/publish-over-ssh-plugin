@@ -50,7 +50,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         expected.setCommonConfig(new BapSshCommonConfiguration("", "", ""));
         assertEquals(expected, configurations.get(0));
 
-        List<BapSshTransfer> transfers = Collections.singletonList(new BapSshTransfer("**/*", "", "", false, false));
+        List<BapSshTransfer> transfers = Collections.singletonList(new BapSshTransfer("**/*", "", "", false, false, "", 120000));
         BapSshPublisher publisher = new BapSshPublisher("default", false, transfers);
         List<BapSshPublisher> publishers = new LinkedList<BapSshPublisher>();
         publishers.add(publisher);
@@ -75,13 +75,13 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         BapSshHostConfiguration[] actualHostConfigurations = BapSshPublisherPlugin.DESCRIPTOR.getHostConfigurations().toArray(new BapSshHostConfiguration[expectedConfig.length]);
         assertArrayEquals(expectedConfig, actualHostConfigurations);
         
-        BapSshTransfer transfer11 = new BapSshTransfer("**/*", "", "", false, false);
-        BapSshTransfer transfer12 = new BapSshTransfer("target/*.jar", "'builds/'yyyy_MM_dd/'build-${BUILD_NUMBER}'", "target", true, true);
+        BapSshTransfer transfer11 = new BapSshTransfer("", "", "", false, false, "date", 120000);
+        BapSshTransfer transfer12 = new BapSshTransfer("target/*.jar", "'builds/'yyyy_MM_dd/'build-${BUILD_NUMBER}'", "target", true, true, "ls -la /tmp", 15000);
         List<BapSshTransfer> transfers1 = new LinkedList<BapSshTransfer>();
         transfers1.add(transfer11);
         transfers1.add(transfer12);
         BapSshPublisher publisher1 = new BapSshPublisher("config a", true, transfers1);
-        BapSshTransfer transfer21 = new BapSshTransfer("out\\dist\\**\\*", "", "out\\dist", false, false);
+        BapSshTransfer transfer21 = new BapSshTransfer("out\\dist\\**\\*", "", "out\\dist", false, false, "", 10000);
         List<BapSshTransfer> transfers2 = new LinkedList<BapSshTransfer>();
         transfers2.add(transfer21);
         BapSshPublisher publisher2 = new BapSshPublisher("config c", false, transfers2);

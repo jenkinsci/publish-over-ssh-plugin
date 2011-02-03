@@ -66,7 +66,7 @@ public class IntegrationTest extends HudsonTestCase {
         BapSshCommonConfiguration commonConfig = new BapSshCommonConfiguration("passphrase", "key", "");
         new JenkinsTestHelper().setGlobalConfig(commonConfig, testHostConfig);
         final String dirToIgnore = "target";
-        BapSshTransfer transfer = new BapSshTransfer("**/*", "sub-home", dirToIgnore, false, false);
+        BapSshTransfer transfer = new BapSshTransfer("**/*", "sub-home", dirToIgnore, false, false, "ls -l", 10000);
         BapSshPublisher publisher = new BapSshPublisher(testHostConfig.getName(), false, Collections.singletonList(transfer));
         BapSshPublisherPlugin plugin = new BapSshPublisherPlugin(Collections.singletonList(publisher), false, false, false, "master");
 

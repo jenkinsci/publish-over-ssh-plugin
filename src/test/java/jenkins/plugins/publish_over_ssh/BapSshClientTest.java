@@ -31,6 +31,7 @@ import com.jcraft.jsch.SftpException;
 import hudson.FilePath;
 import hudson.model.TaskListener;
 import jenkins.plugins.publish_over.BPBuildInfo;
+import jenkins.plugins.publish_over.BapPublisherException;
 import jenkins.plugins.publish_over_ssh.helper.BapSshTestHelper;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
@@ -49,6 +50,7 @@ import java.util.logging.Logger;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class BapSshClientTest {
     
@@ -193,6 +195,16 @@ public class BapSshClientTest {
         mockControl.replay();
         bapSshClient.disconnectQuietly();
         mockControl.verify();
+    }
+    
+    //    @TODO ensure that we cannot be configured without Source files and exec so that this should never occur if using the GUI
+    @Test public void testBeginTransfers_failIfNoSourceFilesAndNoExecCommand() throws Exception {
+        try {
+            bapSshClient.beginTransfers(new BapSshTransfer("", "", "", false, false, "", 10000));
+            fail();
+        } catch (BapPublisherException bpe) {
+            assertEquals(Messages.exception_badTransferConfig(), bpe.getMessage());
+        }
     }
     
 }
