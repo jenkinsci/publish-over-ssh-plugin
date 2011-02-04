@@ -29,7 +29,6 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
-import hudson.model.Descriptor;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import jenkins.plugins.publish_over.*;
@@ -44,22 +43,16 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 
 public class BapSshBuilderPlugin extends Builder {
 
-//    private final transient Log log = LogFactory.getLog(BapSshBuilderPlugin.class);
     
     @Extension
     public static final Descriptor DESCRIPTOR = new Descriptor();
     
     private BapSshPublisherPlugin delegate;
     
-//    public BapSshBuilderPlugin() {
-//        this.delegate = new BapSshPublisherPlugin(new LinkedList<BapSshPublisher>(), false, false, false, "");
-//    }
-
     @DataBoundConstructor
 	public BapSshBuilderPlugin(List<BapSshPublisher> publishers, boolean continueOnError, boolean failOnError, boolean alwaysPublishFromMaster, String masterNodeName) {
 		this.delegate = new BapSshPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
@@ -122,21 +115,19 @@ public class BapSshBuilderPlugin extends Builder {
     
     public static class Descriptor extends BuildStepDescriptor<Builder> {
         private final transient Log log = LogFactory.getLog(Descriptor.class);
-        @Override
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             return true;
         }
-        @Override
         public String getDisplayName() {
             return Messages.builder_descriptor_displayName();
         }
-        @Override
         public Builder newInstance(StaplerRequest req, JSONObject formData) throws FormException {
             if (log.isDebugEnabled())
                 log.debug(Messages.builder_log_newInstance(formData.toString(2)));
             return super.newInstance(req, formData);
-//            BapSshBuilderPlugin plugin = new BapSshBuilderPlugin();
-//            return req.bindJSON(formData);
+        }
+        public String getConfigPage() {
+            return getViewPage(BapSshPublisherPlugin.class, "config.jelly");
         }
         public List<BapSshHostConfiguration> getHostConfigurations() {
             return BapSshPublisherPlugin.DESCRIPTOR.getHostConfigurations();
