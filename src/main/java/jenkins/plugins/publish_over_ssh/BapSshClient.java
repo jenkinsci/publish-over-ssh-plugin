@@ -138,7 +138,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     
     private void connectExecChannel(ChannelExec exec, String command) {
         exec.setCommand(command);
-        buildInfo.printIfVerbose(Messages.console_exec_connecting(command));
+        buildInfo.println(Messages.console_exec_connecting(command));
         try {
             exec.connect(session.getTimeout());
         } catch (JSchException jse) {
@@ -222,7 +222,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         }
         if (!exec.isClosed())
             throw new BapPublisherException(Messages.exception_exec_timeout(duration));
-        buildInfo.printIfVerbose(Messages.console_exec_completed(duration));
+        buildInfo.println(Messages.console_exec_completed(duration));
     }
     
 }

@@ -107,8 +107,6 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             connectSftpChannel(buildInfo, sftp);
             changeToRootDirectory(bapClient);
             setRootDirectoryInClient(bapClient, sftp);            
-    //        TODO the exec - maybe not here?
-    //        ChannelExec exec;
             return bapClient;
         } catch (IOException ioe) {
             bapClient.disconnectQuietly();

@@ -1,0 +1,123 @@
+<?jelly escape-by-default='true'?>
+
+<!--
+  ~ The MIT License
+  ~
+  ~ Copyright (C) 2010-2011 by Anthony Robinson
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in
+  ~ all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  ~ THE SOFTWARE.
+  -->
+
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+    <j:set var="helpUrl" value="${rootURL}/plugin/publish-over-ssh/help/config/"/>
+    <j:invokeStatic className="jenkins.plugins.publish_over_ssh.BapSshTransfer" method="getDefaultExecTimeout" var="defaultExecTimeout"/>
+
+    <f:entry title="${%publishers.section}">
+
+            <f:repeatable items="${instance.publishers}" var="publisher" name="publishers" minimum="1" header="${%publisher.dragAndDropLabel}" add="${%addPublisher.value}">
+
+                <table width="100%" padding="0">
+
+                    <f:entry title="${%hostconfig.title}" help="${helpUrl}configName.html">
+                        <select class="setting-input" name="bap-ssh.configName" description="${%hostconfig.description}">
+                            <j:forEach var="s" items="${descriptor.hostConfigurations}">
+                                <f:option selected="${s.name==publisher.configName}">${s.name}</f:option>
+                            </j:forEach>
+                        </select>
+                    </f:entry>
+
+                    <f:entry title="${%verbose.title}" help="${helpUrl}verbose.html">
+                        <f:checkbox name="bap-ssh.verbose" checked="${publisher.verbose}" />
+                    </f:entry>
+
+                    <f:entry title="${%sshTransfers.section}" help="${helpUrl}sshTransfers.html">
+                        <f:repeatable items="${publisher.transfers}" var="transfer" name="transfers" minimum="1" header="${%sshTransfers.dragAndDropLabel}" add="${%addSshTransfers.value}">
+                            <table width="100%" padding="0">
+
+                                <f:entry title="${%sourceFiles.title}" help="${helpUrl}sourceFiles.html">
+                                    <f:textbox name="bap-ssh.sourceFiles" value="${transfer.sourceFiles}" />
+                                </f:entry>
+
+                                <f:entry title="${%removePrefix.title}" help="${helpUrl}removePrefix.html">
+                                    <f:textbox name="bap-ssh.removePrefix" value="${transfer.removePrefix}" />
+                                </f:entry>
+
+                                <f:entry title="${%remoteDirectory.title}" help="${helpUrl}remoteDirectory.html">
+                                    <f:textbox name="bap-ssh.remoteDirectory" value="${transfer.remoteDirectory}" />
+                                </f:entry>
+
+                                <f:entry title="${%execCommand.title}" help="${helpUrl}execCommand.html">
+                                    <f:textbox name="bap-ssh.execCommand" value="${transfer.execCommand}" />
+                                </f:entry>
+
+                                <f:advanced>
+
+                                    <f:entry title="${%flatten.title}" help="${helpUrl}flatten.html">
+                                        <f:checkbox name="bap-ssh.flatten" checked="${transfer.flatten}" />
+                                    </f:entry>
+
+                                    <f:entry title="${%remoteDirectorySDF.title}" help="${helpUrl}remoteDirectorySDF.html">
+                                        <f:checkbox name="bap-ssh.remoteDirectorySDF" checked="${transfer.remoteDirectorySDF}" />
+                                    </f:entry>
+
+                                    <f:entry title="${%execTimeout.title}" help="${helpUrl}execTimeout.html">
+                                        <f:textbox name="bap-ssh.execTimeout" value="${transfer.execTimeout}" default="${defaultExecTimeout}"/>
+                                    </f:entry>
+                                
+                                </f:advanced>
+
+                                <f:entry title="">
+                                    <div align="right" class="show-if-not-only">
+                                        <f:repeatableDeleteButton value="${%deleteSshTransfers.value}"/>
+                                    </div>
+                                </f:entry>
+
+                           </table>
+                        </f:repeatable>
+                    </f:entry>
+
+                    <f:entry title="">
+                        <div align="right" class="show-if-not-only">
+                            <f:repeatableDeleteButton value="${%deletePublisher.value}"/>
+                        </div>
+                    </f:entry>
+
+                </table>
+
+            </f:repeatable>
+
+            <f:advanced>
+                <f:entry title="${%continueOnError.title}" help="${helpUrl}continueOnError.html">
+                    <f:checkbox name="bap-ssh.continueOnError" checked="${instance.continueOnError}" />
+                </f:entry>
+                <f:entry title="${%failOnError.title}" help="${helpUrl}failOnError.html">
+                    <f:checkbox name="bap-ssh.failOnError" checked="${instance.failOnError}" />
+                </f:entry>
+                <f:entry title="${%alwaysSshFromMaster.title}" help="${helpUrl}alwaysSshFromMaster.html">
+                    <f:checkbox name="bap-ssh.alwaysPublishFromMaster" checked="${instance.alwaysPublishFromMaster}" />
+                </f:entry>
+                <f:entry title="${%masterNodeName.title}" help="${helpUrl}masterNodeName.html">
+                    <f:textbox name="bap-ssh.masterNodeName" value="${instance.masterNodeName}"/>
+                </f:entry>
+            </f:advanced>
+
+    </f:entry>
+
+</j:jelly>
