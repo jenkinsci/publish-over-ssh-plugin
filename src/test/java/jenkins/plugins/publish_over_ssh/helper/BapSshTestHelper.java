@@ -55,9 +55,8 @@ public class BapSshTestHelper {
         try {
             toExec.run();
             fail();
-        } catch (
-            BapPublisherException bpe) {
-            assertTrue(bpe.getMessage().contains(message));
+        } catch (BapPublisherException bpe) {
+            assertTrue(bpe.getLocalizedMessage().contains(message));
         }
         mockControl.verify();
     }

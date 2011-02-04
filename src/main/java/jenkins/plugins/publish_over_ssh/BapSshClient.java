@@ -24,15 +24,17 @@
 
 package jenkins.plugins.publish_over_ssh;
 
+import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import hudson.FilePath;
+import hudson.Util;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPDefaultClient;
 import jenkins.plugins.publish_over.BapPublisherException;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -112,6 +114,65 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         return directory.contains("/") || directory.contains("\\");
     }
 
+    public void endTransfers(BapSshTransfer transfer) {
+        if (transfer.hasExecCommand())
+            exec(transfer);
+    }
+    
+    private void exec(BapSshTransfer transfer) {
+        ChannelExec exec = null;
+        try {
+            exec = openExecChannel();
+            exec.setInputStream(null);
+            exec.setOutputStream(buildInfo.getListener().getLogger(), true);
+            exec.setErrStream(buildInfo.getListener().getLogger(), true);
+            connectExecChannel(exec, Util.replaceMacro(transfer.getExecCommand(), buildInfo.getEnvVars()));
+            waitForExec(exec, transfer.getExecTimeout());
+            int status = exec.getExitStatus();
+            if (status != 0)
+                throw new BapPublisherException(Messages.exception_exec_exitStatus(status));
+        } finally {
+            disconnectExecQuietly(exec);
+        }
+    }
+    
+    private void connectExecChannel(ChannelExec exec, String command) {
+        exec.setCommand(command);
+        buildInfo.printIfVerbose(Messages.console_exec_connecting(command));
+        try {
+            exec.connect(session.getTimeout());
+        } catch (JSchException jse) {
+            throw new BapPublisherException(Messages.exception_exec_connect(jse.getLocalizedMessage()));
+        }
+        buildInfo.printIfVerbose(Messages.console_exec_connected());
+        
+    }
+    
+    private ChannelExec openExecChannel() {
+        buildInfo.printIfVerbose(Messages.console_exec_opening());
+        try {
+            ChannelExec exec = (ChannelExec) session.openChannel("exec");
+            buildInfo.printIfVerbose(Messages.console_exec_opened());
+            return exec;
+        } catch (JSchException jse) {
+            throw new BapPublisherException(Messages.exception_exec_open(jse.getLocalizedMessage()));
+        }
+    }
+
+    public void disconnectExecQuietly(ChannelExec exec) {
+        try {
+            disconnectExec(exec);
+        } catch (Exception e) {
+            LOG.warn(Messages.exception_disconnect_exec(e.getLocalizedMessage()));
+        }
+    }
+    
+    private void disconnectExec(ChannelExec exec) {
+        if (exec == null) return; 
+        if (exec.isConnected())
+            exec.disconnect();
+    }
+    
     public void disconnect() throws Exception {
         disconnectSftp();
         disconnectSession();
@@ -141,4 +202,27 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
             LOG.warn(Messages.exception_disconnect_session(e.getLocalizedMessage()));
         }
     }
+    
+    private void waitForExec(final ChannelExec exec, long timeout) {
+        long start = System.currentTimeMillis();
+        Thread waiter = new Thread() { public void run() {
+                try {
+                    while (!exec.isClosed()) {
+                        Thread.sleep(200);
+                    }
+                } catch (InterruptedException ie) { }
+        }};
+        waiter.start();
+        try {
+            waiter.join(timeout);
+        } catch (InterruptedException ie) { }
+        long duration = System.currentTimeMillis() - start;
+        if (waiter.isAlive()) {
+            waiter.interrupt();
+        }
+        if (!exec.isClosed())
+            throw new BapPublisherException(Messages.exception_exec_timeout(duration));
+        buildInfo.printIfVerbose(Messages.console_exec_completed(duration));
+    }
+    
 }

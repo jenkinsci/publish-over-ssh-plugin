@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_ssh;
 
+import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
@@ -42,13 +43,13 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
@@ -205,6 +206,86 @@ public class BapSshClientTest {
         } catch (BapPublisherException bpe) {
             assertEquals(Messages.exception_badTransferConfig(), bpe.getMessage());
         }
+    }
+    
+    @Test public void testEndTransfers() throws Exception {
+        String command = "ls -ltr /var/log";
+        TestExec exec = new TestExec(command, 30000, 0, 10);
+        expect(mockSession.openChannel("exec")).andReturn(exec);
+        expect(mockSession.getTimeout()).andReturn(30000);
+        mockControl.replay();
+        bapSshClient.endTransfers(new BapSshTransfer("", "", "", false, false, command, 120000));
+        mockControl.verify();
+        exec.assertMethodsCalled();
+    }
+    
+    @Test public void testEndTransfers_canUseEnvVars() throws Exception {
+        String command = "ls -ltr /var/log/$BUILD_NUMBER*";
+        buildInfo.getEnvVars().put("BUILD_NUMBER", "42");
+        TestExec exec = new TestExec("ls -ltr /var/log/42*", 30000, 0, 10);
+        expect(mockSession.openChannel("exec")).andReturn(exec);
+        expect(mockSession.getTimeout()).andReturn(30000);
+        mockControl.replay();
+        bapSshClient.endTransfers(new BapSshTransfer("", "", "", false, false, command, 120000));
+        mockControl.verify();
+        exec.assertMethodsCalled();
+    }
+    
+    @Test public void testEndTransfers_throwsExceptionIfCommandFailed() throws Exception {
+        final String command = "ls -ltr /var/log";
+        TestExec exec = new TestExec(command, 30000, 44, 10);
+        expect(mockSession.openChannel("exec")).andReturn(exec);
+        expect(mockSession.getTimeout()).andReturn(30000);
+        testHelper.assertBPE("44", new Runnable() {public void run() {
+            bapSshClient.endTransfers(new BapSshTransfer("", "", "", false, false, command, 120000));
+        }});
+        exec.assertMethodsCalled();
+    }
+    
+    @Test public void testEndTransfers_throwsExceptionIfCommandTimesOut() throws Exception {
+        final String command = "ls -ltr /var/log";
+        // ~ 40s
+        TestExec exec = new TestExec(command, 30000, 44, 200);
+        expect(mockSession.openChannel("exec")).andReturn(exec);
+        expect(mockSession.getTimeout()).andReturn(30000);
+        long start = System.currentTimeMillis();
+        testHelper.assertBPE("timed out", new Runnable() {public void run() {
+            bapSshClient.endTransfers(new BapSshTransfer("", "", "", false, false, command, 2000));
+        }});
+        long duration = System.currentTimeMillis() - start;
+        // expect to return in 2s + some overhead 4 test and pre thread prod code + very slow machines.
+        // @ 10s this should never fail ...
+        assertTrue(duration < 10000);
+        exec.assertMethodsCalled();
+    }
+    
+    public class TestExec extends ChannelExec {
+        String expectedCommand;
+        int expectedTimeout;
+        int exitStatus;
+        int pollsBeforeClosed;
+        boolean setCommandCalled, connectCalled;
+        public TestExec(String expectedCommand, int expectedConnectTimeout, int exitStatus, int pollsBeforeClosed) {
+            this.expectedCommand = expectedCommand;
+            this.expectedTimeout = expectedConnectTimeout;
+            this.exitStatus = exitStatus;
+            this.pollsBeforeClosed = pollsBeforeClosed;
+        }
+        public boolean isConnected() {return false;}
+        public synchronized boolean isClosed() {return --pollsBeforeClosed < 0;}
+        public void setInputStream(InputStream is) {}
+        public void setOutputStream(OutputStream os, boolean dontClose) {assertTrue(dontClose);}
+        public void setErrStream(OutputStream os, boolean dontClose) {assertTrue(dontClose);}
+        public void setCommand(String command) {setCommandCalled = true; assertEquals(expectedCommand, command);}
+        public void connect(int timeout) {connectCalled = true; assertEquals(expectedTimeout, timeout);}
+        public int getExitStatus() {return exitStatus;}
+        public void assertMethodsCalled() {if (!setCommandCalled || !connectCalled) fail();}
+    }
+    
+    @Test public void testEndTransfers_doesNothingIfNoExecCommand() throws Exception {
+        mockControl.replay();
+        bapSshClient.endTransfers(new BapSshTransfer("*.java", "", "", false, false, "", 10000));
+        mockControl.verify();
     }
     
 }
