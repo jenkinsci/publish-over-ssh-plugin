@@ -53,6 +53,8 @@ import static org.mockito.Mockito.*;
 
 public class IntegrationTest extends HudsonTestCase {
     
+//    @TODO test that we get the expected result when in a promotion     
+    
     public void testIntegration() throws Exception {
         final JSch mockJsch = mock(JSch.class);
         Session mockSession = mock(Session.class);
