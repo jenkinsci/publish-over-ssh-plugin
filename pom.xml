@@ -34,8 +34,6 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-    <groupId>org.jvnet.hudson.plugins</groupId>
-    <!--<groupId>org.jenkins-ci.plugins</groupId>-->
 	<artifactId>publish-over-ssh</artifactId>
 	<packaging>hpi</packaging>
 	<name>Publish Over SSH</name>
@@ -89,6 +87,18 @@
 		</dependency>
 	</dependencies>
 
+    <scm>
+        <connection>scm:git:git://github.com/jenkinsci/publish-over-ssh-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:jenkinsci/publish-over-ssh-plugin.git</developerConnection>
+    </scm>
+    
+    <distributionManagement>
+        <repository>
+            <id>maven.jenkins-ci.org</id>
+            <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
+        </repository>
+    </distributionManagement>
+        
 	<build>
 		<plugins>
 			<plugin>
