@@ -47,6 +47,7 @@ import java.util.List;
 
 public class BapSshBuilderPlugin extends Builder {
 
+    private static final String PROMOTION_JOB_TYPE = "hudson.plugins.promoted_builds.PromotionProcess";
     
     @Extension
     public static final Descriptor DESCRIPTOR = new Descriptor();
@@ -116,7 +117,7 @@ public class BapSshBuilderPlugin extends Builder {
     public static class Descriptor extends BuildStepDescriptor<Builder> {
         private final transient Log log = LogFactory.getLog(Descriptor.class);
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
-            return true;
+            return !PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
         }
         public String getDisplayName() {
             return Messages.builder_descriptor_displayName();

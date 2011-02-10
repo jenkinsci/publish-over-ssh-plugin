@@ -52,6 +52,7 @@
 		<developer>
 			<id>bap</id>
 			<name>Bap</name>
+            <email>bap-jenkins@BapIT.co.uk</email>
 		</developer>
 	</developers>
 
@@ -108,7 +109,7 @@
 				<version>1.42</version>
 				<extensions>true</extensions>
 				<configuration>
-					<compatibleSinceVersion>1.0</compatibleSinceVersion>
+					<compatibleSinceVersion>0.2</compatibleSinceVersion>
 				</configuration>
 			</plugin>
 		</plugins>
