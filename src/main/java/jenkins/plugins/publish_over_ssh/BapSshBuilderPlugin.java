@@ -31,7 +31,8 @@ import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
-import jenkins.plugins.publish_over.*;
+import jenkins.plugins.publish_over.BPPlugin;
+import jenkins.plugins.publish_over.BapPublisher;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -47,8 +48,6 @@ import java.util.List;
 
 public class BapSshBuilderPlugin extends Builder {
 
-    private static final String PROMOTION_JOB_TYPE = "hudson.plugins.promoted_builds.PromotionProcess";
-    
     @Extension
     public static final Descriptor DESCRIPTOR = new Descriptor();
     
@@ -117,7 +116,7 @@ public class BapSshBuilderPlugin extends Builder {
     public static class Descriptor extends BuildStepDescriptor<Builder> {
         private final transient Log log = LogFactory.getLog(Descriptor.class);
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
-            return !PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
+            return !BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
         }
         public String getDisplayName() {
             return Messages.builder_descriptor_displayName();

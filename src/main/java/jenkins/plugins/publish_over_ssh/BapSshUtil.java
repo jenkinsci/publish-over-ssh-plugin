@@ -24,14 +24,8 @@
 
 package jenkins.plugins.publish_over_ssh;
 
-import hudson.FilePath;
-import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BapPublisherException;
-import org.apache.commons.io.IOUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 
 public class BapSshUtil {

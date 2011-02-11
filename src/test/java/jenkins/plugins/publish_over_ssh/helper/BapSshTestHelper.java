@@ -27,14 +27,42 @@ package jenkins.plugins.publish_over_ssh.helper;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
+import hudson.FilePath;
+import hudson.model.TaskListener;
+import jenkins.plugins.publish_over.BPBuildEnv;
+import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BapPublisherException;
 import org.easymock.classextension.IMocksControl;
+
+import java.io.File;
+import java.util.Calendar;
+import java.util.LinkedHashMap;
 
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class BapSshTestHelper {
+    
+
+    public static BPBuildEnv createEmptyBuildEnv() {
+        return new BPBuildEnv(new LinkedHashMap<String, String>(), new FilePath(new File("")), Calendar.getInstance());
+    }
+    
+    public static BPBuildInfo createEmpty() {
+        return createEmpty(true);
+    }
+    
+    public static BPBuildInfo createEmpty(boolean setEffectiveEnvironment) {
+        BPBuildInfo buildInfo = new BPBuildInfo(TaskListener.NULL, "", new FilePath(new File("")), createEmptyBuildEnv(), null);
+        if (setEffectiveEnvironment) {
+            buildInfo.setBuildTime(buildInfo.getCurrentBuildEnv().getBuildTime());
+            buildInfo.setBaseDirectory(buildInfo.getCurrentBuildEnv().getBaseDirectory());
+            buildInfo.setEnvVars(buildInfo.getCurrentBuildEnv().getEnvVars());
+        }
+        return buildInfo;
+    }
+        
     
     private IMocksControl mockControl;
     private ChannelSftp mockSftp;

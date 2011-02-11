@@ -33,7 +33,6 @@ import jenkins.plugins.publish_over_ssh.BapSshTransfer;
 import org.jvnet.hudson.test.HudsonTestCase;
 import org.jvnet.hudson.test.recipes.LocalData;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;

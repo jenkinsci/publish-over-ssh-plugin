@@ -41,8 +41,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import java.io.File;
-import java.util.Calendar;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -56,7 +54,7 @@ public class BapSshHostConfigurationTest {
     @Rule
     public TemporaryFolder jenkinsHome = new TemporaryFolder();
     private Map<String, String> envVars = new TreeMap<String, String>();
-    private BPBuildInfo buildInfo = new BPBuildInfo(envVars, new FilePath(new File("aBaseDir")), Calendar.getInstance(), TaskListener.NULL, "", new FilePath(new File("")));
+    private BPBuildInfo buildInfo;
     private IMocksControl mockControl = EasyMock.createStrictControl();
     private JSch mockJSch = mockControl.createMock(JSch.class);
     private Session mockSession = mockControl.createMock(Session.class);
@@ -65,7 +63,7 @@ public class BapSshHostConfigurationTest {
     
     @Before
     public void setUp() throws Exception {
-        buildInfo = new BPBuildInfo(envVars, new FilePath(new File("")), Calendar.getInstance(), TaskListener.NULL, "", new FilePath(jenkinsHome.getRoot()));
+        buildInfo = new BPBuildInfo(TaskListener.NULL, "", new FilePath(jenkinsHome.getRoot()), null, null);
     }
     
     @Test public void testCreateClientWithOverridePassword() throws Exception {

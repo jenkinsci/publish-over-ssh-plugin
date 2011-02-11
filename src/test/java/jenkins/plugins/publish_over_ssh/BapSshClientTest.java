@@ -30,7 +30,6 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import hudson.FilePath;
-import hudson.model.TaskListener;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BapPublisherException;
 import jenkins.plugins.publish_over_ssh.helper.BapSshTestHelper;
@@ -44,14 +43,12 @@ import org.junit.Test;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Calendar;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 public class BapSshClientTest {
     
@@ -78,8 +75,8 @@ public class BapSshClientTest {
         return BapSshClient.class.getCanonicalName();
     }
     
-    private BPBuildInfo buildInfo = new BPBuildInfo(new TreeMap<String, String>(), new FilePath(new File("")), Calendar.getInstance(), TaskListener.NULL, "", new FilePath(new File("")));    
     private IMocksControl mockControl = EasyMock.createStrictControl();
+    private BPBuildInfo buildInfo = BapSshTestHelper.createEmpty(true);
     private JSch mockJSch = mockControl.createMock(JSch.class);
     private Session mockSession = mockControl.createMock(Session.class);
     private ChannelSftp mockSftp = mockControl.createMock(ChannelSftp.class);
