@@ -34,9 +34,13 @@ import java.util.List;
 
 public class BapSshPublisher extends BapPublisher<BapSshTransfer> {
     
-    @DataBoundConstructor
     public BapSshPublisher(String configName, boolean verbose, List<BapSshTransfer> transfers) {
-        super(configName, verbose, transfers);
+        this(configName, verbose, transfers, false, false);
+    }
+    
+    @DataBoundConstructor
+    public BapSshPublisher(String configName, boolean verbose, List<BapSshTransfer> transfers, boolean useWorkspaceInPromotion, boolean usePromotionTimestamp) {
+        super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp);
     }
     
     public boolean equals(Object o) {

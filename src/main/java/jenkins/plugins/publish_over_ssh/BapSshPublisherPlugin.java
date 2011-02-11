@@ -25,6 +25,7 @@
 package jenkins.plugins.publish_over_ssh;
 
 import hudson.Extension;
+import hudson.model.AbstractProject;
 import jenkins.plugins.publish_over.BPPlugin;
 import jenkins.plugins.publish_over.BPPluginDescriptor;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -65,6 +66,9 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
     public static class Descriptor extends BPPluginDescriptor<BapSshHostConfiguration, BapSshCommonConfiguration> {
         public Descriptor() {
             super(new DescriptorMessages(), BapSshPublisherPlugin.class, BapSshHostConfiguration.class, BapSshCommonConfiguration.class);
+        }
+        public boolean isApplicable(Class<? extends AbstractProject> aClass) {
+            return !BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
         }
     }
     

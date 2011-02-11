@@ -46,6 +46,15 @@
                     <f:entry title="${%verbose.title}" help="${helpUrl}verbose.html">
                         <f:checkbox name="bap-ssh.verbose" checked="${publisher.verbose}" />
                     </f:entry>
+                    
+                    <j:if test='${descriptor.getClass().getCanonicalName().contains("BapSshPromotionPublisherPlugin")}'>
+                        <f:entry title="${%useWorkspaceInPromotion.title}" help="${helpUrl}useWorkspaceInPromotion.html">
+                            <f:checkbox name="bap-ssh.useWorkspaceInPromotion" checked="${publisher.useWorkspaceInPromotion}" />
+                        </f:entry>
+                        <f:entry title="${%usePromotionTimestamp.title}" help="${helpUrl}usePromotionTimestamp.html">
+                            <f:checkbox name="bap-ssh.usePromotionTimestamp" checked="${publisher.usePromotionTimestamp}" />
+                        </f:entry>
+                    </j:if>
 
                     <f:entry title="${%sshTransfers.section}" help="${helpUrl}sshTransfers.html">
                         <f:repeatable items="${publisher.transfers}" var="transfer" name="transfers" minimum="1" header="${%sshTransfers.dragAndDropLabel}" add="${%addSshTransfers.value}">
