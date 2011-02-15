@@ -73,6 +73,10 @@ public class BapSshBuilderPlugin extends Builder {
     public String getMasterNodeName() { return delegate.getMasterNodeName(); }
     public void setMasterNodeName(String masterNodeName) { delegate.setMasterNodeName(masterNodeName); }
     
+    public BapSshPublisherPlugin getPublisherPlugin() {
+        return delegate;
+    }
+    
 	@Override
 	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
         return delegate.perform(build, launcher, listener);

@@ -38,7 +38,7 @@
           <input class="setting-input" name="common.passphrase" type="password" value="${descriptor.commonConfig.passphrase}" />
         </f:entry>
         <f:entry title="${%default.keyPath.title}" help="${helpUrl}defaultKeyPath.html">
-          <f:textbox name="common.keyPath" value="${descriptor.commonConfig.keyPath}"/>
+          <f:textbox name="common.keyPath" value="${descriptor.commonConfig.keyPath}" checkUrl="${descriptor.getCheckUrl('keyPath')}"/>
         </f:entry>
         <f:entry title="${%default.key.title}" help="${helpUrl}defaultKey.html">
           <f:textarea name="common.key" value="${descriptor.commonConfig.key}"/>
@@ -48,13 +48,13 @@
       <f:repeatable var="hostconfig" items="${descriptor.hostConfigurations}" header="${%hostconfig.dragAndDrop}">
         <table width="100%">
           <f:entry title="${%name.title}" help="${helpUrl}name.html">
-            <f:textbox name="bap-pub.name" value="${hostconfig.name}"/>
+            <f:textbox name="bap-pub.name" value="${hostconfig.name}" checkUrl="${descriptor.getCheckUrl('name')}"/>
           </f:entry>
           <f:entry title="${%hostname.title}" help="${helpUrl}hostname.html">
             <f:textbox name="bap-pub.hostname" value="${hostconfig.hostname}"/>
           </f:entry>
           <f:entry title="${%username.title}" help="${helpUrl}username.html">
-            <f:textbox name="bap-pub.username" value="${hostconfig.username}" />
+            <f:textbox name="bap-pub.username" value="${hostconfig.username}"/>
           </f:entry>      
           <f:entry title="${%remotePath.title}" help="${helpUrl}remoteRootDir.html">
             <f:textbox name="bap-pub.remoteRootDir" value="${hostconfig.remoteRootDir}"/>
@@ -67,7 +67,7 @@
                 <input class="setting-input" name="bap-pub.password" type="password" value="${hostconfig.password}" />
               </f:entry>
               <f:entry title="${%keyPath.title}" help="${helpUrl}keyPath.html">
-                <f:textbox name="bap-pub.keyPath" value="${hostconfig.keyPath}"/>
+                <f:textbox name="bap-pub.keyPath" value="${hostconfig.keyPath}" checkUrl="${descriptor.getCheckUrl('keyPath')}"/>
               </f:entry>
               <f:entry title="${%key.title}" help="${helpUrl}key.html">
                 <f:textarea name="bap-pub.key" value="${hostconfig.key}"/>
@@ -75,10 +75,10 @@
             </f:optionalBlock>
       
             <f:entry title="${%port.title}" help="${helpUrl}port.html">
-              <f:textbox name="bap-pub.port" value="${hostconfig.port}" default="${defaultPort}"/>
+              <f:textbox name="bap-pub.port" value="${hostconfig.port}" default="${defaultPort}" checkUrl="${descriptor.getCheckUrl('port')}"/>
             </f:entry>
             <f:entry title="${%timeout.title}" help="${helpUrl}timeout.html">
-              <f:textbox name="bap-pub.timeout" value="${hostconfig.timeout}" default="${defaultTimeout}"/>
+              <f:textbox name="bap-pub.timeout" value="${hostconfig.timeout}" default="${defaultTimeout}" checkUrl="${descriptor.getCheckUrl('timeout')}"/>
             </f:entry>
           </f:advanced>
           <f:validateButton

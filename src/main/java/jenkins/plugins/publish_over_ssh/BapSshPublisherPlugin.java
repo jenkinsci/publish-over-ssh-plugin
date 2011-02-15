@@ -25,13 +25,19 @@
 package jenkins.plugins.publish_over_ssh;
 
 import hudson.Extension;
+import hudson.Util;
 import hudson.model.AbstractProject;
+import hudson.model.Hudson;
+import hudson.util.FormValidation;
+import hudson.util.VersionNumber;
 import jenkins.plugins.publish_over.BPPlugin;
 import jenkins.plugins.publish_over.BPPluginDescriptor;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
 
+import java.io.IOException;
 import java.util.List;
 
 public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClient, BapSshCommonConfiguration> {
@@ -42,6 +48,10 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
     @DataBoundConstructor
 	public BapSshPublisherPlugin(List<BapSshPublisher> publishers, boolean continueOnError, boolean failOnError, boolean alwaysPublishFromMaster, String masterNodeName) {
         super(Messages.console_message_prefix(), publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
+    }
+    
+    public BapSshPublisherPlugin getPublisherPlugin() {
+        return this;
     }
     
     public boolean equals(Object o) {
@@ -69,6 +79,35 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
         }
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             return !BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
+        }
+        public FormValidation doCheckKeyPath(@QueryParameter String value) {
+            if (false && Hudson.getVersion().isNewerThan(new VersionNumber("x.xxx"))) {
+                try {
+                    return Hudson.getInstance().getRootPath().validateRelativePath(value, true, true);
+                } catch (IOException ioe) {
+                    return FormValidation.error(ioe, "");
+                }
+            }
+            return FormValidation.ok();
+        }
+        public FormValidation doCheckSourceFiles(@QueryParameter String sourceFiles, @QueryParameter String execCommand) {
+            return checkTransferSet(sourceFiles, execCommand);
+        }
+        public FormValidation doCheckExecCommand(@QueryParameter String sourceFiles, @QueryParameter String execCommand) {
+            return checkTransferSet(sourceFiles, execCommand);
+        }
+        public FormValidation doCheckExecTimeout(@QueryParameter String value) {
+            return FormValidation.validateNonNegativeInteger(value);
+        }
+        private FormValidation checkTransferSet(String sourceFiles, String execCommand) {
+            return haveAtLeastOne(sourceFiles, execCommand) ? FormValidation.ok()
+                : FormValidation.error(Messages.descriptor_sourceOrExec());
+        }
+        private boolean haveAtLeastOne(String... values) {
+            for (String value : values)
+                if (Util.fixEmptyAndTrim(value) != null)
+                    return true;
+            return false;
         }
     }
     
