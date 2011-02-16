@@ -26,6 +26,7 @@
     <p>Files to upload to a server.</p>
     <p>The string is an Ant fileset eg. '**/*.jar' (see <a href="http://ant.apache.org/manual/dirtasks.html#patterns">Patterns</a>
         in the Ant manual) and can also use the Jenkins environment variables eg. $JOB_NAME or $BUILD_NUMBER.<br />
-    The base directory for this fileset is the workspace.
+    The base directory for this fileset is the artifacts directory of the build that is being promoted.<br/>
+        Change the base directory to the workspace by setting the "Use the workspace" checkbox.
     </p>
 </div>

@@ -31,7 +31,7 @@
 
     <f:entry title="${%publishers.section}">
 
-            <f:repeatable items="${instance.publishers}" var="publisher" name="publishers" minimum="1" header="${%publisher.dragAndDropLabel}" add="${%addPublisher.value}">
+            <f:repeatable items="${instance.publisherPlugin.publishers}" var="publisher" name="publishers" minimum="1" header="${%publisher.dragAndDropLabel}" add="${%addPublisher.value}">
 
                 <table width="100%" padding="0">
 
@@ -54,13 +54,14 @@
                         <f:entry title="${%usePromotionTimestamp.title}" help="${helpUrl}usePromotionTimestamp.html">
                             <f:checkbox name="usePromotionTimestamp" checked="${publisher.usePromotionTimestamp}" />
                         </f:entry>
+                        <j:set var="promoHelpSuffix" value="ForPromotion"/>
                     </j:if>
 
                     <f:entry title="${%sshTransfers.section}" help="${helpUrl}sshTransfers.html">
                         <f:repeatable items="${publisher.transfers}" var="transfer" name="transfers" minimum="1" header="${%sshTransfers.dragAndDropLabel}" add="${%addSshTransfers.value}">
                             <table width="100%" padding="0">
 
-                                <f:entry title="${%sourceFiles.title}" help="${helpUrl}sourceFiles.html">
+                                <f:entry title="${%sourceFiles.title}" help="${helpUrl}sourceFiles${promoHelpSuffix}.html">
                                     <f:textbox name="sourceFiles" value="${transfer.sourceFiles}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('sourceFiles')}"/>
                                 </f:entry>
 
@@ -114,16 +115,16 @@
 
             <f:advanced>
                 <f:entry title="${%continueOnError.title}" help="${helpUrl}continueOnError.html">
-                    <f:checkbox name="continueOnError" checked="${instance.continueOnError}" />
+                    <f:checkbox name="continueOnError" checked="${instance.publisherPlugin.continueOnError}" />
                 </f:entry>
                 <f:entry title="${%failOnError.title}" help="${helpUrl}failOnError.html">
-                    <f:checkbox name="failOnError" checked="${instance.failOnError}" />
+                    <f:checkbox name="failOnError" checked="${instance.publisherPlugin.failOnError}" />
                 </f:entry>
                 <f:entry title="${%alwaysSshFromMaster.title}" help="${helpUrl}alwaysSshFromMaster.html">
-                    <f:checkbox name="alwaysPublishFromMaster" checked="${instance.alwaysPublishFromMaster}" />
+                    <f:checkbox name="alwaysPublishFromMaster" checked="${instance.publisherPlugin.alwaysPublishFromMaster}" />
                 </f:entry>
                 <f:entry title="${%masterNodeName.title}" help="${helpUrl}masterNodeName.html">
-                    <f:textbox name="masterNodeName" value="${instance.masterNodeName}"/>
+                    <f:textbox name="masterNodeName" value="${instance.publisherPlugin.masterNodeName}"/>
                 </f:entry>
             </f:advanced>
 

@@ -25,7 +25,7 @@
 <div>
     <p>A command to execute on the remote server</p>
     <p>This command will be executed on the remote server after any files are transferred.<br />
-        The command can include the Jenkins environment variables eg. $JOB_NAME or $BUILD_NUMBER, which will be replace before execution.<br />
+        The command can include the Jenkins environment variables eg. $JOB_NAME or $BUILD_NUMBER, which will be replaced before execution.<br />
         The SSH Transfer Set must include either a Source Files pattern, an Exec command, or both. If both are present, the files are transferred
         before the command is executed. If you want to Exec before the files are transferred, use 2 Transfer Sets and move the Exec command before
         the Transfer set that includes a Source files pattern.

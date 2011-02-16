@@ -34,8 +34,6 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
 import jenkins.plugins.publish_over.BPPlugin;
-import jenkins.plugins.publish_over.BapPublisher;
-import net.sf.json.JSONObject;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -43,7 +41,6 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.IOException;
 import java.util.List;
@@ -60,21 +57,6 @@ public class BapSshPromotionPublisherPlugin extends Notifier {
 		this.delegate = new BapSshPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
 
-	public List<BapPublisher> getPublishers() { return delegate.getPublishers(); }
-	public void setPublishers(List<BapPublisher> publishers) { delegate.setPublishers(publishers); }
-
-    public boolean isContinueOnError() { return delegate.isContinueOnError(); }
-    public void setContinueOnError(boolean continueOnError) { delegate.setContinueOnError(continueOnError); }
-
-    public boolean isFailOnError() { return delegate.isFailOnError(); }
-    public void setFailOnError(boolean failOnError) { delegate.setFailOnError(failOnError); }
-
-    public boolean isAlwaysPublishFromMaster() { return delegate.isAlwaysPublishFromMaster(); }
-    public void setAlwaysPublishFromMaster(boolean alwaysPublishFromMaster) { delegate.setAlwaysPublishFromMaster(alwaysPublishFromMaster); }
-
-    public String getMasterNodeName() { return delegate.getMasterNodeName(); }
-    public void setMasterNodeName(String masterNodeName) { delegate.setMasterNodeName(masterNodeName); }
-    
 	@Override
 	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
         return delegate.perform(build, launcher, listener);
@@ -117,6 +99,10 @@ public class BapSshPromotionPublisherPlugin extends Notifier {
     
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+    }
+    
+    public BapSshPublisherPlugin getPublisherPlugin() {
+        return delegate;
     }
     
     public static class Descriptor extends BuildStepDescriptor<Publisher> {

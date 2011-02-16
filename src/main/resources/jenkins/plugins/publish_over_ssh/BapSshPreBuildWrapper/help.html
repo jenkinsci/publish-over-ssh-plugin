@@ -23,9 +23,9 @@
   -->
 
 <div>
-    <p>Files to upload to a server.</p>
-    <p>The string is an Ant fileset eg. '**/*.jar' (see <a href="http://ant.apache.org/manual/dirtasks.html#patterns">Patterns</a>
-        in the Ant manual) and can also use the Jenkins environment variables eg. $JOB_NAME or $BUILD_NUMBER.<br />
-    The base directory for this fileset is the workspace.
+    <p>Send files or execute commands over SSH <strong>before the build runs</strong>.</p>
+    <p>This will run the SSH <em>publishers</em> after the workspace has been checked out, but before the build starts.<br />
+    If the publish fails, then the build will be marked as unstable, but still continue. To fail the build set the
+        Advanced option "Fail the build if an error occurs". This will also prevent post build steps from being run.
     </p>
 </div>

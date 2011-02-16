@@ -21,11 +21,9 @@
   ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   ~ THE SOFTWARE.
   -->
-
 <div>
-    <p>Files to upload to a server.</p>
-    <p>The string is an Ant fileset eg. '**/*.jar' (see <a href="http://ant.apache.org/manual/dirtasks.html#patterns">Patterns</a>
-        in the Ant manual) and can also use the Jenkins environment variables eg. $JOB_NAME or $BUILD_NUMBER.<br />
-    The base directory for this fileset is the workspace.
+    <p>Send files or execute commands over SSH <strong>after the build runs</strong>.</p>
+    <p>This will run the SSH <em>publishers</em> after the build has finished and will run no matter what the status of the build.<br />
+    Note that if the build fails before the builders are executed (ie in a pre build step) then the post build steps will not run.
     </p>
 </div>
