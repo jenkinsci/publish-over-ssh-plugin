@@ -121,11 +121,6 @@ public class BapSshBuilderPlugin extends Builder {
         public String getDisplayName() {
             return Messages.builder_descriptor_displayName();
         }
-        public Builder newInstance(StaplerRequest req, JSONObject formData) throws FormException {
-            if (log.isDebugEnabled())
-                log.debug(Messages.builder_log_newInstance(formData.toString(2)));
-            return super.newInstance(req, formData);
-        }
         public String getConfigPage() {
             return getViewPage(BapSshPublisherPlugin.class, "config.jelly");
         }

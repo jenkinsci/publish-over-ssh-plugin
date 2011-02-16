@@ -127,11 +127,6 @@ public class BapSshPromotionPublisherPlugin extends Notifier {
         public String getDisplayName() {
             return Messages.promotion_descriptor_displayName();
         }
-        public Publisher newInstance(StaplerRequest req, JSONObject formData) throws FormException {
-            if (log.isDebugEnabled())
-                log.debug(Messages.promotion_log_newInstance(formData.toString(2)));
-            return super.newInstance(req, formData);
-        }
         public String getConfigPage() {
             return getViewPage(BapSshPublisherPlugin.class, "config.jelly");
         }
