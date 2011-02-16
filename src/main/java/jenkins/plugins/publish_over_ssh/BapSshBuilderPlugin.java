@@ -73,10 +73,6 @@ public class BapSshBuilderPlugin extends Builder {
     public String getMasterNodeName() { return delegate.getMasterNodeName(); }
     public void setMasterNodeName(String masterNodeName) { delegate.setMasterNodeName(masterNodeName); }
     
-    public BapSshPublisherPlugin getPublisherPlugin() {
-        return delegate;
-    }
-    
 	@Override
 	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
         return delegate.perform(build, launcher, listener);
@@ -133,8 +129,8 @@ public class BapSshBuilderPlugin extends Builder {
         public String getConfigPage() {
             return getViewPage(BapSshPublisherPlugin.class, "config.jelly");
         }
-        public List<BapSshHostConfiguration> getHostConfigurations() {
-            return BapSshPublisherPlugin.DESCRIPTOR.getHostConfigurations();
+        public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
+            return BapSshPublisherPlugin.DESCRIPTOR;
         }
     }
 

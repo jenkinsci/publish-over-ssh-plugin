@@ -50,10 +50,6 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
         super(Messages.console_message_prefix(), publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
     
-    public BapSshPublisherPlugin getPublisherPlugin() {
-        return this;
-    }
-    
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -108,6 +104,9 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
                 if (Util.fixEmptyAndTrim(value) != null)
                     return true;
             return false;
+        }
+        public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
+            return this;
         }
     }
     

@@ -37,7 +37,7 @@
 
                     <f:entry title="${%hostconfig.title}" help="${helpUrl}configName.html">
                         <select class="setting-input" name="configName" description="${%hostconfig.description}">
-                            <j:forEach var="s" items="${descriptor.hostConfigurations}">
+                            <j:forEach var="s" items="${descriptor.publisherDescriptor.hostConfigurations}">
                                 <f:option selected="${s.name==publisher.configName}">${s.name}</f:option>
                             </j:forEach>
                         </select>
@@ -61,7 +61,7 @@
                             <table width="100%" padding="0">
 
                                 <f:entry title="${%sourceFiles.title}" help="${helpUrl}sourceFiles.html">
-                                    <f:textbox name="sourceFiles" value="${transfer.sourceFiles}" checkUrl="${instance.publisherPlugin.descriptor.getCheckUrl('sourceFiles')}"/>
+                                    <f:textbox name="sourceFiles" value="${transfer.sourceFiles}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('sourceFiles')}"/>
                                 </f:entry>
 
                                 <f:entry title="${%removePrefix.title}" help="${helpUrl}removePrefix.html">
@@ -73,7 +73,7 @@
                                 </f:entry>
 
                                 <f:entry title="${%execCommand.title}" help="${helpUrl}execCommand.html">
-                                    <f:textbox name="execCommand" value="${transfer.execCommand}" checkUrl="${instance.publisherPlugin.descriptor.getCheckUrl('execCommand')}"/>
+                                    <f:textbox name="execCommand" value="${transfer.execCommand}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('execCommand')}"/>
                                 </f:entry>
 
                                 <f:advanced>
@@ -87,7 +87,7 @@
                                     </f:entry>
 
                                     <f:entry title="${%execTimeout.title}" help="${helpUrl}execTimeout.html">
-                                        <f:textbox name="execTimeout" value="${transfer.execTimeout}" default="${defaultExecTimeout}" checkUrl="${instance.publisherPlugin.descriptor.getCheckUrl('execTimeout')}"/>
+                                        <f:textbox name="execTimeout" value="${transfer.execTimeout}" default="${defaultExecTimeout}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('execTimeout')}"/>
                                     </f:entry>
                                 
                                 </f:advanced>
