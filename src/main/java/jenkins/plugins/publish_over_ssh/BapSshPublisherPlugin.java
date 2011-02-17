@@ -65,10 +65,6 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
 
-    public BapSshPublisherPlugin getPublisherPlugin() {
-        return this;
-    }
-
     public BapSshHostConfiguration getConfiguration(String name) {
 		return DESCRIPTOR.getConfiguration(name);
 	}

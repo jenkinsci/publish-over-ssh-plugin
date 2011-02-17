@@ -31,7 +31,7 @@
 
     <f:entry title="${%publishers.section}">
 
-            <f:repeatable items="${instance.publisherPlugin.publishers}" var="publisher" name="publishers" minimum="1" header="${%publisher.dragAndDropLabel}" add="${%addPublisher.value}">
+            <f:repeatable items="${instance.instanceConfig.publishers}" var="publisher" name="publishers" minimum="1" header="${%publisher.dragAndDropLabel}" add="${%addPublisher.value}">
 
                 <table width="100%" padding="0">
 
@@ -47,10 +47,22 @@
                         <f:checkbox name="verbose" checked="${publisher.verbose}" />
                     </f:entry>
                     
-                    <j:if test='${descriptor.getClass().getCanonicalName().contains("BapSshPromotionPublisherPlugin")}'>
-                        <f:entry title="${%useWorkspaceInPromotion.title}" help="${helpUrl}useWorkspaceInPromotion.html">
-                            <f:checkbox name="useWorkspaceInPromotion" checked="${publisher.useWorkspaceInPromotion}" />
-                        </f:entry>
+                    <j:if test='${descriptor.getClass().canonicalName.contains("BapSshPromotionPublisherPlugin")}'>
+                        <j:choose>
+                            <j:when test="${it.getClass().canonicalName == 'hudson.matrix.MatrixProject'}">
+                                <f:entry title="${%useWorkspaceInPromotion.title}" help="${helpUrl}useWorkspaceInPromotionForMatrix.html">
+                                    <input type="checkbox" checked="true" disabled="true"/>
+                                </f:entry>
+                                <f:invisiblEntry>
+                                    <f:checkbox name="useWorkspaceInPromotion" checked="true"/>
+                                </f:invisiblEntry>
+                            </j:when>
+                            <j:otherwise>
+                                <f:entry title="${%useWorkspaceInPromotion.title}" help="${helpUrl}useWorkspaceInPromotion.html">
+                                    <f:checkbox name="useWorkspaceInPromotion" checked="${publisher.useWorkspaceInPromotion}" />
+                                </f:entry>
+                            </j:otherwise>
+                        </j:choose>
                         <f:entry title="${%usePromotionTimestamp.title}" help="${helpUrl}usePromotionTimestamp.html">
                             <f:checkbox name="usePromotionTimestamp" checked="${publisher.usePromotionTimestamp}" />
                         </f:entry>
@@ -115,16 +127,16 @@
 
             <f:advanced>
                 <f:entry title="${%continueOnError.title}" help="${helpUrl}continueOnError.html">
-                    <f:checkbox name="continueOnError" checked="${instance.publisherPlugin.continueOnError}" />
+                    <f:checkbox name="continueOnError" checked="${instance.instanceConfig.continueOnError}" />
                 </f:entry>
                 <f:entry title="${%failOnError.title}" help="${helpUrl}failOnError.html">
-                    <f:checkbox name="failOnError" checked="${instance.publisherPlugin.failOnError}" />
+                    <f:checkbox name="failOnError" checked="${instance.instanceConfig.failOnError}" />
                 </f:entry>
                 <f:entry title="${%alwaysSshFromMaster.title}" help="${helpUrl}alwaysSshFromMaster.html">
-                    <f:checkbox name="alwaysPublishFromMaster" checked="${instance.publisherPlugin.alwaysPublishFromMaster}" />
+                    <f:checkbox name="alwaysPublishFromMaster" checked="${instance.instanceConfig.alwaysPublishFromMaster}" />
                 </f:entry>
                 <f:entry title="${%masterNodeName.title}" help="${helpUrl}masterNodeName.html">
-                    <f:textbox name="masterNodeName" value="${instance.publisherPlugin.masterNodeName}"/>
+                    <f:textbox name="masterNodeName" value="${instance.instanceConfig.masterNodeName}"/>
                 </f:entry>
             </f:advanced>
 

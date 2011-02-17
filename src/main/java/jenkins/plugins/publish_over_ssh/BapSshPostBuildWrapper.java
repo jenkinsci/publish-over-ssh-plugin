@@ -31,6 +31,7 @@ import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.tasks.BuildWrapper;
 import hudson.tasks.BuildWrapperDescriptor;
+import jenkins.plugins.publish_over.BPInstanceConfig;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
@@ -57,8 +58,8 @@ public class BapSshPostBuildWrapper extends BuildWrapper {
         return runPostBuild;
     }
     
-    public BapSshPublisherPlugin getPublisherPlugin() {
-        return postBuild;
+    public BPInstanceConfig getInstanceConfig() {
+        return postBuild.getInstanceConfig();
     }
     
     public static class Descriptor extends BuildWrapperDescriptor {
