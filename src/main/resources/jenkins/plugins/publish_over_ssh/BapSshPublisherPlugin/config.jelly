@@ -89,6 +89,10 @@
                                     <f:textbox name="execCommand" value="${transfer.execCommand}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('execCommand')}"/>
                                 </f:entry>
 
+                                <f:entry>
+                                    <j:out value='${%transfers.envVars(rootURL)}'/>
+                                </f:entry>
+                                
                                 <f:advanced>
 
                                     <f:entry title="${%flatten.title}" help="${helpUrl}flatten.html">
