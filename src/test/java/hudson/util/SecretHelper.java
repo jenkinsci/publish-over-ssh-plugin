@@ -22,15 +22,19 @@
  * THE SOFTWARE.
  */
 
-package jenkins.plugins.publish_over_ssh;
+package hudson.util;
 
-import jenkins.plugins.publish_over.BPBuildInfo;
+public class SecretHelper {
+    
+    private static final String KEY = "7b41d2675f759b479460a41a9758bd0f6049a23ac685dc739bf7bb2d2319472d";
+    
+    public static void setSecretKey() {
+        Secret.SECRET = KEY;
+    }
+    
+    public static void clearSecretKey() {
+        Secret.SECRET = null;
+    }
 
-public interface BapSshKeyInfo {
-   
-    String getPassphrase();
-    public String getEncryptedPassphrase();    
-    byte[] getEffectiveKey(BPBuildInfo buildInfo);
-    boolean useKey();
     
 }

@@ -35,7 +35,7 @@
     <f:entry title="${%common.entry.title}" help="${helpUrl}defaultKeySummary.html"/>
       <f:rowSet name="common">
         <f:entry title="${%default.passphrase.title}" help="${helpUrl}defaultPassphrase.html">
-          <input class="setting-input" name="common.passphrase" type="password" value="${descriptor.commonConfig.passphrase}" />
+          <input class="setting-input" name="common.passphrase" type="password" value="${descriptor.commonConfig.encryptedPassphrase}" />
         </f:entry>
         <f:entry title="${%default.keyPath.title}" help="${helpUrl}defaultKeyPath.html">
           <f:textbox name="common.keyPath" value="${descriptor.commonConfig.keyPath}" checkUrl="${descriptor.getCheckUrl('keyPath')}"/>
@@ -64,7 +64,7 @@
       
             <f:optionalBlock inline="true" name="bap-pub.overrideKey" checked="${hostconfig.overrideKey}" title="${%override.default.key.title}" help="${helpUrl}overrideKey.html">
               <f:entry title="${%password.title}" help="${helpUrl}password.html">
-                <input class="setting-input" name="bap-pub.password" type="password" value="${hostconfig.password}" />
+                <input class="setting-input" name="bap-pub.password" type="password" value="${hostconfig.encryptedPassword}" />
               </f:entry>
               <f:entry title="${%keyPath.title}" help="${helpUrl}keyPath.html">
                 <f:textbox name="bap-pub.keyPath" value="${hostconfig.keyPath}" checkUrl="${descriptor.getCheckUrl('keyPath')}"/>

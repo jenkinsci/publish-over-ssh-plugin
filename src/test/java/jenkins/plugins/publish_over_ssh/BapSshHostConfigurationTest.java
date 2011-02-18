@@ -30,13 +30,16 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import hudson.FilePath;
 import hudson.model.TaskListener;
+import hudson.util.SecretHelper;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BapPublisherException;
 import jenkins.plugins.publish_over_ssh.helper.BapSshTestHelper;
 import jenkins.plugins.publish_over_ssh.helper.RandomFile;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -50,6 +53,16 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class BapSshHostConfigurationTest {
+    
+    @BeforeClass
+    public static void before() {
+        SecretHelper.setSecretKey();
+    }
+    
+    @AfterClass
+    public static void after() {
+        SecretHelper.clearSecretKey();
+    }
     
     @Rule
     public TemporaryFolder jenkinsHome = new TemporaryFolder();

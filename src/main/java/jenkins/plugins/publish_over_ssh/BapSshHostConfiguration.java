@@ -44,18 +44,18 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     
     static final long serialVersionUID = 1L;
     
-    public static final int DEFAULT_PORT = 22;
-    public static final int DEFAULT_TIMEOUT = 300000;
-    private int timeout;
-    private boolean overrideKey;
-    private BapSshConcreteKeyInfo keyInfo= new BapSshConcreteKeyInfo();
-
     public static int getDefaultPort() {
         return DEFAULT_PORT;
     }
     public static int getDefaultTimeout() {
         return DEFAULT_TIMEOUT;
     }
+    
+    public static final int DEFAULT_PORT = 22;
+    public static final int DEFAULT_TIMEOUT = 300000;
+    private int timeout;
+    private boolean overrideKey;
+    private BapSshConcreteKeyInfo keyInfo;
     
     @DataBoundConstructor
 	public BapSshHostConfiguration(String name, String hostname, String username, String password, String remoteRootDir, int port, int timeout, boolean overrideKey, String keyPath, String key) {
@@ -67,11 +67,21 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         setKeyPath(keyPath);
     }
 
+    private void createKeyInfoIfNotInit() {
+        if (keyInfo == null)
+            keyInfo = new BapSshConcreteKeyInfo();
+    }
+
     public int getTimeout() { return timeout; }
     public void setTimeout(int timeout) { this.timeout = timeout; }
 
     public String getPassword() { return keyInfo.getPassphrase(); }
-    public void setPassword(String password) { keyInfo.setPassphrase(password); }
+    public void setPassword(String password) {
+        createKeyInfoIfNotInit();
+        keyInfo.setPassphrase(password);
+    }
+    
+    public String getEncryptedPassword() { return keyInfo.getEncryptedPassphrase(); }
     
     public String getKeyPath() {return keyInfo.getKeyPath(); }
     public void setKeyPath(String keyPath) { keyInfo.setKeyPath(keyPath); }

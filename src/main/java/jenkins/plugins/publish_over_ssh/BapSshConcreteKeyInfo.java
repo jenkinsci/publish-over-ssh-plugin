@@ -25,6 +25,7 @@
 package jenkins.plugins.publish_over_ssh;
 
 import hudson.Util;
+import hudson.util.Secret;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -37,6 +38,7 @@ import java.io.Serializable;
 public class BapSshConcreteKeyInfo implements Serializable, BapSshKeyInfo {
     
     private String passphrase;
+    private Secret secretPassphrase;
     private String key;
     private String keyPath;
 
@@ -44,13 +46,17 @@ public class BapSshConcreteKeyInfo implements Serializable, BapSshKeyInfo {
     
     @DataBoundConstructor
     public BapSshConcreteKeyInfo(String passphrase, String key, String keyPath) {
-        this.passphrase = passphrase;
+        setPassphrase(passphrase);
         this.key = key;
         this.keyPath = keyPath;
     }
 
-    public String getPassphrase() { return passphrase; }
-    public void setPassphrase(String passphrase) { this.passphrase = passphrase; }
+    public String getPassphrase() { return Secret.toString(secretPassphrase); }
+    public void setPassphrase(String passphrase) { secretPassphrase = Secret.fromString(passphrase); }
+    
+    public String getEncryptedPassphrase() {
+        return (secretPassphrase == null) ? null : secretPassphrase.getEncryptedValue();
+    }
 
     public String getKey() { return key; }
     public void setKey(String key) { this.key = key; }
@@ -81,7 +87,7 @@ public class BapSshConcreteKeyInfo implements Serializable, BapSshKeyInfo {
     }
 
     protected HashCodeBuilder addToHashCode(HashCodeBuilder builder) {
-        return builder.append(passphrase)
+        return builder.append(secretPassphrase)
             .append(key)
             .append(keyPath);
     }
@@ -91,7 +97,7 @@ public class BapSshConcreteKeyInfo implements Serializable, BapSshKeyInfo {
     }
     
     protected EqualsBuilder addToEquals(EqualsBuilder builder, BapSshConcreteKeyInfo that) {
-        return builder.append(passphrase, that.passphrase)
+        return builder.append(secretPassphrase, that.secretPassphrase)
             .append(key, that.key)
             .append(keyPath, that.keyPath);
     }
@@ -115,6 +121,12 @@ public class BapSshConcreteKeyInfo implements Serializable, BapSshKeyInfo {
     
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+    }
+    
+    public Object readResolve() {
+        if (passphrase != null)
+            setPassphrase(passphrase);
+        return this;
     }
 
 }
