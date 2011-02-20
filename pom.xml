@@ -27,7 +27,6 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-        <!-- <groupId>org.jenkins-ci.plugins</groupId> -->
 		<groupId>org.jvnet.hudson.plugins</groupId>
 		<artifactId>plugin</artifactId>
 		<version>1.388</version>
@@ -41,6 +40,7 @@
 	<url>http://wiki.jenkins-ci.org/display/JENKINS/Publish+Over+SSH+Plugin</url> 
 
     <properties>
+        <java.net.id>bap</java.net.id>                
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     
@@ -66,10 +66,9 @@
 			<version>0.1.44</version>
 		</dependency>
 		<dependency>
-            <groupId>org.jvnet.hudson.plugins</groupId>
-			<!--<groupId>org.jenkins-ci.plugins</groupId>-->
+			<groupId>org.jenkins-ci.plugins</groupId>
 			<artifactId>publish-over</artifactId>
-			<version>0.4</version>
+			<version>0.5-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -92,9 +91,15 @@
 	</dependencies>
 
     <scm>
+        <url>https://github.com/jenkinsci/publish-over-ftp-plugin</url>
         <connection>scm:git:git://github.com/jenkinsci/publish-over-ssh-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/publish-over-ssh-plugin.git</developerConnection>
     </scm>
+    
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://issues.jenkins-ci.org/</url>
+    </issueManagement>
     
     <distributionManagement>
         <repository>
@@ -106,7 +111,6 @@
 	<build>
 		<plugins>
 			<plugin>
-                <!-- <groupId>org.jenkins-ci.plugins</groupId> -->
 				<groupId>org.jvnet.hudson.tools</groupId>
 				<artifactId>maven-hpi-plugin</artifactId>
 				<version>1.42</version>
