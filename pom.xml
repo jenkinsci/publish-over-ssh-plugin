@@ -41,6 +41,10 @@
 	<description>Send build artifacts over SSH</description>
 	<url>http://wiki.jenkins-ci.org/display/JENKINS/Publish+Over+SSH+Plugin</url> 
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    
 	<licenses>
 		<license>
 			<name>The MIT license</name>
