@@ -37,7 +37,7 @@ import java.io.Serializable;
 
 public class BapSshConcreteKeyInfo implements Serializable, BapSshKeyInfo {
 
-    static final long serialVersionUID = 1L;    
+    static final long serialVersionUID = 1L;
 
     private String passphrase;
     private Secret secretPassphrase;

@@ -39,7 +39,7 @@ import java.util.List;
 
 public class BapSshPreBuildWrapper extends BuildWrapper {
 
-    @Extension(ordinal = 11)
+    @Extension(ordinal = BapSshUtil.EXTENSION_ORDINAL_PRE_BUILD_WRAPPER)
     public static final Descriptor DESCRIPTOR = new Descriptor();
 
     private BapSshAlwaysRunPublisherPlugin preBuild;

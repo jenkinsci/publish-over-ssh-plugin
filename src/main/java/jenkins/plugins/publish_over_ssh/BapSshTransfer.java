@@ -36,7 +36,7 @@ public class BapSshTransfer extends BPTransfer {
     public static final int DEFAULT_EXEC_TIMEOUT = 120000;
 
     public static int getDefaultExecTimeout() { return DEFAULT_EXEC_TIMEOUT; }
-    
+
     private String execCommand;
     private int execTimeout;
 
@@ -62,7 +62,7 @@ public class BapSshTransfer extends BPTransfer {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BapSshTransfer that = (BapSshTransfer) o;
-        
+
         return createEqualsBuilder(that)
             .append(execCommand, that.execCommand)
             .append(execTimeout, that.execTimeout)

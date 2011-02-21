@@ -54,7 +54,7 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        
+
         return createEqualsBuilder((BapSshPublisherPlugin) o).isEquals();
     }
 

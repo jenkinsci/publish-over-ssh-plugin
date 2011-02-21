@@ -39,9 +39,9 @@ import java.util.List;
 
 public class BapSshPostBuildWrapper extends BuildWrapper {
 
-    @Extension(ordinal = 10)
+    @Extension(ordinal = BapSshUtil.EXTENSION_ORDINAL_POST_BUILD_WRAPPER)
     public static final Descriptor DESCRIPTOR = new Descriptor();
-    
+
     private BapSshAlwaysRunPublisherPlugin postBuild;
 
     @DataBoundConstructor
@@ -53,7 +53,7 @@ public class BapSshPostBuildWrapper extends BuildWrapper {
     public Environment setUp(final AbstractBuild build, final Launcher launcher, final BuildListener listener)
                     throws IOException, InterruptedException {
         Environment runPostBuild = new Environment() {
-            public boolean tearDown(AbstractBuild build, BuildListener listener) throws IOException, InterruptedException {
+            public boolean tearDown(final AbstractBuild build, final BuildListener listener) throws IOException, InterruptedException {
                 return postBuild.perform(build, listener);
             }
         };

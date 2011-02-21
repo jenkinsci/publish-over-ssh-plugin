@@ -30,7 +30,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class BapSshCommonConfiguration extends BapSshConcreteKeyInfo {
 
-    static final long serialVersionUID = 1L;    
+    static final long serialVersionUID = 1L;
 
     public BapSshCommonConfiguration() { }
 
@@ -43,7 +43,7 @@ public class BapSshCommonConfiguration extends BapSshConcreteKeyInfo {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BapSshCommonConfiguration that = (BapSshCommonConfiguration) o;
-        
+
         return createEqualsBuilder(that).isEquals();
     }
 

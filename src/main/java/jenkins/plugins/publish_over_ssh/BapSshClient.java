@@ -65,7 +65,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
             throw new BapPublisherException(Messages.exception_badTransferConfig());
     }
 
-    public boolean changeDirectory(final String directory) {    
+    public boolean changeDirectory(final String directory) {
         try {
             if (!sftp.stat(directory).isDir()) return false;
         } catch (SftpException sftpe) {
@@ -143,7 +143,6 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
             throw new BapPublisherException(Messages.exception_exec_connect(jse.getLocalizedMessage()));
         }
         buildInfo.printIfVerbose(Messages.console_exec_connected());
-        
     }
 
     private ChannelExec openExecChannel() {
@@ -166,7 +165,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     }
 
     private void disconnectExec(final ChannelExec exec) {
-        if (exec == null) return; 
+        if (exec == null) return;
         if (exec.isConnected())
             exec.disconnect();
     }

@@ -57,11 +57,12 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     private boolean overrideKey;
     private BapSshConcreteKeyInfo keyInfo;
 
+    // CSOFF: ParameterNumberCheck
     @DataBoundConstructor
     public BapSshHostConfiguration(final String name, final String hostname, final String username, final String password,
                                    final String remoteRootDir, final int port, final int timeout, final boolean overrideKey,
                                    final String keyPath, final String key) {
-        // DataBoundConstructor got a lot of args!
+        // CSON: ParameterNumberCheck
         super(name, hostname, username, null, remoteRootDir, port);
         this.timeout = timeout;
         this.overrideKey = overrideKey;
@@ -119,7 +120,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             bapClient.setSftp(sftp);
             connectSftpChannel(buildInfo, sftp);
             changeToRootDirectory(bapClient);
-            setRootDirectoryInClient(bapClient, sftp);            
+            setRootDirectoryInClient(bapClient, sftp);
             return bapClient;
         } catch (IOException ioe) {
             bapClient.disconnectQuietly();
@@ -167,7 +168,6 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             throw new BapPublisherException(Messages.exception_sftp_connect(jse.getLocalizedMessage()));
         }
         buildInfo.printIfVerbose(Messages.console_sftp_connected());
-        
     }
 
     private ChannelSftp openSftpChannel(final BPBuildInfo buildInfo, final Session session) {
