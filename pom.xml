@@ -172,7 +172,7 @@
                         <artifactId>maven-checkstyle-plugin</artifactId>
                         <version>2.6</version>
                         <configuration>
-                            <configLocation>src/test/checkstyle_rules.xml</configLocation>
+                            <configLocation>jenkins/plugins/publish_over/metrics/checkstyle_rules.xml</configLocation>
                         </configuration>
                     </plugin>
                 </plugins>
