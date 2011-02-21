@@ -202,13 +202,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     
     private void waitForExec(final ChannelExec exec, final long timeout) {
         long start = System.currentTimeMillis();
-        Thread waiter = new Thread() { public void run() {
-                try {
-                    while (!exec.isClosed()) {
-                        Thread.sleep(200);
-                    }
-                } catch (InterruptedException ie) { }
-        }};
+        Thread waiter = new ExecCheckThread(exec);
         waiter.start();
         try {
             waiter.join(timeout);
@@ -220,6 +214,21 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         if (!exec.isClosed())
             throw new BapPublisherException(Messages.exception_exec_timeout(duration));
         buildInfo.println(Messages.console_exec_completed(duration));
+    }
+    
+    private static final class ExecCheckThread extends Thread {
+        private final ChannelExec exec;
+        ExecCheckThread(final ChannelExec exec) {
+            this.exec = exec;
+        }
+        @Override
+        public void run() {
+            try {
+                while (!exec.isClosed()) {
+                    Thread.sleep(200);
+                }
+            } catch (InterruptedException ie) { }
+        }
     }
     
 }

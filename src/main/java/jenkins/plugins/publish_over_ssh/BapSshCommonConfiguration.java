@@ -30,7 +30,9 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class BapSshCommonConfiguration extends BapSshConcreteKeyInfo {
     
-    public BapSshCommonConfiguration() {}
+    static final long serialVersionUID = 1L;    
+    
+    public BapSshCommonConfiguration() { }
     
     @DataBoundConstructor
     public BapSshCommonConfiguration(final String passphrase, final String key, final String keyPath) {

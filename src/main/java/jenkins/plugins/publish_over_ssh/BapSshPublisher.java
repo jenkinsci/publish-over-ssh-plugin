@@ -34,6 +34,8 @@ import java.util.List;
 
 public class BapSshPublisher extends BapPublisher<BapSshTransfer> {
     
+    static final long serialVersionUID = 1L;    
+    
     public BapSshPublisher(final String configName, final boolean verbose, final List<BapSshTransfer> transfers) {
         this(configName, verbose, transfers, false, false);
     }
