@@ -139,6 +139,9 @@
         <profile>
             <!-- mvn clean test emma:emma findbugs:findbugs checkstyle:checkstyle pmd:pmd pmd:cpd -->
             <id>metrics</id>
+            <properties>
+                <maven.emma.filter.excludes>jenkins.plugins.publish_over_ssh.Messages*</maven.emma.filter.excludes>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
