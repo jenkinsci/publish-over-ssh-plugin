@@ -101,7 +101,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     public BapSshClient createClient(final BPBuildInfo buildInfo) {
         JSch ssh = createJSch();
         Session session = createSession(buildInfo, ssh);
-        BapSshClient bapClient = new BapSshClient(buildInfo, ssh, session);
+        BapSshClient bapClient = new BapSshClient(buildInfo, session);
         try {
             BapSshKeyInfo keyInfo = getEffectiveKeyInfo();
             Properties sessionProperties = getSessionProperties();

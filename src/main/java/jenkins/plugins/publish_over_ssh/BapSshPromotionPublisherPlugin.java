@@ -39,8 +39,6 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
@@ -107,7 +105,6 @@ public class BapSshPromotionPublisherPlugin extends Notifier {
     }
     
     public static class Descriptor extends BuildStepDescriptor<Publisher> {
-        private final transient Log log = LogFactory.getLog(Descriptor.class);
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
             return BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
         }

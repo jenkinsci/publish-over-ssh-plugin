@@ -26,7 +26,6 @@ package jenkins.plugins.publish_over_ssh;
 
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
@@ -45,13 +44,11 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     private static Log LOG = LogFactory.getLog(BapSshClient.class);
     
     private BPBuildInfo buildInfo;
-    private JSch ssh;
     private Session session;
     private ChannelSftp sftp;
 
-    public BapSshClient(final BPBuildInfo buildInfo, final JSch ssh, final Session session) {
+    public BapSshClient(final BPBuildInfo buildInfo, final Session session) {
         this.buildInfo = buildInfo;
-        this.ssh = ssh;
         this.session = session;
     }
     

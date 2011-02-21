@@ -26,7 +26,6 @@ package jenkins.plugins.publish_over_ssh;
 
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 import hudson.FilePath;
@@ -77,10 +76,9 @@ public class BapSshClientTest {
     
     private IMocksControl mockControl = EasyMock.createStrictControl();
     private BPBuildInfo buildInfo = BapSshTestHelper.createEmpty(true);
-    private JSch mockJSch = mockControl.createMock(JSch.class);
     private Session mockSession = mockControl.createMock(Session.class);
     private ChannelSftp mockSftp = mockControl.createMock(ChannelSftp.class);
-    private BapSshClient bapSshClient = new BapSshClient(buildInfo, mockJSch, mockSession);
+    private BapSshClient bapSshClient = new BapSshClient(buildInfo, mockSession);
     private BapSshTransfer mockTransfer = mockControl.createMock(BapSshTransfer.class);
     private InputStream anInputStream = mockControl.createMock(InputStream.class);
     private BapSshTestHelper testHelper = new BapSshTestHelper(mockControl, mockSftp);
