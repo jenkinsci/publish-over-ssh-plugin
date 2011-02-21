@@ -28,7 +28,6 @@
     "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
 
 <module name="Checker">
-    <module name="JavadocPackage"/>
     <module name="NewlineAtEndOfFile"/>
     <module name="Translation"/>
     <module name="FileLength"/>
@@ -40,10 +39,6 @@
        <property name="message" value="Line has trailing spaces."/>
     </module>
     <module name="TreeWalker">
-        <module name="JavadocMethod"/>
-        <module name="JavadocType"/>
-        <module name="JavadocVariable"/>
-        <module name="JavadocStyle"/>
         <module name="ConstantName"/>
         <module name="LocalFinalVariableName"/>
         <module name="LocalVariableName"/>
