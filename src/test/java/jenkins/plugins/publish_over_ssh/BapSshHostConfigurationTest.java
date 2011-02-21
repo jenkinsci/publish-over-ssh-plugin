@@ -292,17 +292,17 @@ public class BapSshHostConfigurationTest {
         private static final String TEST_USERNAME = "testUser";
         private static final String TEST_REMOTE_ROOT = "/test/root";
         
-        public BapSshHostConfigurationWithMockJSch(BapSshCommonConfiguration defaultKeyInfo) {
+        public BapSshHostConfigurationWithMockJSch(final BapSshCommonConfiguration defaultKeyInfo) {
             this();
             setOverrideKey(false);
             setCommonConfig(defaultKeyInfo);
         }
         
-        public BapSshHostConfigurationWithMockJSch(String overridePassword) {
+        public BapSshHostConfigurationWithMockJSch(final String overridePassword) {
             super(TEST_NAME, TEST_HOSTNAME, TEST_USERNAME, overridePassword, TEST_REMOTE_ROOT, DEFAULT_PORT, DEFAULT_TIMEOUT, true, null, null);
         }
         
-        public BapSshHostConfigurationWithMockJSch(String overridePassword, String overrideKeyPath, String overrideKey) {
+        public BapSshHostConfigurationWithMockJSch(final String overridePassword, final String overrideKeyPath, final String overrideKey) {
             super(TEST_NAME, TEST_HOSTNAME, TEST_USERNAME, overridePassword, TEST_REMOTE_ROOT, DEFAULT_PORT, DEFAULT_TIMEOUT, true, overrideKeyPath, overrideKey);
         }
         
@@ -310,7 +310,8 @@ public class BapSshHostConfigurationTest {
             this(TEST_NAME, TEST_HOSTNAME, TEST_USERNAME, null, TEST_REMOTE_ROOT, DEFAULT_PORT, DEFAULT_TIMEOUT);
         }
 
-        public BapSshHostConfigurationWithMockJSch(String name, String hostname, String username, String password, String remoteRootDir, int port, int timeout) {
+        public BapSshHostConfigurationWithMockJSch(final String name, final String hostname, final String username, final String password,
+                                                   final String remoteRootDir, final int port, final int timeout) {
             super(name, hostname, username, password, remoteRootDir, port, timeout, true, "", "");
         }
 

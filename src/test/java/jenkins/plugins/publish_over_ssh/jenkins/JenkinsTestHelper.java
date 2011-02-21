@@ -34,7 +34,7 @@ import java.lang.reflect.Field;
 
 public class JenkinsTestHelper {
     
-    public void setGlobalConfig(BapSshCommonConfiguration commonConfig, BapSshHostConfiguration... newHostConfigurations) throws Exception {
+    public void setGlobalConfig(final BapSshCommonConfiguration commonConfig, final BapSshHostConfiguration... newHostConfigurations) throws Exception {
         for (BapSshHostConfiguration hostConfig : newHostConfigurations) {
             hostConfig.setCommonConfig(commonConfig);
         }

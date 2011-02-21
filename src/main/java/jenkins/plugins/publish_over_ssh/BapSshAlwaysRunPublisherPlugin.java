@@ -33,16 +33,17 @@ import java.util.List;
 
 public class BapSshAlwaysRunPublisherPlugin extends BapSshPublisherPlugin {
     
-	public BapSshAlwaysRunPublisherPlugin(List<BapSshPublisher> publishers, boolean continueOnError, boolean failOnError, boolean alwaysPublishFromMaster, String masterNodeName) {
+	public BapSshAlwaysRunPublisherPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
+                                          final boolean alwaysPublishFromMaster, final String masterNodeName) {
         super(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
     
     @Override
-    protected boolean isBuildGoodEnoughToRun(AbstractBuild<?, ?> build, PrintStream console) {
+    protected boolean isBuildGoodEnoughToRun(final AbstractBuild<?, ?> build, final PrintStream console) {
         return true;
     }
 
-    public boolean perform(AbstractBuild<?, ?> build, BuildListener listener) throws InterruptedException, IOException {
+    public boolean perform(final AbstractBuild<?, ?> build, final BuildListener listener) throws InterruptedException, IOException {
         return perform(build, null, listener);
     }
 }

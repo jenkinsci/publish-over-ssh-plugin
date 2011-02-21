@@ -45,12 +45,12 @@ public class BapSshPreBuildWrapper extends BuildWrapper {
     BapSshAlwaysRunPublisherPlugin preBuild;
     
     @DataBoundConstructor
-    public BapSshPreBuildWrapper(List<BapSshPublisher> publishers, boolean continueOnError, boolean failOnError, boolean alwaysPublishFromMaster, String masterNodeName) {
+    public BapSshPreBuildWrapper(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName) {
         preBuild = new BapSshAlwaysRunPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
 
     @Override
-    public Environment setUp(AbstractBuild build, final Launcher launcher, final BuildListener listener) throws IOException, InterruptedException {
+    public Environment setUp(final AbstractBuild build, final Launcher launcher, final BuildListener listener) throws IOException, InterruptedException {
         return preBuild.perform(build, launcher, listener) ? new Environment(){} : null;
     }
     
@@ -59,7 +59,7 @@ public class BapSshPreBuildWrapper extends BuildWrapper {
     }
     
     public static class Descriptor extends BuildWrapperDescriptor {
-        public boolean isApplicable(AbstractProject<?, ?> abstractProject) {
+        public boolean isApplicable(final AbstractProject<?, ?> abstractProject) {
             return true;
         }
         public String getDisplayName() {

@@ -42,29 +42,29 @@ public class BapSshConcreteKeyInfo implements Serializable, BapSshKeyInfo {
     private String key;
     private String keyPath;
 
-    public BapSshConcreteKeyInfo() {}
+    public BapSshConcreteKeyInfo() { }
     
     @DataBoundConstructor
-    public BapSshConcreteKeyInfo(String passphrase, String key, String keyPath) {
+    public BapSshConcreteKeyInfo(final String passphrase, final String key, final String keyPath) {
         setPassphrase(passphrase);
         this.key = key;
         this.keyPath = keyPath;
     }
 
     public String getPassphrase() { return Secret.toString(secretPassphrase); }
-    public void setPassphrase(String passphrase) { secretPassphrase = Secret.fromString(passphrase); }
+    public void setPassphrase(final String passphrase) { secretPassphrase = Secret.fromString(passphrase); }
     
     public String getEncryptedPassphrase() {
         return (secretPassphrase == null) ? null : secretPassphrase.getEncryptedValue();
     }
 
     public String getKey() { return key; }
-    public void setKey(String key) { this.key = key; }
+    public void setKey(final String key) { this.key = key; }
 
     public String getKeyPath() { return keyPath; }
-    public void setKeyPath(String keyPath) { this.keyPath = keyPath; }
+    public void setKeyPath(final String keyPath) { this.keyPath = keyPath; }
     
-    public byte[] getEffectiveKey(BPBuildInfo buildInfo) {
+    public byte[] getEffectiveKey(final BPBuildInfo buildInfo) {
         if (hasKey())
             return BapSshUtil.toBytes(key);
         return buildInfo.readFileFromMaster(keyPath.trim());
@@ -86,29 +86,29 @@ public class BapSshConcreteKeyInfo implements Serializable, BapSshKeyInfo {
         return addToHashCode(new HashCodeBuilder());
     }
 
-    protected HashCodeBuilder addToHashCode(HashCodeBuilder builder) {
+    protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
         return builder.append(secretPassphrase)
             .append(key)
             .append(keyPath);
     }
     
-    protected EqualsBuilder createEqualsBuilder(BapSshConcreteKeyInfo that) {
+    protected EqualsBuilder createEqualsBuilder(final BapSshConcreteKeyInfo that) {
         return addToEquals(new EqualsBuilder(), that);
     }
     
-    protected EqualsBuilder addToEquals(EqualsBuilder builder, BapSshConcreteKeyInfo that) {
+    protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshConcreteKeyInfo that) {
         return builder.append(secretPassphrase, that.secretPassphrase)
             .append(key, that.key)
             .append(keyPath, that.keyPath);
     }
     
-    protected ToStringBuilder addToToString(ToStringBuilder builder) {
+    protected ToStringBuilder addToToString(final ToStringBuilder builder) {
         return builder.append("passphrase", "***")
             .append("key", "***")
             .append("keyPath", keyPath);
     }
     
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         

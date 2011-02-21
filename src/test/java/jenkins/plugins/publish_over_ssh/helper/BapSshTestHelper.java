@@ -53,7 +53,7 @@ public class BapSshTestHelper {
         return createEmpty(true);
     }
     
-    public static BPBuildInfo createEmpty(boolean setEffectiveEnvironment) {
+    public static BPBuildInfo createEmpty(final boolean setEffectiveEnvironment) {
         BPBuildInfo buildInfo = new BPBuildInfo(TaskListener.NULL, "", new FilePath(new File("")), createEmptyBuildEnv(), null);
         if (setEffectiveEnvironment) {
             buildInfo.setBuildTime(buildInfo.getCurrentBuildEnv().getBuildTime());
@@ -67,18 +67,18 @@ public class BapSshTestHelper {
     private IMocksControl mockControl;
     private ChannelSftp mockSftp;
     
-    public BapSshTestHelper(IMocksControl mockControl, ChannelSftp mockSftp) {
+    public BapSshTestHelper(final IMocksControl mockControl, final ChannelSftp mockSftp) {
         this.mockControl = mockControl;
         this.mockSftp = mockSftp;
     }
     
-    public void expectDirectoryCheck(String directory, boolean isDirectory) throws SftpException {
+    public void expectDirectoryCheck(final String directory, final boolean isDirectory) throws SftpException {
         SftpATTRS mockAttrs = mockControl.createMock(SftpATTRS.class);
         expect(mockSftp.stat(directory)).andReturn(mockAttrs);
         expect(mockAttrs.isDir()).andReturn(isDirectory);
     }
     
-    public void assertBPE(String message, Runnable toExec) {
+    public void assertBPE(final String message, final Runnable toExec) {
         mockControl.replay();
         try {
             toExec.run();

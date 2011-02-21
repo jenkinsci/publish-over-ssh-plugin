@@ -41,23 +41,23 @@ public class BapSshTransfer extends BPTransfer {
     private int execTimeout;
     
     @DataBoundConstructor
-    public BapSshTransfer(String sourceFiles, String remoteDirectory, String removePrefix, boolean remoteDirectorySDF, boolean flatten, String execCommand, int execTimeout) {
+    public BapSshTransfer(final String sourceFiles, final String remoteDirectory, final String removePrefix, final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout) {
         super(sourceFiles, remoteDirectory, removePrefix, remoteDirectorySDF, flatten);
         this.execCommand = execCommand;
         this.execTimeout = execTimeout;
     }
     
     public String getExecCommand() { return execCommand; }
-    public void setExecCommand(String execCommand) { this.execCommand = execCommand; }
+    public void setExecCommand(final String execCommand) { this.execCommand = execCommand; }
 
     public int getExecTimeout() { return execTimeout; }
-    public void setExecTimeout(int execTimeout) { this.execTimeout = execTimeout; }
+    public void setExecTimeout(final int execTimeout) { this.execTimeout = execTimeout; }
     
     public boolean hasExecCommand() {
         return Util.fixEmptyAndTrim(getExecCommand()) != null;
     }
 
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BapSshTransfer that = (BapSshTransfer) o;
@@ -81,6 +81,5 @@ public class BapSshTransfer extends BPTransfer {
             .append(execTimeout)
             .toString();
     }
-    
-    
+
 }

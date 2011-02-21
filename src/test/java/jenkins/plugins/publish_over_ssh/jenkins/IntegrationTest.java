@@ -78,7 +78,7 @@ public class IntegrationTest extends HudsonTestCase {
         final String buildFileName = "file.txt";
         project.getBuildersList().add(new TestBuilder() {
             @Override
-            public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+            public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener) throws InterruptedException, IOException {
                 FilePath dir = build.getWorkspace().child(dirToIgnore).child(buildDirectory);
                 dir.mkdirs();
                 dir.child(buildFileName).write("Helloooooo", "UTF-8");

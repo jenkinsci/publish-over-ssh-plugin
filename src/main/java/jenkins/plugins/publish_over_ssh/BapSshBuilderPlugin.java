@@ -51,12 +51,12 @@ public class BapSshBuilderPlugin extends Builder {
     private BapSshPublisherPlugin delegate;
     
     @DataBoundConstructor
-	public BapSshBuilderPlugin(List<BapSshPublisher> publishers, boolean continueOnError, boolean failOnError, boolean alwaysPublishFromMaster, String masterNodeName) {
+	public BapSshBuilderPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName) {
 		this.delegate = new BapSshPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
 
 	@Override
-	public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+	public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener) throws InterruptedException, IOException {
         return delegate.perform(build, launcher, listener);
 	}
     
@@ -64,23 +64,23 @@ public class BapSshBuilderPlugin extends Builder {
         return addToHashCode(new HashCodeBuilder());
     }
 
-    protected HashCodeBuilder addToHashCode(HashCodeBuilder builder) {
+    protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
         return builder.append(delegate);
     }
     
-    protected EqualsBuilder createEqualsBuilder(BapSshBuilderPlugin that) {
+    protected EqualsBuilder createEqualsBuilder(final BapSshBuilderPlugin that) {
         return addToEquals(new EqualsBuilder(), that);
     }
     
-    protected EqualsBuilder addToEquals(EqualsBuilder builder, BapSshBuilderPlugin that) {
+    protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshBuilderPlugin that) {
         return builder.append(delegate, that.delegate);
     }
     
-    protected ToStringBuilder addToToString(ToStringBuilder builder) {
+    protected ToStringBuilder addToToString(final ToStringBuilder builder) {
         return builder.append("delegate", delegate);
     }
     
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         
@@ -101,7 +101,7 @@ public class BapSshBuilderPlugin extends Builder {
     
     public static class Descriptor extends BuildStepDescriptor<Builder> {
         private final transient Log log = LogFactory.getLog(Descriptor.class);
-        public boolean isApplicable(Class<? extends AbstractProject> aClass) {
+        public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
             return !BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
         }
         public String getDisplayName() {

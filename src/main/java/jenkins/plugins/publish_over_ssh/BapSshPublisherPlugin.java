@@ -46,11 +46,11 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
     public static final Descriptor DESCRIPTOR = new Descriptor();
 
     @DataBoundConstructor
-	public BapSshPublisherPlugin(List<BapSshPublisher> publishers, boolean continueOnError, boolean failOnError, boolean alwaysPublishFromMaster, String masterNodeName) {
+	public BapSshPublisherPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName) {
         super(Messages.console_message_prefix(), publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
     
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         
@@ -65,7 +65,7 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
 
-    public BapSshHostConfiguration getConfiguration(String name) {
+    public BapSshHostConfiguration getConfiguration(final String name) {
 		return DESCRIPTOR.getConfiguration(name);
 	}
     
@@ -73,10 +73,10 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
         public Descriptor() {
             super(new DescriptorMessages(), BapSshPublisherPlugin.class, BapSshHostConfiguration.class, BapSshCommonConfiguration.class);
         }
-        public boolean isApplicable(Class<? extends AbstractProject> aClass) {
+        public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
             return !BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
         }
-        public FormValidation doCheckKeyPath(@QueryParameter String value) {
+        public FormValidation doCheckKeyPath(@QueryParameter final String value) {
             if (false && Hudson.getVersion().isNewerThan(new VersionNumber("x.xxx"))) {
                 try {
                     return Hudson.getInstance().getRootPath().validateRelativePath(value, true, true);
@@ -86,20 +86,20 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
             }
             return FormValidation.ok();
         }
-        public FormValidation doCheckSourceFiles(@QueryParameter String sourceFiles, @QueryParameter String execCommand) {
+        public FormValidation doCheckSourceFiles(@QueryParameter final String sourceFiles, @QueryParameter final String execCommand) {
             return checkTransferSet(sourceFiles, execCommand);
         }
-        public FormValidation doCheckExecCommand(@QueryParameter String sourceFiles, @QueryParameter String execCommand) {
+        public FormValidation doCheckExecCommand(@QueryParameter final String sourceFiles, @QueryParameter final String execCommand) {
             return checkTransferSet(sourceFiles, execCommand);
         }
-        public FormValidation doCheckExecTimeout(@QueryParameter String value) {
+        public FormValidation doCheckExecTimeout(@QueryParameter final String value) {
             return FormValidation.validateNonNegativeInteger(value);
         }
-        private FormValidation checkTransferSet(String sourceFiles, String execCommand) {
+        private FormValidation checkTransferSet(final String sourceFiles, final String execCommand) {
             return haveAtLeastOne(sourceFiles, execCommand) ? FormValidation.ok()
                 : FormValidation.error(Messages.descriptor_sourceOrExec());
         }
-        private boolean haveAtLeastOne(String... values) {
+        private boolean haveAtLeastOne(final String... values) {
             for (String value : values)
                 if (Util.fixEmptyAndTrim(value) != null)
                     return true;

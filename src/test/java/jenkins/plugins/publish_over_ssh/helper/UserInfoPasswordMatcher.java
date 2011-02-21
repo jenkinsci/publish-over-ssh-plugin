@@ -30,18 +30,18 @@ import org.easymock.classextension.EasyMock;
 
 public class UserInfoPasswordMatcher implements IArgumentMatcher {
     
-    public static UserInfo uiPassword(String password) {
+    public static UserInfo uiPassword(final String password) {
         EasyMock.reportMatcher(new UserInfoPasswordMatcher(password));
         return null;
     }
      
     private String expectedPassword;
 
-    public UserInfoPasswordMatcher(String expectedPassword) {
+    public UserInfoPasswordMatcher(final String expectedPassword) {
         this.expectedPassword = expectedPassword;
     }
     
-    public boolean matches(Object actual) {
+    public boolean matches(final Object actual) {
         if (!(actual instanceof UserInfo)) {
             return false;
         }
@@ -49,7 +49,7 @@ public class UserInfoPasswordMatcher implements IArgumentMatcher {
         return (expectedPassword == actualUI.getPassword()) && (expectedPassword == actualUI.getPassphrase());
     }
 
-    public void appendTo(StringBuffer stringBuffer) {
+    public void appendTo(final StringBuffer stringBuffer) {
         stringBuffer.append("uiPassword(\"")
             .append(expectedPassword)
             .append("\")");

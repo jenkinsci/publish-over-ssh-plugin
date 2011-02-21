@@ -49,7 +49,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     private Session session;
     private ChannelSftp sftp;
 
-    public BapSshClient(BPBuildInfo buildInfo, JSch ssh, Session session) {
+    public BapSshClient(final BPBuildInfo buildInfo, final JSch ssh, final Session session) {
         this.buildInfo = buildInfo;
         this.ssh = ssh;
         this.session = session;
@@ -59,16 +59,16 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         return buildInfo;
     }
 
-    public void setSftp(ChannelSftp sftp) {
+    public void setSftp(final ChannelSftp sftp) {
         this.sftp = sftp;
     }
 
-    public void beginTransfers(BapSshTransfer transfer) {
+    public void beginTransfers(final BapSshTransfer transfer) {
         if (!transfer.hasConfiguredSourceFiles() && !transfer.hasExecCommand())
             throw new BapPublisherException(Messages.exception_badTransferConfig());
     }
 
-    public boolean changeDirectory(String directory) {    
+    public boolean changeDirectory(final String directory) {    
         try {
             if (!sftp.stat(directory).isDir()) return false;
         } catch (SftpException sftpe) {
@@ -87,7 +87,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         }
     }
 
-    public boolean makeDirectory(String directory) {
+    public boolean makeDirectory(final String directory) {
         if (hasSubDirs(directory)) return false;
         try {
             buildInfo.printIfVerbose(Messages.console_mkdir(directory));
@@ -100,7 +100,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         }
     }
 
-    public void transferFile(BapSshTransfer bapSshTransfer, FilePath filePath, InputStream inputStream) throws SftpException {
+    public void transferFile(final BapSshTransfer bapSshTransfer, final FilePath filePath, final InputStream inputStream) throws SftpException {
         buildInfo.printIfVerbose(Messages.console_put(filePath.getName()));
         sftp.put(inputStream, filePath.getName());
         success();
@@ -110,16 +110,16 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         buildInfo.printIfVerbose(Messages.console_success());
     }
     
-    private boolean hasSubDirs(String directory) {
+    private boolean hasSubDirs(final String directory) {
         return directory.contains("/") || directory.contains("\\");
     }
 
-    public void endTransfers(BapSshTransfer transfer) {
+    public void endTransfers(final BapSshTransfer transfer) {
         if (transfer.hasExecCommand())
             exec(transfer);
     }
     
-    private void exec(BapSshTransfer transfer) {
+    private void exec(final BapSshTransfer transfer) {
         ChannelExec exec = null;
         try {
             exec = openExecChannel();
@@ -136,7 +136,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         }
     }
     
-    private void connectExecChannel(ChannelExec exec, String command) {
+    private void connectExecChannel(final ChannelExec exec, final String command) {
         exec.setCommand(command);
         buildInfo.println(Messages.console_exec_connecting(command));
         try {
@@ -159,7 +159,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         }
     }
 
-    public void disconnectExecQuietly(ChannelExec exec) {
+    public void disconnectExecQuietly(final ChannelExec exec) {
         try {
             disconnectExec(exec);
         } catch (Exception e) {
@@ -167,7 +167,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         }
     }
     
-    private void disconnectExec(ChannelExec exec) {
+    private void disconnectExec(final ChannelExec exec) {
         if (exec == null) return; 
         if (exec.isConnected())
             exec.disconnect();
@@ -203,7 +203,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         }
     }
     
-    private void waitForExec(final ChannelExec exec, long timeout) {
+    private void waitForExec(final ChannelExec exec, final long timeout) {
         long start = System.currentTimeMillis();
         Thread waiter = new Thread() { public void run() {
                 try {

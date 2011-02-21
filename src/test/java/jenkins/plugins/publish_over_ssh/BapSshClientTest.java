@@ -105,7 +105,7 @@ public class BapSshClientTest {
         assertChangeDirectory(false, DIRECTORY_PATH);
     }
 
-    private void assertChangeDirectory(boolean expectedReturn, String directory) {
+    private void assertChangeDirectory(final boolean expectedReturn, final String directory) {
         mockControl.replay();
         assertEquals(expectedReturn, bapSshClient.changeDirectory(directory));
         mockControl.verify();
@@ -141,7 +141,7 @@ public class BapSshClientTest {
         assertMakeDirectory(false, DIRECTORY);
     }
     
-    private void assertMakeDirectory(boolean expectedReturn, String directory) {
+    private void assertMakeDirectory(final boolean expectedReturn, final String directory) {
         mockControl.replay();
         assertEquals(expectedReturn, bapSshClient.makeDirectory(directory));
         mockControl.verify();
@@ -195,7 +195,6 @@ public class BapSshClientTest {
         mockControl.verify();
     }
     
-    //    @TODO ensure that we cannot be configured without Source files and exec so that this should never occur if using the GUI
     @Test public void testBeginTransfers_failIfNoSourceFilesAndNoExecCommand() throws Exception {
         try {
             bapSshClient.beginTransfers(new BapSshTransfer("", "", "", false, false, "", 10000));
@@ -256,33 +255,51 @@ public class BapSshClientTest {
         exec.assertMethodsCalled();
     }
     
-    public class TestExec extends ChannelExec {
+    @Test public void testEndTransfers_doesNothingIfNoExecCommand() throws Exception {
+        mockControl.replay();
+        bapSshClient.endTransfers(new BapSshTransfer("*.java", "", "", false, false, "", 10000));
+        mockControl.verify();
+    }    
+    
+    public static class TestExec extends ChannelExec {
         String expectedCommand;
         int expectedTimeout;
         int exitStatus;
         int pollsBeforeClosed;
         boolean setCommandCalled, connectCalled;
-        public TestExec(String expectedCommand, int expectedConnectTimeout, int exitStatus, int pollsBeforeClosed) {
+        public TestExec(final String expectedCommand, final int expectedConnectTimeout, final int exitStatus, final int pollsBeforeClosed) {
             this.expectedCommand = expectedCommand;
             this.expectedTimeout = expectedConnectTimeout;
             this.exitStatus = exitStatus;
             this.pollsBeforeClosed = pollsBeforeClosed;
         }
-        public boolean isConnected() {return false;}
-        public synchronized boolean isClosed() {return --pollsBeforeClosed < 0;}
-        public void setInputStream(InputStream is) {}
-        public void setOutputStream(OutputStream os, boolean dontClose) {assertTrue(dontClose);}
-        public void setErrStream(OutputStream os, boolean dontClose) {assertTrue(dontClose);}
-        public void setCommand(String command) {setCommandCalled = true; assertEquals(expectedCommand, command);}
-        public void connect(int timeout) {connectCalled = true; assertEquals(expectedTimeout, timeout);}
-        public int getExitStatus() {return exitStatus;}
-        public void assertMethodsCalled() {if (!setCommandCalled || !connectCalled) fail();}
-    }
-    
-    @Test public void testEndTransfers_doesNothingIfNoExecCommand() throws Exception {
-        mockControl.replay();
-        bapSshClient.endTransfers(new BapSshTransfer("*.java", "", "", false, false, "", 10000));
-        mockControl.verify();
+        public boolean isConnected() {
+            return false;
+        }
+        public synchronized boolean isClosed() {
+            return --pollsBeforeClosed < 0;
+        }
+        public void setInputStream(final InputStream is) { }
+        public void setOutputStream(final OutputStream os, final boolean dontClose) {
+            assertTrue(dontClose);
+        }
+        public void setErrStream(final OutputStream os, final boolean dontClose) {
+            assertTrue(dontClose);
+        }
+        public void setCommand(final String command) {
+            setCommandCalled = true;
+            assertEquals(expectedCommand, command);
+        }
+        public void connect(final int timeout) {
+            connectCalled = true;
+            assertEquals(expectedTimeout, timeout);
+        }
+        public int getExitStatus() {
+            return exitStatus;
+        }
+        public void assertMethodsCalled() {
+            if (!setCommandCalled || !connectCalled) fail();
+        }
     }
     
 }

@@ -58,7 +58,8 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     private BapSshConcreteKeyInfo keyInfo;
     
     @DataBoundConstructor
-	public BapSshHostConfiguration(String name, String hostname, String username, String password, String remoteRootDir, int port, int timeout, boolean overrideKey, String keyPath, String key) {
+	public BapSshHostConfiguration(final String name, final String hostname, final String username, final String password, final String remoteRootDir,
+                                final int port, final int timeout, final boolean overrideKey, final String keyPath, final String key) {
         super(name, hostname, username, null, remoteRootDir, port);
         this.timeout = timeout;
         this.overrideKey = overrideKey;
@@ -73,10 +74,10 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     }
 
     public int getTimeout() { return timeout; }
-    public void setTimeout(int timeout) { this.timeout = timeout; }
+    public void setTimeout(final int timeout) { this.timeout = timeout; }
 
     public String getPassword() { return keyInfo.getPassphrase(); }
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         createKeyInfoIfNotInit();
         keyInfo.setPassphrase(password);
     }
@@ -84,20 +85,20 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     public String getEncryptedPassword() { return keyInfo.getEncryptedPassphrase(); }
     
     public String getKeyPath() {return keyInfo.getKeyPath(); }
-    public void setKeyPath(String keyPath) { keyInfo.setKeyPath(keyPath); }
+    public void setKeyPath(final String keyPath) { keyInfo.setKeyPath(keyPath); }
 
     public String getKey() { return keyInfo.getKey(); }
-    public void setKey(String key) { keyInfo.setKey(key); }
+    public void setKey(final String key) { keyInfo.setKey(key); }
 
     public boolean isOverrideKey() { return overrideKey; }
-    public void setOverrideKey(boolean overrideKey) { this.overrideKey = overrideKey; }
+    public void setOverrideKey(final boolean overrideKey) { this.overrideKey = overrideKey; }
 
     BapSshKeyInfo getEffectiveKeyInfo() {
         return overrideKey ? keyInfo : getCommonConfig();
     }
 
     @Override
-    public BapSshClient createClient(BPBuildInfo buildInfo) {
+    public BapSshClient createClient(final BPBuildInfo buildInfo) {
         JSch ssh = createJSch();
         Session session = createSession(buildInfo, ssh);
         BapSshClient bapClient = new BapSshClient(buildInfo, ssh, session);
@@ -127,7 +128,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         }
     }
     
-    private void setKey(BPBuildInfo buildInfo, JSch ssh, BapSshKeyInfo keyInfo) {
+    private void setKey(final BPBuildInfo buildInfo, final JSch ssh, final BapSshKeyInfo keyInfo) {
         try {
             ssh.addIdentity("TheKey", keyInfo.getEffectiveKey(buildInfo), null, BapSshUtil.toBytes(keyInfo.getPassphrase()));
         } catch (JSchException jsche) {
@@ -135,7 +136,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         }
     }
     
-    private void setRootDirectoryInClient(BapSshClient client, ChannelSftp sftp) throws IOException {
+    private void setRootDirectoryInClient(final BapSshClient client, final ChannelSftp sftp) throws IOException {
         if (isDirectoryAbsolute(getRemoteRootDir())) {
             client.setAbsoluteRemoteRoot(getRemoteRootDir());
         } else {
@@ -143,7 +144,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         }
     }
     
-    private String getRootDirectoryFromPwd(BapSshClient client, ChannelSftp sftp) {
+    private String getRootDirectoryFromPwd(final BapSshClient client, final ChannelSftp sftp) {
         BPBuildInfo buildInfo = client.getBuildInfo();
         buildInfo.printIfVerbose(Messages.console_usingPwd());
         try {
@@ -156,7 +157,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         }
     }
     
-    private void connectSftpChannel(BPBuildInfo buildInfo, ChannelSftp channel) {
+    private void connectSftpChannel(final BPBuildInfo buildInfo, final ChannelSftp channel) {
         buildInfo.printIfVerbose(Messages.console_sftp_connecting());
         try {
             channel.connect(getTimeout());
@@ -167,7 +168,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         
     }
     
-    private ChannelSftp openSftpChannel(BPBuildInfo buildInfo, Session session) {
+    private ChannelSftp openSftpChannel(final BPBuildInfo buildInfo, final Session session) {
         buildInfo.printIfVerbose(Messages.console_sftp_opening());
         ChannelSftp sftp;
         try {
@@ -185,7 +186,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         return props;
     }
     
-    private void connect(BPBuildInfo buildInfo, Session session) {
+    private void connect(final BPBuildInfo buildInfo, final Session session) {
         buildInfo.printIfVerbose(Messages.console_session_connecting());
         try {
             session.connect(getTimeout());
@@ -195,7 +196,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         buildInfo.printIfVerbose(Messages.console_session_connected());
     }
 
-    private Session createSession(BPBuildInfo buildInfo, JSch ssh) {
+    private Session createSession(final BPBuildInfo buildInfo, final JSch ssh) {
         try {
             buildInfo.printIfVerbose(Messages.console_session_creating(getUsername(), getHostname(), getPort()));
             return ssh.getSession(getUsername(), getHostname(), getPort());
@@ -208,7 +209,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         return new JSch();
     }
 
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BapSshHostConfiguration that = (BapSshHostConfiguration) o;

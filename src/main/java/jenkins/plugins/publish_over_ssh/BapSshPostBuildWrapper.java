@@ -45,11 +45,11 @@ public class BapSshPostBuildWrapper extends BuildWrapper {
     BapSshAlwaysRunPublisherPlugin postBuild;
     
     @DataBoundConstructor
-    public BapSshPostBuildWrapper(List<BapSshPublisher> publishers, boolean continueOnError, boolean failOnError, boolean alwaysPublishFromMaster, String masterNodeName) {
+    public BapSshPostBuildWrapper(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName) {
         postBuild = new BapSshAlwaysRunPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
 
-    public Environment setUp(AbstractBuild build, final Launcher launcher, final BuildListener listener) throws IOException, InterruptedException {
+    public Environment setUp(final AbstractBuild build, final Launcher launcher, final BuildListener listener) throws IOException, InterruptedException {
         Environment runPostBuild = new Environment() {
             public boolean tearDown(AbstractBuild build, BuildListener listener) throws IOException, InterruptedException {
                 return postBuild.perform(build, listener);
@@ -63,7 +63,7 @@ public class BapSshPostBuildWrapper extends BuildWrapper {
     }
     
     public static class Descriptor extends BuildWrapperDescriptor {
-        public boolean isApplicable(AbstractProject<?, ?> abstractProject) {
+        public boolean isApplicable(final AbstractProject<?, ?> abstractProject) {
             return true;
         }
         public String getDisplayName() {

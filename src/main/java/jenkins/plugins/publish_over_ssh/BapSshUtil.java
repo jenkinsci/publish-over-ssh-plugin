@@ -30,7 +30,7 @@ import java.io.UnsupportedEncodingException;
 
 public class BapSshUtil {
     
-    public static byte[] toBytes(String string) {
+    public static byte[] toBytes(final String string) {
         if (string == null)
             return null;
         try {

@@ -37,15 +37,15 @@ public class RandomFile {
     private File file;
     private byte[] contents;
 
-    public RandomFile(File directory, String filename) {
+    public RandomFile(final File directory, final String filename) {
         this(new File(directory, filename));
     }
 
-    public RandomFile(File file) {
+    public RandomFile(final File file) {
         this(file, 200);
     }
 
-    public RandomFile(File file, int size) {
+    public RandomFile(final File file, final int size) {
         this.file = file;
 
         contents = new byte[size];

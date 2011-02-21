@@ -33,11 +33,11 @@ public class BapSshCommonConfiguration extends BapSshConcreteKeyInfo {
     public BapSshCommonConfiguration() {}
     
     @DataBoundConstructor
-    public BapSshCommonConfiguration(String passphrase, String key, String keyPath) {
+    public BapSshCommonConfiguration(final String passphrase, final String key, final String keyPath) {
         super(passphrase, key, keyPath);
     }
 
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BapSshCommonConfiguration that = (BapSshCommonConfiguration) o;

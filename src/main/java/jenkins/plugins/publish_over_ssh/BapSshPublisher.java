@@ -34,16 +34,16 @@ import java.util.List;
 
 public class BapSshPublisher extends BapPublisher<BapSshTransfer> {
     
-    public BapSshPublisher(String configName, boolean verbose, List<BapSshTransfer> transfers) {
+    public BapSshPublisher(final String configName, final boolean verbose, final List<BapSshTransfer> transfers) {
         this(configName, verbose, transfers, false, false);
     }
     
     @DataBoundConstructor
-    public BapSshPublisher(String configName, boolean verbose, List<BapSshTransfer> transfers, boolean useWorkspaceInPromotion, boolean usePromotionTimestamp) {
+    public BapSshPublisher(final String configName, final boolean verbose, final List<BapSshTransfer> transfers, final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp) {
         super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp);
     }
     
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         
