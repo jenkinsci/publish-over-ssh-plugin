@@ -29,11 +29,11 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 public class BapSshCommonConfiguration extends BapSshConcreteKeyInfo {
-    
+
     static final long serialVersionUID = 1L;    
-    
+
     public BapSshCommonConfiguration() { }
-    
+
     @DataBoundConstructor
     public BapSshCommonConfiguration(final String passphrase, final String key, final String keyPath) {
         super(passphrase, key, keyPath);
@@ -50,7 +50,7 @@ public class BapSshCommonConfiguration extends BapSshConcreteKeyInfo {
     public int hashCode() {
         return createHashCodeBuilder().toHashCode();
     }
-    
+
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }

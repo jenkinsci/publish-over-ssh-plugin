@@ -41,15 +41,16 @@ import java.io.IOException;
 import java.util.List;
 
 public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClient, BapSshCommonConfiguration> {
-    
+
     @Extension
     public static final Descriptor DESCRIPTOR = new Descriptor();
 
     @DataBoundConstructor
-    public BapSshPublisherPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName) {
+    public BapSshPublisherPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
+                                 final boolean alwaysPublishFromMaster, final String masterNodeName) {
         super(Messages.console_message_prefix(), publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
-    
+
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -60,7 +61,7 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
     public int hashCode() {
         return createHashCodeBuilder().toHashCode();
     }
-    
+
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
@@ -68,7 +69,7 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
     public BapSshHostConfiguration getConfiguration(final String name) {
         return DESCRIPTOR.getConfiguration(name);
     }
-    
+
     public static class Descriptor extends BPPluginDescriptor<BapSshHostConfiguration, BapSshCommonConfiguration> {
         public Descriptor() {
             super(new DescriptorMessages(), BapSshPublisherPlugin.class, BapSshHostConfiguration.class, BapSshCommonConfiguration.class);
@@ -77,7 +78,8 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
             return !BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
         }
         public FormValidation doCheckKeyPath(@QueryParameter final String value) {
-            if (false && Hudson.getVersion().isNewerThan(new VersionNumber("x.xxx"))) {
+            //@todo confirm version number then enable
+            if (false && Hudson.getVersion().isNewerThan(new VersionNumber("1.399"))) {
                 try {
                     return Hudson.getInstance().getRootPath().validateRelativePath(value, true, true);
                 } catch (IOException ioe) {
@@ -109,7 +111,7 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
             return this;
         }
     }
-    
+
     public static class DescriptorMessages implements BPPluginDescriptor.BPDescriptorMessages {
         public String displayName() {
             return Messages.descriptor_displayName();
@@ -121,5 +123,5 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
             return Messages.descriptor_testConnection_error();
         }
     }
-    
+
 }

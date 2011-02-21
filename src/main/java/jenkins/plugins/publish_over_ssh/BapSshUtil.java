@@ -29,7 +29,7 @@ import jenkins.plugins.publish_over.BapPublisherException;
 import java.io.UnsupportedEncodingException;
 
 public class BapSshUtil {
-    
+
     public static byte[] toBytes(final String string) {
         if (string == null)
             return null;
@@ -39,5 +39,5 @@ public class BapSshUtil {
             throw new BapPublisherException("Really? Really? You don't know what UTF-8 is? Really? ...", uee);
         }
     }
-    
+
 }

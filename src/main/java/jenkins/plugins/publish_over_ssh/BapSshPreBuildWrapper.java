@@ -38,26 +38,28 @@ import java.io.IOException;
 import java.util.List;
 
 public class BapSshPreBuildWrapper extends BuildWrapper {
-    
+
     @Extension(ordinal = 11)
     public static final Descriptor DESCRIPTOR = new Descriptor();
-    
-    BapSshAlwaysRunPublisherPlugin preBuild;
-    
+
+    private BapSshAlwaysRunPublisherPlugin preBuild;
+
     @DataBoundConstructor
-    public BapSshPreBuildWrapper(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName) {
+    public BapSshPreBuildWrapper(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
+                                 final boolean alwaysPublishFromMaster, final String masterNodeName) {
         preBuild = new BapSshAlwaysRunPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
 
     @Override
-    public Environment setUp(final AbstractBuild build, final Launcher launcher, final BuildListener listener) throws IOException, InterruptedException {
-        return preBuild.perform(build, launcher, listener) ? new Environment(){} : null;
+    public Environment setUp(final AbstractBuild build, final Launcher launcher, final BuildListener listener)
+                    throws IOException, InterruptedException {
+        return preBuild.perform(build, launcher, listener) ? new Environment() { } : null;
     }
-    
+
     public BPInstanceConfig getInstanceConfig() {
         return preBuild.getInstanceConfig();
     }
-    
+
     public static class Descriptor extends BuildWrapperDescriptor {
         public boolean isApplicable(final AbstractProject<?, ?> abstractProject) {
             return true;
@@ -72,4 +74,5 @@ public class BapSshPreBuildWrapper extends BuildWrapper {
             return BapSshPublisherPlugin.DESCRIPTOR;
         }
     }
+
 }

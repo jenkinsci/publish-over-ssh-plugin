@@ -38,18 +38,20 @@ import java.io.IOException;
 import java.util.List;
 
 public class BapSshPostBuildWrapper extends BuildWrapper {
-    
+
     @Extension(ordinal = 10)
     public static final Descriptor DESCRIPTOR = new Descriptor();
     
-    BapSshAlwaysRunPublisherPlugin postBuild;
-    
+    private BapSshAlwaysRunPublisherPlugin postBuild;
+
     @DataBoundConstructor
-    public BapSshPostBuildWrapper(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName) {
+    public BapSshPostBuildWrapper(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
+                                  final boolean alwaysPublishFromMaster, final String masterNodeName) {
         postBuild = new BapSshAlwaysRunPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
 
-    public Environment setUp(final AbstractBuild build, final Launcher launcher, final BuildListener listener) throws IOException, InterruptedException {
+    public Environment setUp(final AbstractBuild build, final Launcher launcher, final BuildListener listener)
+                    throws IOException, InterruptedException {
         Environment runPostBuild = new Environment() {
             public boolean tearDown(AbstractBuild build, BuildListener listener) throws IOException, InterruptedException {
                 return postBuild.perform(build, listener);
@@ -57,11 +59,11 @@ public class BapSshPostBuildWrapper extends BuildWrapper {
         };
         return runPostBuild;
     }
-    
+
     public BPInstanceConfig getInstanceConfig() {
         return postBuild.getInstanceConfig();
     }
-    
+
     public static class Descriptor extends BuildWrapperDescriptor {
         public boolean isApplicable(final AbstractProject<?, ?> abstractProject) {
             return true;
@@ -76,4 +78,5 @@ public class BapSshPostBuildWrapper extends BuildWrapper {
             return BapSshPublisherPlugin.DESCRIPTOR;
         }
     }
+
 }

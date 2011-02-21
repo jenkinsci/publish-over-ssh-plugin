@@ -36,16 +36,16 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import java.io.Serializable;
 
 public class BapSshConcreteKeyInfo implements Serializable, BapSshKeyInfo {
-    
+
     static final long serialVersionUID = 1L;    
-    
+
     private String passphrase;
     private Secret secretPassphrase;
     private String key;
     private String keyPath;
 
     public BapSshConcreteKeyInfo() { }
-    
+
     @DataBoundConstructor
     public BapSshConcreteKeyInfo(final String passphrase, final String key, final String keyPath) {
         setPassphrase(passphrase);
@@ -55,7 +55,7 @@ public class BapSshConcreteKeyInfo implements Serializable, BapSshKeyInfo {
 
     public String getPassphrase() { return Secret.toString(secretPassphrase); }
     public void setPassphrase(final String passphrase) { secretPassphrase = Secret.fromString(passphrase); }
-    
+
     public String getEncryptedPassphrase() {
         return (secretPassphrase == null) ? null : secretPassphrase.getEncryptedValue();
     }
@@ -65,7 +65,7 @@ public class BapSshConcreteKeyInfo implements Serializable, BapSshKeyInfo {
 
     public String getKeyPath() { return keyPath; }
     public void setKeyPath(final String keyPath) { this.keyPath = keyPath; }
-    
+
     public byte[] getEffectiveKey(final BPBuildInfo buildInfo) {
         if (hasKey())
             return BapSshUtil.toBytes(key);
@@ -75,15 +75,15 @@ public class BapSshConcreteKeyInfo implements Serializable, BapSshKeyInfo {
     public boolean useKey() {
         return hasKey() || hasKeyPath();
     }
-    
+
     private boolean hasKey() {
         return Util.fixEmptyAndTrim(key) != null;
     }
-    
+
     private boolean hasKeyPath() {
         return Util.fixEmptyAndTrim(keyPath) != null;
     }
-    
+
     protected HashCodeBuilder createHashCodeBuilder() {
         return addToHashCode(new HashCodeBuilder());
     }
@@ -93,38 +93,38 @@ public class BapSshConcreteKeyInfo implements Serializable, BapSshKeyInfo {
             .append(key)
             .append(keyPath);
     }
-    
+
     protected EqualsBuilder createEqualsBuilder(final BapSshConcreteKeyInfo that) {
         return addToEquals(new EqualsBuilder(), that);
     }
-    
+
     protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshConcreteKeyInfo that) {
         return builder.append(secretPassphrase, that.secretPassphrase)
             .append(key, that.key)
             .append(keyPath, that.keyPath);
     }
-    
+
     protected ToStringBuilder addToToString(final ToStringBuilder builder) {
         return builder.append("passphrase", "***")
             .append("key", "***")
             .append("keyPath", keyPath);
     }
-    
+
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        
+
         return createEqualsBuilder((BapSshConcreteKeyInfo) o).isEquals();
     }
 
     public int hashCode() {
         return createHashCodeBuilder().toHashCode();
     }
-    
+
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
-    
+
     public Object readResolve() {
         if (passphrase != null)
             setPassphrase(passphrase);

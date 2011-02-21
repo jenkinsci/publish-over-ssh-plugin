@@ -34,25 +34,26 @@ public class BapSshTransfer extends BPTransfer {
 
     static final long serialVersionUID = 1L;
     public static final int DEFAULT_EXEC_TIMEOUT = 120000;
-    
+
     public static int getDefaultExecTimeout() { return DEFAULT_EXEC_TIMEOUT; }
     
     private String execCommand;
     private int execTimeout;
-    
+
     @DataBoundConstructor
-    public BapSshTransfer(final String sourceFiles, final String remoteDirectory, final String removePrefix, final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout) {
+    public BapSshTransfer(final String sourceFiles, final String remoteDirectory, final String removePrefix,
+                          final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout) {
         super(sourceFiles, remoteDirectory, removePrefix, remoteDirectorySDF, flatten);
         this.execCommand = execCommand;
         this.execTimeout = execTimeout;
     }
-    
+
     public String getExecCommand() { return execCommand; }
     public void setExecCommand(final String execCommand) { this.execCommand = execCommand; }
 
     public int getExecTimeout() { return execTimeout; }
     public void setExecTimeout(final int execTimeout) { this.execTimeout = execTimeout; }
-    
+
     public boolean hasExecCommand() {
         return Util.fixEmptyAndTrim(getExecCommand()) != null;
     }
@@ -74,7 +75,7 @@ public class BapSshTransfer extends BPTransfer {
             .append(execTimeout)
             .toHashCode();
     }
-    
+
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE))
             .append(execCommand)

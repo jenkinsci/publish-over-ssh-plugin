@@ -33,32 +33,32 @@ import java.util.List;
 
 
 public class BapSshPublisher extends BapPublisher<BapSshTransfer> {
-    
+
     static final long serialVersionUID = 1L;    
-    
+
     public BapSshPublisher(final String configName, final boolean verbose, final List<BapSshTransfer> transfers) {
         this(configName, verbose, transfers, false, false);
     }
-    
+
     @DataBoundConstructor
-    public BapSshPublisher(final String configName, final boolean verbose, final List<BapSshTransfer> transfers, final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp) {
+    public BapSshPublisher(final String configName, final boolean verbose, final List<BapSshTransfer> transfers,
+                           final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp) {
         super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp);
     }
-    
+
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        
+
         return createEqualsBuilder((BapSshPublisher) o).isEquals();
     }
 
     public int hashCode() {
         return createHashCodeBuilder().toHashCode();
     }
-    
+
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
-    
-    
+
 }

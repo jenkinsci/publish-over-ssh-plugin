@@ -48,16 +48,18 @@ public class BapSshPromotionPublisherPlugin extends Notifier {
 
     @Extension
     public static final Descriptor DESCRIPTOR = new Descriptor();
-    
+
     private BapSshPublisherPlugin delegate;
-    
+
     @DataBoundConstructor
-    public BapSshPromotionPublisherPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName) {
+    public BapSshPromotionPublisherPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
+                                          final boolean alwaysPublishFromMaster, final String masterNodeName) {
         this.delegate = new BapSshPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
 
     @Override
-    public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener) throws InterruptedException, IOException {
+    public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener)
+                    throws InterruptedException, IOException {
         return delegate.perform(build, launcher, listener);
     }
 
@@ -72,38 +74,38 @@ public class BapSshPromotionPublisherPlugin extends Notifier {
     protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
         return builder.append(delegate);
     }
-    
+
     protected EqualsBuilder createEqualsBuilder(final BapSshPromotionPublisherPlugin that) {
         return addToEquals(new EqualsBuilder(), that);
     }
-    
+
     protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshPromotionPublisherPlugin that) {
         return builder.append(delegate, that.delegate);
     }
-    
+
     protected ToStringBuilder addToToString(final ToStringBuilder builder) {
         return builder.append("delegate", delegate);
     }
-    
+
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        
+
         return createEqualsBuilder((BapSshPromotionPublisherPlugin) o).isEquals();
     }
 
     public int hashCode() {
         return createHashCodeBuilder().toHashCode();
     }
-    
+
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
-    
+
     public BPInstanceConfig getInstanceConfig() {
         return delegate.getInstanceConfig();
     }
-    
+
     public static class Descriptor extends BuildStepDescriptor<Publisher> {
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
             return BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());

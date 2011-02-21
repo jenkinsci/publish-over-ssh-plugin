@@ -27,10 +27,10 @@ package jenkins.plugins.publish_over_ssh;
 import jenkins.plugins.publish_over.BPBuildInfo;
 
 public interface BapSshKeyInfo {
-   
+
     String getPassphrase();
-    public String getEncryptedPassphrase();    
+    String getEncryptedPassphrase();    
     byte[] getEffectiveKey(BPBuildInfo buildInfo);
     boolean useKey();
-    
+
 }

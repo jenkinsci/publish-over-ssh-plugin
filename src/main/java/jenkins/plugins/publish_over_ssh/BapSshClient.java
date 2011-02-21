@@ -40,9 +40,9 @@ import org.apache.commons.logging.LogFactory;
 import java.io.InputStream;
 
 public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
-    
-    private static Log LOG = LogFactory.getLog(BapSshClient.class);
-    
+
+    private static final transient Log LOG = LogFactory.getLog(BapSshClient.class);
+
     private BPBuildInfo buildInfo;
     private Session session;
     private ChannelSftp sftp;
@@ -51,7 +51,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         this.buildInfo = buildInfo;
         this.session = session;
     }
-    
+
     public BPBuildInfo getBuildInfo() {
         return buildInfo;
     }
@@ -97,16 +97,17 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         }
     }
 
-    public void transferFile(final BapSshTransfer bapSshTransfer, final FilePath filePath, final InputStream inputStream) throws SftpException {
+    public void transferFile(final BapSshTransfer bapSshTransfer, final FilePath filePath,
+                             final InputStream inputStream) throws SftpException {
         buildInfo.printIfVerbose(Messages.console_put(filePath.getName()));
         sftp.put(inputStream, filePath.getName());
         success();
     }
-    
+
     private void success() {
         buildInfo.printIfVerbose(Messages.console_success());
     }
-    
+
     private boolean hasSubDirs(final String directory) {
         return directory.contains("/") || directory.contains("\\");
     }
@@ -115,7 +116,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         if (transfer.hasExecCommand())
             exec(transfer);
     }
-    
+
     private void exec(final BapSshTransfer transfer) {
         ChannelExec exec = null;
         try {
@@ -132,7 +133,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
             disconnectExecQuietly(exec);
         }
     }
-    
+
     private void connectExecChannel(final ChannelExec exec, final String command) {
         exec.setCommand(command);
         buildInfo.println(Messages.console_exec_connecting(command));
@@ -144,7 +145,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         buildInfo.printIfVerbose(Messages.console_exec_connected());
         
     }
-    
+
     private ChannelExec openExecChannel() {
         buildInfo.printIfVerbose(Messages.console_exec_opening());
         try {
@@ -163,24 +164,24 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
             LOG.warn(Messages.exception_disconnect_exec(e.getLocalizedMessage()));
         }
     }
-    
+
     private void disconnectExec(final ChannelExec exec) {
         if (exec == null) return; 
         if (exec.isConnected())
             exec.disconnect();
     }
-    
+
     public void disconnect() throws Exception {
         disconnectSftp();
         disconnectSession();
     }
-    
+
     private void disconnectSftp() {
         if (sftp == null) return;
         if (sftp.isConnected())
             sftp.disconnect();
     }
-    
+
     private void disconnectSession() {
         if (session == null) return;
         if (session.isConnected())
@@ -199,7 +200,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
             LOG.warn(Messages.exception_disconnect_session(e.getLocalizedMessage()));
         }
     }
-    
+
     private void waitForExec(final ChannelExec exec, final long timeout) {
         long start = System.currentTimeMillis();
         Thread waiter = new ExecCheckThread(exec);
@@ -215,9 +216,11 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
             throw new BapPublisherException(Messages.exception_exec_timeout(duration));
         buildInfo.println(Messages.console_exec_completed(duration));
     }
-    
+
     private static final class ExecCheckThread extends Thread {
+        private static final int POLL_TIME = 200;
         private final ChannelExec exec;
+
         ExecCheckThread(final ChannelExec exec) {
             this.exec = exec;
         }
@@ -225,10 +228,10 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         public void run() {
             try {
                 while (!exec.isClosed()) {
-                    Thread.sleep(200);
+                    Thread.sleep(POLL_TIME);
                 }
             } catch (InterruptedException ie) { }
         }
     }
-    
+
 }
