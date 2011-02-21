@@ -24,77 +24,77 @@
   -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.jvnet.hudson.plugins</groupId>
-		<artifactId>plugin</artifactId>
-		<version>1.388</version>
-	</parent>
+    <parent>
+        <groupId>org.jvnet.hudson.plugins</groupId>
+        <artifactId>plugin</artifactId>
+        <version>1.388</version>
+    </parent>
 
-	<artifactId>publish-over-ssh</artifactId>
-	<packaging>hpi</packaging>
-	<name>Publish Over SSH</name>
-	<version>0.6-SNAPSHOT</version>
-	<description>Send build artifacts over SSH</description>
-	<url>http://wiki.jenkins-ci.org/display/JENKINS/Publish+Over+SSH+Plugin</url> 
+    <artifactId>publish-over-ssh</artifactId>
+    <packaging>hpi</packaging>
+    <name>Publish Over SSH</name>
+    <version>0.6-SNAPSHOT</version>
+    <description>Send build artifacts over SSH</description>
+    <url>http://wiki.jenkins-ci.org/display/JENKINS/Publish+Over+SSH+Plugin</url> 
 
     <properties>
         <java.net.id>bap</java.net.id>                
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     
-	<licenses>
-		<license>
-			<name>The MIT license</name>
-			<comments>All source code is under the MIT license.</comments>
-		</license>
-	</licenses>
+    <licenses>
+        <license>
+            <name>The MIT license</name>
+            <comments>All source code is under the MIT license.</comments>
+        </license>
+    </licenses>
 
-	<developers>
-		<developer>
-			<id>bap</id>
-			<name>Bap</name>
+    <developers>
+        <developer>
+            <id>bap</id>
+            <name>Bap</name>
             <email>bap-jenkins@BapIT.co.uk</email>
-		</developer>
-	</developers>
+        </developer>
+    </developers>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.jcraft</groupId>
-			<artifactId>jsch</artifactId>
-			<version>0.1.44</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jenkins-ci.plugins</groupId>
-			<artifactId>publish-over</artifactId>
-			<version>0.5-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8.1</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<version>1.8.5</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-			<version>2.4</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymockclassextension</artifactId>
-			<version>2.4</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.44</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>publish-over</artifactId>
+            <version>0.5-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.8.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>2.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymockclassextension</artifactId>
+            <version>2.4</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <scm>
         <url>https://github.com/jenkinsci/publish-over-ftp-plugin</url>
@@ -114,19 +114,19 @@
         </repository>
     </distributionManagement>
         
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.jvnet.hudson.tools</groupId>
-				<artifactId>maven-hpi-plugin</artifactId>
-				<version>1.42</version>
-				<extensions>true</extensions>
-				<configuration>
-					<compatibleSinceVersion>0.3</compatibleSinceVersion>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jvnet.hudson.tools</groupId>
+                <artifactId>maven-hpi-plugin</artifactId>
+                <version>1.42</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <compatibleSinceVersion>0.3</compatibleSinceVersion>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     
     <repositories>
         <repository>

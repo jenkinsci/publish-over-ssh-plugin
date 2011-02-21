@@ -52,14 +52,14 @@ public class BapSshPromotionPublisherPlugin extends Notifier {
     private BapSshPublisherPlugin delegate;
     
     @DataBoundConstructor
-	public BapSshPromotionPublisherPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName) {
-		this.delegate = new BapSshPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
+    public BapSshPromotionPublisherPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName) {
+        this.delegate = new BapSshPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
 
-	@Override
-	public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener) throws InterruptedException, IOException {
+    @Override
+    public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener) throws InterruptedException, IOException {
         return delegate.perform(build, launcher, listener);
-	}
+    }
 
     public BuildStepMonitor getRequiredMonitorService() {
         return delegate.getRequiredMonitorService();

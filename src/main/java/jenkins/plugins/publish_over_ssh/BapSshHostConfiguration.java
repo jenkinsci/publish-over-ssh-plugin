@@ -58,7 +58,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     private BapSshConcreteKeyInfo keyInfo;
     
     @DataBoundConstructor
-	public BapSshHostConfiguration(final String name, final String hostname, final String username, final String password, final String remoteRootDir,
+    public BapSshHostConfiguration(final String name, final String hostname, final String username, final String password, final String remoteRootDir,
                                 final int port, final int timeout, final boolean overrideKey, final String keyPath, final String key) {
         super(name, hostname, username, null, remoteRootDir, port);
         this.timeout = timeout;

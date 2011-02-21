@@ -46,7 +46,7 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
     public static final Descriptor DESCRIPTOR = new Descriptor();
 
     @DataBoundConstructor
-	public BapSshPublisherPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName) {
+    public BapSshPublisherPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName) {
         super(Messages.console_message_prefix(), publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
     
@@ -66,8 +66,8 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
     }
 
     public BapSshHostConfiguration getConfiguration(final String name) {
-		return DESCRIPTOR.getConfiguration(name);
-	}
+        return DESCRIPTOR.getConfiguration(name);
+    }
     
     public static class Descriptor extends BPPluginDescriptor<BapSshHostConfiguration, BapSshCommonConfiguration> {
         public Descriptor() {

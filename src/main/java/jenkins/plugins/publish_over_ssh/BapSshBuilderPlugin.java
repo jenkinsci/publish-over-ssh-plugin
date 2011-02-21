@@ -49,14 +49,14 @@ public class BapSshBuilderPlugin extends Builder {
     private BapSshPublisherPlugin delegate;
     
     @DataBoundConstructor
-	public BapSshBuilderPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName) {
-		this.delegate = new BapSshPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
+    public BapSshBuilderPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName) {
+        this.delegate = new BapSshPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
 
-	@Override
-	public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener) throws InterruptedException, IOException {
+    @Override
+    public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener) throws InterruptedException, IOException {
         return delegate.perform(build, launcher, listener);
-	}
+    }
     
     protected HashCodeBuilder createHashCodeBuilder() {
         return addToHashCode(new HashCodeBuilder());
