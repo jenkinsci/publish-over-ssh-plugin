@@ -43,16 +43,16 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class BapSshTestHelper {
-    
+
 
     public static BPBuildEnv createEmptyBuildEnv() {
         return new BPBuildEnv(new LinkedHashMap<String, String>(), new FilePath(new File("")), Calendar.getInstance());
     }
-    
+
     public static BPBuildInfo createEmpty() {
         return createEmpty(true);
     }
-    
+
     public static BPBuildInfo createEmpty(final boolean setEffectiveEnvironment) {
         BPBuildInfo buildInfo = new BPBuildInfo(TaskListener.NULL, "", new FilePath(new File("")), createEmptyBuildEnv(), null);
         if (setEffectiveEnvironment) {
@@ -62,22 +62,22 @@ public class BapSshTestHelper {
         }
         return buildInfo;
     }
-        
-    
+
+
     private IMocksControl mockControl;
     private ChannelSftp mockSftp;
-    
+
     public BapSshTestHelper(final IMocksControl mockControl, final ChannelSftp mockSftp) {
         this.mockControl = mockControl;
         this.mockSftp = mockSftp;
     }
-    
+
     public void expectDirectoryCheck(final String directory, final boolean isDirectory) throws SftpException {
         SftpATTRS mockAttrs = mockControl.createMock(SftpATTRS.class);
         expect(mockSftp.stat(directory)).andReturn(mockAttrs);
         expect(mockAttrs.isDir()).andReturn(isDirectory);
     }
-    
+
     public void assertBPE(final String message, final Runnable toExec) {
         mockControl.replay();
         try {
@@ -88,5 +88,5 @@ public class BapSshTestHelper {
         }
         mockControl.verify();
     }
-    
+
 }

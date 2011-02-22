@@ -40,7 +40,7 @@ import java.util.List;
 import static org.junit.Assert.assertArrayEquals;
 
 public class LegacyConfigurationTest extends HudsonTestCase {
-    
+
     @LocalData
     public void testLoad_0_1_minimal() throws Exception {
         List<BapSshHostConfiguration> configurations = BapSshPublisherPlugin.DESCRIPTOR.getHostConfigurations();
@@ -56,7 +56,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         BapSshPublisherPlugin expectedPlugin = new BapSshPublisherPlugin(publishers, false, false, false, "");
         assertEquals(expectedPlugin, getConfiguredPlugin());
     }
-    
+
     @LocalData
     public void testLoad_0_1() throws Exception {
         BapSshHostConfiguration[] expectedConfig = new BapSshHostConfiguration[] {
@@ -73,7 +73,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         assertEquals(expectedConfig.length, BapSshPublisherPlugin.DESCRIPTOR.getHostConfigurations().size());
         BapSshHostConfiguration[] actualHostConfigurations = BapSshPublisherPlugin.DESCRIPTOR.getHostConfigurations().toArray(new BapSshHostConfiguration[expectedConfig.length]);
         assertArrayEquals(expectedConfig, actualHostConfigurations);
-        
+
         BapSshTransfer transfer11 = new BapSshTransfer("", "", "", false, false, "date", 120000);
         BapSshTransfer transfer12 = new BapSshTransfer("target/*.jar", "'builds/'yyyy_MM_dd/'build-${BUILD_NUMBER}'", "target", true, true, "ls -la /tmp", 15000);
         List<BapSshTransfer> transfers1 = new LinkedList<BapSshTransfer>();
@@ -90,7 +90,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         BapSshPublisherPlugin expectedPlugin = new BapSshPublisherPlugin(publishers, true, true, true, "essien");
         assertEquals(expectedPlugin, getConfiguredPlugin());
     }
-    
+
     private String commonKey =
         "-----BEGIN RSA PRIVATE KEY-----\n" +
             "Proc-Type: 4,ENCRYPTED\n" +
@@ -136,7 +136,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
             "HDo8xcZZP8/VOhWx9vJRSD7Q68W9kIcrJqA9c+Al0hrEkuBDFkymlgIVALIwRRoV\n" +
             "4xWDtv+JzBP0SclOU6Fz\n" +
             "-----END DSA PRIVATE KEY-----\n";
-    
+
     private BapSshPublisherPlugin getConfiguredPlugin() {
         for (Project project : hudson.getProjects()) {
             if (project.getPublisher(BapSshPublisherPlugin.DESCRIPTOR) != null)

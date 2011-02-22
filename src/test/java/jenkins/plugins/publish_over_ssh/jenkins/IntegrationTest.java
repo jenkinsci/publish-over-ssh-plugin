@@ -52,9 +52,9 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 public class IntegrationTest extends HudsonTestCase {
-    
-//    @TODO test that we get the expected result when in a promotion     
-    
+
+//    @TODO test that we get the expected result when in a promotion
+
     public void testIntegration() throws Exception {
         final JSch mockJsch = mock(JSch.class);
         Session mockSession = mock(Session.class);
@@ -86,15 +86,15 @@ public class IntegrationTest extends HudsonTestCase {
                 return true;
             }
         });
-        
+
         when(mockJsch.getSession(testHostConfig.getUsername(), testHostConfig.getHostname(), testHostConfig.getPort())).thenReturn(mockSession);
         when(mockSession.openChannel("sftp")).thenReturn(mockSftp);
         SftpATTRS mockAttrs = mock(SftpATTRS.class);
         when(mockAttrs.isDir()).thenReturn(true);
         when(mockSftp.stat(anyString())).thenReturn(mockAttrs);
-        
+
         assertBuildStatusSuccess(project.scheduleBuild2(0).get());
-        
+
         verify(mockJsch).addIdentity("TheKey", BapSshUtil.toBytes("key"), null, BapSshUtil.toBytes("passphrase"));
         verify(mockSession).connect(3000);
         verify(mockSftp).connect(3000);
@@ -102,5 +102,5 @@ public class IntegrationTest extends HudsonTestCase {
         verify(mockSftp).cd("build-dir");
         verify(mockSftp).put((InputStream)anyObject(), eq(buildFileName));
     }
-    
+
 }

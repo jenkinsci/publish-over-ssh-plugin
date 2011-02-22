@@ -29,18 +29,18 @@ import org.easymock.IArgumentMatcher;
 import org.easymock.classextension.EasyMock;
 
 public class UserInfoPasswordMatcher implements IArgumentMatcher {
-    
+
     public static UserInfo uiPassword(final String password) {
         EasyMock.reportMatcher(new UserInfoPasswordMatcher(password));
         return null;
     }
-     
+
     private String expectedPassword;
 
     public UserInfoPasswordMatcher(final String expectedPassword) {
         this.expectedPassword = expectedPassword;
     }
-    
+
     public boolean matches(final Object actual) {
         if (!(actual instanceof UserInfo)) {
             return false;

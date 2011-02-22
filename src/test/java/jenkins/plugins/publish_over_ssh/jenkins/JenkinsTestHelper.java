@@ -33,7 +33,7 @@ import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import java.lang.reflect.Field;
 
 public class JenkinsTestHelper {
-    
+
     public void setGlobalConfig(final BapSshCommonConfiguration commonConfig, final BapSshHostConfiguration... newHostConfigurations) throws Exception {
         for (BapSshHostConfiguration hostConfig : newHostConfigurations) {
             hostConfig.setCommonConfig(commonConfig);
@@ -42,11 +42,11 @@ public class JenkinsTestHelper {
         hostConfigurations.replaceBy(newHostConfigurations);
         BapSshPublisherPlugin.DESCRIPTOR.setCommonConfig(commonConfig);
     }
-    
+
     public CopyOnWriteList<BapSshHostConfiguration> getHostConfigurations() throws Exception {
         Field hostConfig = BPPluginDescriptor.class.getDeclaredField("hostConfigurations");
         hostConfig.setAccessible(true);
-        return (CopyOnWriteList)hostConfig.get(BapSshPublisherPlugin.DESCRIPTOR);        
+        return (CopyOnWriteList)hostConfig.get(BapSshPublisherPlugin.DESCRIPTOR);
     }
-    
+
 }
