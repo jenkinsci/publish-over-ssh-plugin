@@ -145,15 +145,17 @@
         <profile>
             <!-- mvn clean test emma:emma findbugs:findbugs checkstyle:checkstyle pmd:pmd pmd:cpd -->
             <id>metrics</id>
-            <properties>
-                <maven.emma.filter.excludes>jenkins.plugins.publish_over_ssh.Messages*</maven.emma.filter.excludes>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>emma-maven-plugin</artifactId>
                         <version>1.0-alpha-3</version>
+                        <configuration>
+                            <filters>
+                                <filter>-*.Messages</filter>
+                            </filters>
+                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
