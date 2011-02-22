@@ -295,7 +295,7 @@ public class BapSshHostConfigurationTest {
         private static final String TEST_HOSTNAME = "test.host.name";
         private static final String TEST_USERNAME = "testUser";
         private static final String TEST_REMOTE_ROOT = "/test/root";
-        
+
         private final JSch ssh;
 
         public BapSshHostConfigurationWithMockJSch(final JSch ssh, final BapSshCommonConfiguration defaultKeyInfo) {
@@ -310,7 +310,8 @@ public class BapSshHostConfigurationTest {
             this.ssh = ssh;
         }
 
-        private BapSshHostConfigurationWithMockJSch(final JSch ssh, final String overridePassword, final String overrideKeyPath, final String overrideKey) {
+        private BapSshHostConfigurationWithMockJSch(final JSch ssh, final String overridePassword,
+                                                    final String overrideKeyPath, final String overrideKey) {
             super(TEST_NAME, TEST_HOSTNAME, TEST_USERNAME, overridePassword, TEST_REMOTE_ROOT, DEFAULT_PORT, DEFAULT_TIMEOUT,
                 true, overrideKeyPath, overrideKey);
             this.ssh = ssh;
