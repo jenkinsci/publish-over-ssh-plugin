@@ -28,13 +28,14 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Random;
 
 public class RandomFile {
 
     private static final int DEFAULT_FILE_SIZE = 200;
     private static Random random = new Random();
-    
+
     private File file;
     private byte[] contents;
 
@@ -52,8 +53,8 @@ public class RandomFile {
         contents = new byte[size];
         random.nextBytes(contents);
         File parent = file.getParentFile();
-        if (!parent.exists())
-            parent.mkdirs();
+        if (!parent.exists() && !parent.mkdirs())
+            throw new RuntimeException("Failed to make parent directory [" + parent.getAbsolutePath() + "]");
         try {
             FileUtils.writeByteArrayToFile(file, contents);
         } catch (IOException ioe) {
@@ -66,7 +67,7 @@ public class RandomFile {
     }
 
     public byte[] getContents() {
-        return contents;
+        return Arrays.copyOf(contents, contents.length);
     }
 
     public String getFileName() {

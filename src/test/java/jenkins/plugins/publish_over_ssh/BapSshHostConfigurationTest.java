@@ -44,11 +44,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import java.util.Map;
 import java.util.Properties;
-import java.util.TreeMap;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.aryEq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.isNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -80,7 +83,7 @@ public class BapSshHostConfigurationTest {
 
     @Test public void testCreateClientWithOverridePassword() throws Exception {
         String testPass = "TEST PASSWORD";
-        BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch(testPass);
+        BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch(mockJSch, testPass);
         BapSshCommonConfiguration commonConfiguration = new BapSshCommonConfiguration("Ignore me", null, null);
         hostConfig.setCommonConfig(commonConfiguration);
         expect(mockJSch.getSession(hostConfig.getUsername(), hostConfig.getHostname(), hostConfig.getPort())).andReturn(mockSession);
@@ -99,7 +102,7 @@ public class BapSshHostConfigurationTest {
     @Test public void testCreateClientWithDefaultPassword() throws Exception {
         String testPass = "TEST PASSWORD";
         BapSshCommonConfiguration defaultKeyInfo = new BapSshCommonConfiguration(testPass, null, null);
-        BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch(defaultKeyInfo);
+        BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch(mockJSch, defaultKeyInfo);
         hostConfig.setPassword("Ignore me");
         expect(mockJSch.getSession(hostConfig.getUsername(), hostConfig.getHostname(), hostConfig.getPort())).andReturn(mockSession);
         mockSession.setPassword(testPass);
@@ -118,7 +121,7 @@ public class BapSshHostConfigurationTest {
         String testPass = "TEST PASSWORD";
         String testKey = "MyVeryBigKey";
         BapSshCommonConfiguration defaultKeyInfo = new BapSshCommonConfiguration(testPass, testKey, null);
-        BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch(defaultKeyInfo);
+        BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch(mockJSch, defaultKeyInfo);
         hostConfig.setPassword("Ignore me");
         expect(mockJSch.getSession(hostConfig.getUsername(), hostConfig.getHostname(), hostConfig.getPort())).andReturn(mockSession);
         mockJSch.addIdentity(isA(String.class), aryEq(BapSshUtil.toBytes(testKey)), (byte[]) isNull(), aryEq(BapSshUtil.toBytes(testPass)));
@@ -137,7 +140,7 @@ public class BapSshHostConfigurationTest {
         String testPass = "TEST PASSWORD";
         String testKeyFilename = "myPrivateKey";
         RandomFile theKey = new RandomFile(jenkinsHome.getRoot(), testKeyFilename);
-        BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch(testPass, testKeyFilename, "");
+        BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch(mockJSch, testPass, testKeyFilename, "");
         BapSshCommonConfiguration commonConfiguration = new BapSshCommonConfiguration("Ignore me", null, null);
         hostConfig.setCommonConfig(commonConfiguration);
         expect(mockJSch.getSession(hostConfig.getUsername(), hostConfig.getHostname(), hostConfig.getPort())).andReturn(mockSession);
@@ -157,7 +160,7 @@ public class BapSshHostConfigurationTest {
         String testPass = "TEST PASSWORD";
         String testKey = "MyVeryBigKey";
         BapSshCommonConfiguration defaultKeyInfo = new BapSshCommonConfiguration(testPass, testKey, "/this/file/will/not/be/used");
-        BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch(defaultKeyInfo);
+        BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch(mockJSch, defaultKeyInfo);
         hostConfig.setPassword("Ignore me");
         expect(mockJSch.getSession(hostConfig.getUsername(), hostConfig.getHostname(), hostConfig.getPort())).andReturn(mockSession);
         mockJSch.addIdentity(isA(String.class), aryEq(BapSshUtil.toBytes(testKey)), (byte[]) isNull(), aryEq(BapSshUtil.toBytes(testPass)));
@@ -175,7 +178,7 @@ public class BapSshHostConfigurationTest {
     @Test public void testCreateClientWithRelativeRemoteDir() throws Exception {
         String testPass = "TEST PASSWORD";
         String remoteRoot = "some/directory/in/my/home/dir";
-        BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch(testPass);
+        BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch(mockJSch, testPass);
         hostConfig.setRemoteRootDir(remoteRoot);
         BapSshCommonConfiguration commonConfiguration = new BapSshCommonConfiguration("Ignore me", null, null);
         hostConfig.setCommonConfig(commonConfiguration);
@@ -196,7 +199,7 @@ public class BapSshHostConfigurationTest {
     @Test public void testCreateClientFailsIfPwdReturnsRelativePath() throws Exception {
         String testPass = "TEST PASSWORD";
         String remoteRoot = "some/directory/in/my/home/dir";
-        final BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch(testPass);
+        final BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch(mockJSch, testPass);
         hostConfig.setRemoteRootDir(remoteRoot);
         BapSshCommonConfiguration commonConfiguration = new BapSshCommonConfiguration("Ignore me", null, null);
         hostConfig.setCommonConfig(commonConfiguration);
@@ -215,7 +218,7 @@ public class BapSshHostConfigurationTest {
     }
 
     @Test public void failToConnectSftpChanel() throws Exception {
-        final BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch();
+        final BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch(mockJSch);
         expect(mockJSch.getSession(hostConfig.getUsername(), hostConfig.getHostname(), hostConfig.getPort())).andReturn(mockSession);
         mockSession.setPassword("");
         mockSession.setConfig((Properties) anyObject());
@@ -229,7 +232,7 @@ public class BapSshHostConfigurationTest {
     }
 
     @Test public void failToOpenSftpChanel() throws Exception {
-        final BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch();
+        final BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch(mockJSch);
         expect(mockJSch.getSession(hostConfig.getUsername(), hostConfig.getHostname(), hostConfig.getPort())).andReturn(mockSession);
         mockSession.setPassword("");
         mockSession.setConfig((Properties) anyObject());
@@ -241,7 +244,7 @@ public class BapSshHostConfigurationTest {
     }
 
     @Test public void testFailToConnect() throws Exception {
-        BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch();
+        BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch(mockJSch);
         expect(mockJSch.getSession(hostConfig.getUsername(), hostConfig.getHostname(), hostConfig.getPort())).andReturn(mockSession);
         mockSession.setPassword("");
         mockSession.setConfig((Properties) anyObject());
@@ -253,7 +256,7 @@ public class BapSshHostConfigurationTest {
     }
 
     @Test public void testFailToCreateSession() throws Exception {
-        BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch();
+        BapSshHostConfiguration hostConfig = new BapSshHostConfigurationWithMockJSch(mockJSch);
         JSchException exception = new JSchException("meh");
         expect(mockJSch.getSession(hostConfig.getUsername(), hostConfig.getHostname(), hostConfig.getPort())).andThrow(exception);
         mockControl.replay();
@@ -278,7 +281,7 @@ public class BapSshHostConfigurationTest {
                                                    final String exceptionMessageShouldContain) throws Exception {
         testHelper.assertBPE(exceptionMessageShouldContain, new Runnable() { public void run() {
             hostConfig.createClient(buildInfo);
-        } } );
+        } });
     }
 
     private void expectDisconnect() throws Exception {
@@ -286,41 +289,46 @@ public class BapSshHostConfigurationTest {
         expect(mockSession.isConnected()).andReturn(false);
     }
 
-    public class BapSshHostConfigurationWithMockJSch extends BapSshHostConfiguration {
-
+    public static class BapSshHostConfigurationWithMockJSch extends BapSshHostConfiguration {
+        static final long serialVersionUID = 1L;
         private static final String TEST_NAME = "test config";
         private static final String TEST_HOSTNAME = "test.host.name";
         private static final String TEST_USERNAME = "testUser";
         private static final String TEST_REMOTE_ROOT = "/test/root";
+        
+        private final JSch ssh;
 
-        public BapSshHostConfigurationWithMockJSch(final BapSshCommonConfiguration defaultKeyInfo) {
-            this();
+        public BapSshHostConfigurationWithMockJSch(final JSch ssh, final BapSshCommonConfiguration defaultKeyInfo) {
+            this(ssh);
             setOverrideKey(false);
             setCommonConfig(defaultKeyInfo);
         }
 
-        public BapSshHostConfigurationWithMockJSch(final String overridePassword) {
+        public BapSshHostConfigurationWithMockJSch(final JSch ssh, final String overridePassword) {
             super(TEST_NAME, TEST_HOSTNAME, TEST_USERNAME, overridePassword, TEST_REMOTE_ROOT, DEFAULT_PORT, DEFAULT_TIMEOUT,
                 true, null, null);
+            this.ssh = ssh;
         }
 
-        public BapSshHostConfigurationWithMockJSch(final String overridePassword, final String overrideKeyPath, final String overrideKey) {
+        private BapSshHostConfigurationWithMockJSch(final JSch ssh, final String overridePassword, final String overrideKeyPath, final String overrideKey) {
             super(TEST_NAME, TEST_HOSTNAME, TEST_USERNAME, overridePassword, TEST_REMOTE_ROOT, DEFAULT_PORT, DEFAULT_TIMEOUT,
                 true, overrideKeyPath, overrideKey);
+            this.ssh = ssh;
         }
 
-        public BapSshHostConfigurationWithMockJSch() {
-            this(TEST_NAME, TEST_HOSTNAME, TEST_USERNAME, null, TEST_REMOTE_ROOT, DEFAULT_PORT, DEFAULT_TIMEOUT);
+        public BapSshHostConfigurationWithMockJSch(final JSch ssh) {
+            this(ssh, TEST_NAME, TEST_HOSTNAME, TEST_USERNAME, null, TEST_REMOTE_ROOT, DEFAULT_PORT, DEFAULT_TIMEOUT);
         }
 
-        public BapSshHostConfigurationWithMockJSch(final String name, final String hostname, final String username, final String password,
-                                                   final String remoteRootDir, final int port, final int timeout) {
+        public BapSshHostConfigurationWithMockJSch(final JSch ssh, final String name, final String hostname, final String username,
+                                                   final String password, final String remoteRootDir, final int port, final int timeout) {
             super(name, hostname, username, password, remoteRootDir, port, timeout, true, "", "");
+            this.ssh = ssh;
         }
 
         @Override
         protected JSch createJSch() {
-            return mockJSch;
+            return ssh;
         }
     }
 

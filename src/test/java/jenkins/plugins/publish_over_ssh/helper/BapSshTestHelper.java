@@ -36,7 +36,7 @@ import org.easymock.classextension.IMocksControl;
 
 import java.io.File;
 import java.util.Calendar;
-import java.util.LinkedHashMap;
+import java.util.TreeMap;
 
 import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertTrue;
@@ -46,7 +46,7 @@ public class BapSshTestHelper {
 
 
     public static BPBuildEnv createEmptyBuildEnv() {
-        return new BPBuildEnv(new LinkedHashMap<String, String>(), new FilePath(new File("")), Calendar.getInstance());
+        return new BPBuildEnv(new TreeMap<String, String>(), new FilePath(new File("")), Calendar.getInstance());
     }
 
     public static BPBuildInfo createEmpty() {

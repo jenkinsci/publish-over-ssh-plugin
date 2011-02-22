@@ -90,7 +90,7 @@ public class IntegrationTest extends HudsonTestCase {
                 build.setResult(Result.SUCCESS);
                 return true;
             }
-        } );
+        });
 
         when(mockJsch.getSession(testHostConfig.getUsername(), testHostConfig.getHostname(), testHostConfig.getPort()))
                 .thenReturn(mockSession);

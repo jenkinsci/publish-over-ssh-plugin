@@ -31,6 +31,9 @@ import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 
 import java.lang.reflect.Field;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 
 public class JenkinsTestHelper {
 
@@ -45,9 +48,17 @@ public class JenkinsTestHelper {
     }
 
     public CopyOnWriteList<BapSshHostConfiguration> getHostConfigurations() throws Exception {
-        Field hostConfig = BPPluginDescriptor.class.getDeclaredField("hostConfigurations");
-        hostConfig.setAccessible(true);
-        return (CopyOnWriteList) hostConfig.get(BapSshPublisherPlugin.DESCRIPTOR);
+        final Field hostConfig = BPPluginDescriptor.class.getDeclaredField("hostConfigurations");
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<CopyOnWriteList<BapSshHostConfiguration>>() {
+                public CopyOnWriteList<BapSshHostConfiguration> run() throws IllegalAccessException {
+                    hostConfig.setAccessible(true);
+                    return (CopyOnWriteList) hostConfig.get(BapSshPublisherPlugin.DESCRIPTOR);
+                }
+            });
+        } catch (PrivilegedActionException pae) {
+            throw (IllegalAccessException) pae.getException();
+        }
     }
 
 }

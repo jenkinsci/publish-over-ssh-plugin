@@ -114,7 +114,7 @@ public class BapSshClientTest {
         expectLastCall().andThrow(new SftpException(1, message));
         testHelper.assertBPE(message, new Runnable() { public void run() {
             bapSshClient.changeDirectory(DIRECTORY_PATH);
-        } } );
+        } });
     }
 
     @Test public void testMakeDirectory() throws Exception {
@@ -192,7 +192,7 @@ public class BapSshClientTest {
 
     @Test public void testBeginTransfersFailIfNoSourceFilesAndNoExecCommand() throws Exception {
         try {
-            int execTimeout = 10000;
+            final int execTimeout = 10000;
             bapSshClient.beginTransfers(new BapSshTransfer("", "", "", false, false, "", execTimeout));
             fail();
         } catch (BapPublisherException bpe) {
@@ -201,12 +201,12 @@ public class BapSshClientTest {
     }
 
     @Test public void testEndTransfersAndCanUseEnvVars() throws Exception {
-        String command = "ls -ltr /var/log/$BUILD_NUMBER*";
+        final String command = "ls -ltr /var/log/$BUILD_NUMBER*";
         buildInfo.getEnvVars().put("BUILD_NUMBER", "42");
-        String expectedCommand = "ls -ltr /var/log/42*";
-        int expectedConnectTimeout = 30000;
-        int exitStatus = 0;
-        int pollsBeforeClosed = 10;
+        final String expectedCommand = "ls -ltr /var/log/42*";
+        final int expectedConnectTimeout = 30000;
+        final int exitStatus = 0;
+        final int pollsBeforeClosed = 10;
         TestExec exec = new TestExec(expectedCommand, expectedConnectTimeout, exitStatus, pollsBeforeClosed);
         expect(mockSession.openChannel("exec")).andReturn(exec);
         expect(mockSession.getTimeout()).andReturn(expectedConnectTimeout);
@@ -224,7 +224,7 @@ public class BapSshClientTest {
         expect(mockSession.getTimeout()).andReturn(30000);
         testHelper.assertBPE("44", new Runnable() { public void run() {
             bapSshClient.endTransfers(new BapSshTransfer("", "", "", false, false, command, 120000));
-        } } );
+        } });
         exec.assertMethodsCalled();
     }
 
@@ -237,7 +237,7 @@ public class BapSshClientTest {
         long start = System.currentTimeMillis();
         testHelper.assertBPE("timed out", new Runnable() { public void run() {
             bapSshClient.endTransfers(new BapSshTransfer("", "", "", false, false, command, 2000));
-        } } );
+        } });
         long duration = System.currentTimeMillis() - start;
         // expect to return in 2s + some overhead 4 test and pre thread prod code + very slow machines.
         // @ 10s this should never fail ...
