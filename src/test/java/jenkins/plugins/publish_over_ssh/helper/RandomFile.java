@@ -32,8 +32,9 @@ import java.util.Random;
 
 public class RandomFile {
 
+    private static final int DEFAULT_FILE_SIZE = 200;
     private static Random random = new Random();
-
+    
     private File file;
     private byte[] contents;
 
@@ -42,7 +43,7 @@ public class RandomFile {
     }
 
     public RandomFile(final File file) {
-        this(file, 200);
+        this(file, DEFAULT_FILE_SIZE);
     }
 
     public RandomFile(final File file, final int size) {

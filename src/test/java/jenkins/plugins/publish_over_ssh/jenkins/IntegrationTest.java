@@ -59,7 +59,10 @@ public class IntegrationTest extends HudsonTestCase {
         final JSch mockJsch = mock(JSch.class);
         Session mockSession = mock(Session.class);
         ChannelSftp mockSftp = mock(ChannelSftp.class);
-        BapSshHostConfiguration testHostConfig = new BapSshHostConfiguration("testConfig", "testHostname", "testUsername", "", "/testRemoteRoot", 28, 3000, false, "", "") {
+        int port = 28;
+        int timeout = 3000;
+        BapSshHostConfiguration testHostConfig = new BapSshHostConfiguration("testConfig", "testHostname", "testUsername", "",
+                                                                             "/testRemoteRoot", port, timeout, false, "", "") {
             @Override
             public JSch createJSch() {
                 return mockJsch;
@@ -68,7 +71,8 @@ public class IntegrationTest extends HudsonTestCase {
         BapSshCommonConfiguration commonConfig = new BapSshCommonConfiguration("passphrase", "key", "");
         new JenkinsTestHelper().setGlobalConfig(commonConfig, testHostConfig);
         final String dirToIgnore = "target";
-        BapSshTransfer transfer = new BapSshTransfer("**/*", "sub-home", dirToIgnore, false, false, "", 10000);
+        int execTimeout = 10000;
+        BapSshTransfer transfer = new BapSshTransfer("**/*", "sub-home", dirToIgnore, false, false, "", execTimeout);
         BapSshPublisher publisher = new BapSshPublisher(testHostConfig.getName(), false, Collections.singletonList(transfer));
         BapSshPublisherPlugin plugin = new BapSshPublisherPlugin(Collections.singletonList(publisher), false, false, false, "master");
 
@@ -78,16 +82,18 @@ public class IntegrationTest extends HudsonTestCase {
         final String buildFileName = "file.txt";
         project.getBuildersList().add(new TestBuilder() {
             @Override
-            public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener) throws InterruptedException, IOException {
+            public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener)
+                                   throws InterruptedException, IOException {
                 FilePath dir = build.getWorkspace().child(dirToIgnore).child(buildDirectory);
                 dir.mkdirs();
                 dir.child(buildFileName).write("Helloooooo", "UTF-8");
                 build.setResult(Result.SUCCESS);
                 return true;
             }
-        });
+        } );
 
-        when(mockJsch.getSession(testHostConfig.getUsername(), testHostConfig.getHostname(), testHostConfig.getPort())).thenReturn(mockSession);
+        when(mockJsch.getSession(testHostConfig.getUsername(), testHostConfig.getHostname(), testHostConfig.getPort()))
+                .thenReturn(mockSession);
         when(mockSession.openChannel("sftp")).thenReturn(mockSftp);
         SftpATTRS mockAttrs = mock(SftpATTRS.class);
         when(mockAttrs.isDir()).thenReturn(true);
@@ -96,11 +102,11 @@ public class IntegrationTest extends HudsonTestCase {
         assertBuildStatusSuccess(project.scheduleBuild2(0).get());
 
         verify(mockJsch).addIdentity("TheKey", BapSshUtil.toBytes("key"), null, BapSshUtil.toBytes("passphrase"));
-        verify(mockSession).connect(3000);
-        verify(mockSftp).connect(3000);
+        verify(mockSession).connect(timeout);
+        verify(mockSftp).connect(timeout);
         verify(mockSftp).cd(transfer.getRemoteDirectory());
         verify(mockSftp).cd("build-dir");
-        verify(mockSftp).put((InputStream)anyObject(), eq(buildFileName));
+        verify(mockSftp).put((InputStream) anyObject(), eq(buildFileName));
     }
 
 }

@@ -57,21 +57,18 @@ public class BapSshClientTest {
     private static final String FILENAME = "my.file";
     private static final FilePath FILE_PATH = new FilePath(new File(FILENAME));
     private static  Level originalLogLevel;
+    private static Logger logger;
 
     @BeforeClass
     public static void before() {
-        String packageName = getLoggerName();
-        originalLogLevel = Logger.getLogger(packageName).getLevel();
-        Logger.getLogger(packageName).setLevel(Level.OFF);
+        logger = Logger.getLogger(BapSshClient.class.getCanonicalName());
+        originalLogLevel = logger.getLevel();
+        logger.setLevel(Level.OFF);
     }
 
     @AfterClass
     public static void after() {
-        Logger.getLogger(getLoggerName()).setLevel(originalLogLevel);
-    }
-
-    private static String getLoggerName() {
-        return BapSshClient.class.getCanonicalName();
+        logger.setLevel(originalLogLevel);
     }
 
     private IMocksControl mockControl = EasyMock.createStrictControl();
@@ -93,12 +90,12 @@ public class BapSshClientTest {
         assertChangeDirectory(true, DIRECTORY_PATH);
     }
 
-    @Test public void testChangeDirectory_notADirectory() throws Exception {
+    @Test public void testChangeDirectoryNotADirectory() throws Exception {
         testHelper.expectDirectoryCheck(DIRECTORY_PATH, false);
         assertChangeDirectory(false, DIRECTORY_PATH);
     }
 
-    @Test public void testChangeDirectory_cannotStat() throws Exception {
+    @Test public void testChangeDirectoryCannotStat() throws Exception {
         expect(mockSftp.stat(DIRECTORY_PATH)).andThrow(new SftpException(1, "stat what? where? I ain't got no file"));
         assertChangeDirectory(false, DIRECTORY_PATH);
     }
@@ -109,7 +106,7 @@ public class BapSshClientTest {
         mockControl.verify();
     }
 
-    @Test public void testChangeDirectory_cdFails() throws Exception {
+    @Test public void testChangeDirectoryCdFails() throws Exception {
         bapSshClient.setSftp(mockSftp);
         testHelper.expectDirectoryCheck(DIRECTORY_PATH, true);
         mockSftp.cd(DIRECTORY_PATH);
@@ -117,7 +114,7 @@ public class BapSshClientTest {
         expectLastCall().andThrow(new SftpException(1, message));
         testHelper.assertBPE(message, new Runnable() { public void run() {
             bapSshClient.changeDirectory(DIRECTORY_PATH);
-        }});
+        } } );
     }
 
     @Test public void testMakeDirectory() throws Exception {
@@ -125,15 +122,15 @@ public class BapSshClientTest {
         assertMakeDirectory(true, DIRECTORY);
     }
 
-    @Test public void testMakeDirectory_refuseAttemptAtSubDirectories() throws Exception {
+    @Test public void testMakeDirectoryRefuseAttemptAtSubDirectories() throws Exception {
         assertMakeDirectory(false, DIRECTORY_PATH);
     }
 
-    @Test public void testMakeDirectory_refuseAttemptAtSubDirectoriesOnWindows() throws Exception {
+    @Test public void testMakeDirectoryRefuseAttemptAtSubDirectoriesOnWindows() throws Exception {
         assertMakeDirectory(false, DIRECTORY_PATH_WIN);
     }
 
-    @Test public void testMakeDirectory_mkdirFails() throws Exception {
+    @Test public void testMakeDirectoryMkdirFails() throws Exception {
         mockSftp.mkdir(DIRECTORY);
         expectLastCall().andThrow(new SftpException(1, "I'm sorry, Dave. I'm afraid I can't do that."));
         assertMakeDirectory(false, DIRECTORY);
@@ -161,14 +158,14 @@ public class BapSshClientTest {
         assertDisconnect();
     }
 
-    @Test public void testDisconnect_notConnected() throws Exception {
+    @Test public void testDisconnectNotConnected() throws Exception {
         mockControl.checkOrder(false);
         expect(mockSftp.isConnected()).andReturn(false);
         expect(mockSession.isConnected()).andReturn(false);
         assertDisconnect();
     }
 
-    @Test public void testDisconnect_handleNulls() throws Exception {
+    @Test public void testDisconnectHandleNulls() throws Exception {
         bapSshClient.setSftp(null);
         expect(mockSession.isConnected()).andReturn(false);
         assertDisconnect();
@@ -180,7 +177,7 @@ public class BapSshClientTest {
         mockControl.verify();
     }
 
-    @Test public void testDisconnectQuietly_surpressExceptions() throws Exception {
+    @Test public void testDisconnectQuietlySurpressExceptions() throws Exception {
         mockControl.checkOrder(false);
         expect(mockSftp.isConnected()).andReturn(true);
         mockSftp.disconnect();
@@ -193,59 +190,54 @@ public class BapSshClientTest {
         mockControl.verify();
     }
 
-    @Test public void testBeginTransfers_failIfNoSourceFilesAndNoExecCommand() throws Exception {
+    @Test public void testBeginTransfersFailIfNoSourceFilesAndNoExecCommand() throws Exception {
         try {
-            bapSshClient.beginTransfers(new BapSshTransfer("", "", "", false, false, "", 10000));
+            int execTimeout = 10000;
+            bapSshClient.beginTransfers(new BapSshTransfer("", "", "", false, false, "", execTimeout));
             fail();
         } catch (BapPublisherException bpe) {
             assertEquals(Messages.exception_badTransferConfig(), bpe.getMessage());
         }
     }
 
-    @Test public void testEndTransfers() throws Exception {
-        String command = "ls -ltr /var/log";
-        TestExec exec = new TestExec(command, 30000, 0, 10);
-        expect(mockSession.openChannel("exec")).andReturn(exec);
-        expect(mockSession.getTimeout()).andReturn(30000);
-        mockControl.replay();
-        bapSshClient.endTransfers(new BapSshTransfer("", "", "", false, false, command, 120000));
-        mockControl.verify();
-        exec.assertMethodsCalled();
-    }
-
-    @Test public void testEndTransfers_canUseEnvVars() throws Exception {
+    @Test public void testEndTransfersAndCanUseEnvVars() throws Exception {
         String command = "ls -ltr /var/log/$BUILD_NUMBER*";
         buildInfo.getEnvVars().put("BUILD_NUMBER", "42");
-        TestExec exec = new TestExec("ls -ltr /var/log/42*", 30000, 0, 10);
+        String expectedCommand = "ls -ltr /var/log/42*";
+        int expectedConnectTimeout = 30000;
+        int exitStatus = 0;
+        int pollsBeforeClosed = 10;
+        TestExec exec = new TestExec(expectedCommand, expectedConnectTimeout, exitStatus, pollsBeforeClosed);
         expect(mockSession.openChannel("exec")).andReturn(exec);
-        expect(mockSession.getTimeout()).andReturn(30000);
+        expect(mockSession.getTimeout()).andReturn(expectedConnectTimeout);
         mockControl.replay();
-        bapSshClient.endTransfers(new BapSshTransfer("", "", "", false, false, command, 120000));
+        int execCommandTimeout = 120000;
+        bapSshClient.endTransfers(new BapSshTransfer("", "", "", false, false, command, execCommandTimeout));
         mockControl.verify();
         exec.assertMethodsCalled();
     }
 
-    @Test public void testEndTransfers_throwsExceptionIfCommandFailed() throws Exception {
+    @Test public void testEndTransfersThrowsExceptionIfCommandFailed() throws Exception {
         final String command = "ls -ltr /var/log";
         TestExec exec = new TestExec(command, 30000, 44, 10);
         expect(mockSession.openChannel("exec")).andReturn(exec);
         expect(mockSession.getTimeout()).andReturn(30000);
-        testHelper.assertBPE("44", new Runnable() {public void run() {
+        testHelper.assertBPE("44", new Runnable() { public void run() {
             bapSshClient.endTransfers(new BapSshTransfer("", "", "", false, false, command, 120000));
-        }});
+        } } );
         exec.assertMethodsCalled();
     }
 
-    @Test public void testEndTransfers_throwsExceptionIfCommandTimesOut() throws Exception {
+    @Test public void testEndTransfersThrowsExceptionIfCommandTimesOut() throws Exception {
         final String command = "ls -ltr /var/log";
         // ~ 40s
         TestExec exec = new TestExec(command, 30000, 44, 200);
         expect(mockSession.openChannel("exec")).andReturn(exec);
         expect(mockSession.getTimeout()).andReturn(30000);
         long start = System.currentTimeMillis();
-        testHelper.assertBPE("timed out", new Runnable() {public void run() {
+        testHelper.assertBPE("timed out", new Runnable() { public void run() {
             bapSshClient.endTransfers(new BapSshTransfer("", "", "", false, false, command, 2000));
-        }});
+        } } );
         long duration = System.currentTimeMillis() - start;
         // expect to return in 2s + some overhead 4 test and pre thread prod code + very slow machines.
         // @ 10s this should never fail ...
@@ -253,18 +245,18 @@ public class BapSshClientTest {
         exec.assertMethodsCalled();
     }
 
-    @Test public void testEndTransfers_doesNothingIfNoExecCommand() throws Exception {
+    @Test public void testEndTransfersDoesNothingIfNoExecCommand() throws Exception {
         mockControl.replay();
         bapSshClient.endTransfers(new BapSshTransfer("*.java", "", "", false, false, "", 10000));
         mockControl.verify();
     }
 
     public static class TestExec extends ChannelExec {
-        String expectedCommand;
-        int expectedTimeout;
-        int exitStatus;
-        int pollsBeforeClosed;
-        boolean setCommandCalled, connectCalled;
+        private String expectedCommand;
+        private int expectedTimeout;
+        private int exitStatus;
+        private int pollsBeforeClosed;
+        private boolean setCommandCalled, connectCalled;
         public TestExec(final String expectedCommand, final int expectedConnectTimeout, final int exitStatus, final int pollsBeforeClosed) {
             this.expectedCommand = expectedCommand;
             this.expectedTimeout = expectedConnectTimeout;
