@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <!--
   ~ The MIT License
   ~
@@ -22,7 +23,6 @@
   ~ THE SOFTWARE.
   -->
 
-<?xml version="1.0"?>
 <ruleset name="Publish Over ruleset"
          xmlns="http://pmd.sf.net/ruleset/1.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
