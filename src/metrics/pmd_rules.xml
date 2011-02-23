@@ -48,20 +48,22 @@
     <rule ref="rulesets/controversial.xml/SuspiciousOctalEscape"/>
     <rule ref="rulesets/controversial.xml/DefaultPackage"/>
     <rule ref="rulesets/controversial.xml/UnnecessaryParentheses"/>
-    <rule ref="rulesets/controversial.xml/DataflowAnomalyAnalysis"/>
     <rule ref="rulesets/design.xml">
         <exclude name="UseSingleton"/>
         <exclude name="UncommentedEmptyConstructor"/>
     </rule>
     <rule ref="rulesets/finalizers.xml"/>
-    <rule ref="rulesets/javabeans.xml"/>
+    <rule ref="rulesets/javabeans.xml/MissingSerialVersionUID"/>
     <rule ref="rulesets/logging-jakarta-commons.xml"/>
     <rule ref="rulesets/logging-java.xml"/>
     <rule ref="rulesets/migrating.xml"/>
     <rule ref="rulesets/naming.xml">
         <exclude name="LongVariable"/>
+        <exclude name="AbstractNaming"/>
     </rule>
-    <rule ref="rulesets/optimizations.xml"/>
+    <rule ref="rulesets/optimizations.xml">
+        <exclude name="AvoidInstantiatingObjectsInLoops"/>
+    </rule>
     <rule ref="rulesets/strings.xml"/>
     <rule ref="rulesets/sunsecure.xml"/>
     <rule ref="rulesets/typeresolution.xml"/>
