@@ -42,7 +42,7 @@ import java.util.Properties;
 
 public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, BapSshCommonConfiguration> {
 
-    static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     public static int getDefaultPort() {
         return DEFAULT_PORT;

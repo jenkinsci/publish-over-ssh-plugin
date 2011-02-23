@@ -32,7 +32,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class BapSshTransfer extends BPTransfer {
 
-    static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     public static final int DEFAULT_EXEC_TIMEOUT = 120000;
 
     public static int getDefaultExecTimeout() { return DEFAULT_EXEC_TIMEOUT; }

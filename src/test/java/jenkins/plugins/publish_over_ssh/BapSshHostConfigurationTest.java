@@ -293,7 +293,7 @@ public class BapSshHostConfigurationTest {
     }
 
     public static final class BapSshHostConfigurationWithMockJSch extends BapSshHostConfiguration {
-        static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 1L;
 
         private transient JSch ssh;
 
