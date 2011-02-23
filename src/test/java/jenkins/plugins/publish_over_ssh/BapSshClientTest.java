@@ -255,8 +255,9 @@ public class BapSshClientTest {
     }
 
     @Test public void testEndTransfersDoesNothingIfNoExecCommand() throws Exception {
+        final int execTimeout = 10000;
         mockControl.replay();
-        bapSshClient.endTransfers(new BapSshTransfer("*.java", "", "", false, false, "", 10000));
+        bapSshClient.endTransfers(new BapSshTransfer("*.java", "", "", false, false, "", execTimeout));
         mockControl.verify();
     }
 
