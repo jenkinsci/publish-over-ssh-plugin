@@ -135,7 +135,7 @@ public class BapSshHostConfigurationTest {
 
     @Test public void testCreateClientWithDefaultKey() throws Exception {
         final String testKey = "MyVeryBigKey";
-        BapSshCommonConfiguration defaultKeyInfo = new BapSshCommonConfiguration(TEST_PASSPHRASE, testKey, null);
+        final BapSshCommonConfiguration defaultKeyInfo = new BapSshCommonConfiguration(TEST_PASSPHRASE, testKey, null);
         hostConfig = createWithDefaultKeyInfo(mockJSch, defaultKeyInfo);
         hostConfig.setPassword("Ignore me");
         expect(mockJSch.getSession(hostConfig.getUsername(), hostConfig.getHostname(), hostConfig.getPort())).andReturn(mockSession);
@@ -170,7 +170,8 @@ public class BapSshHostConfigurationTest {
 
     @Test public void testCreateClientWillUseKeyIfKeyAndKeyPathPresent() throws Exception {
         final String testKey = "MyVeryBigKey";
-        final BapSshCommonConfiguration defaultKeyInfo = new BapSshCommonConfiguration(TEST_PASSPHRASE, testKey, "/this/file/will/not/be/used");
+        final BapSshCommonConfiguration defaultKeyInfo = new BapSshCommonConfiguration(TEST_PASSPHRASE, testKey,
+                                                                                                    "/this/file/will/not/be/used");
         hostConfig = createWithDefaultKeyInfo(mockJSch, defaultKeyInfo);
         hostConfig.setPassword("Ignore me");
         expect(mockJSch.getSession(hostConfig.getUsername(), hostConfig.getHostname(), hostConfig.getPort())).andReturn(mockSession);
@@ -296,7 +297,7 @@ public class BapSshHostConfigurationTest {
     public static final class BapSshHostConfigurationWithMockJSch extends BapSshHostConfiguration {
         private static final long serialVersionUID = 1L;
 
-        private transient JSch ssh;
+        private final transient JSch ssh;
 
         protected BapSshHostConfigurationWithMockJSch(final JSch ssh) {
             this(ssh, TEST_NAME, TEST_HOSTNAME, TEST_USERNAME, TEST_PASSPHRASE, TEST_REMOTE_ROOT, DEFAULT_PORT, DEFAULT_TIMEOUT, "", "");
@@ -308,6 +309,7 @@ public class BapSshHostConfigurationTest {
                         overrideKeyPath, overrideKey);
         }
 
+        @SuppressWarnings("PMD.ExcessiveParameterList")
         protected BapSshHostConfigurationWithMockJSch(final JSch ssh, final String name, final String hostname, final String username,
                                                    final String overridePassword, final String remoteRootDir, final int port,
                                                    final int timeout, final String overrideKeyPath, final String overrideKey) {

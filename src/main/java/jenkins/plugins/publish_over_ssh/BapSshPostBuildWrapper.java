@@ -55,7 +55,7 @@ public class BapSshPostBuildWrapper extends BuildWrapper {
                     throws IOException, InterruptedException {
         final Environment runPostBuild = new Environment() {
             @SuppressWarnings("PMD.JUnit4TestShouldUseAfterAnnotation")
-            public boolean tearDown(final AbstractBuild build, final BuildListener listener) throws IOException, InterruptedException { 
+            public boolean tearDown(final AbstractBuild build, final BuildListener listener) throws IOException, InterruptedException {
                 return postBuild.perform(build, listener);
             }
         };

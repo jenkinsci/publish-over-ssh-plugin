@@ -42,13 +42,13 @@ public class JenkinsTestHelper {
         for (BapSshHostConfiguration hostConfig : newHostConfigurations) {
             hostConfig.setCommonConfig(commonConfig);
         }
-        CopyOnWriteList<BapSshHostConfiguration> hostConfigurations = getHostConfigurations();
+        final CopyOnWriteList<BapSshHostConfiguration> hostConfigurations = getHostConfigurations();
         hostConfigurations.replaceBy(newHostConfigurations);
         BapSshPublisherPlugin.DESCRIPTOR.setCommonConfig(commonConfig);
     }
 
-    public CopyOnWriteList<BapSshHostConfiguration> getHostConfigurations() throws Exception {
-        Field hostConfigurations = BPPluginDescriptor.class.getDeclaredField("hostConfigurations");
+    public CopyOnWriteList<BapSshHostConfiguration> getHostConfigurations() throws NoSuchFieldException, IllegalAccessException {
+        final Field hostConfigurations = BPPluginDescriptor.class.getDeclaredField("hostConfigurations");
         try {
             return AccessController.doPrivileged(new GetMeTheHostConfigurations(hostConfigurations));
         } catch (PrivilegedActionException pae) {
@@ -58,7 +58,7 @@ public class JenkinsTestHelper {
 
     private static final class GetMeTheHostConfigurations implements PrivilegedExceptionAction<CopyOnWriteList<BapSshHostConfiguration>> {
         private final Field hostConfigurations;
-        private GetMeTheHostConfigurations(final Field hostConfigurations) {
+        protected GetMeTheHostConfigurations(final Field hostConfigurations) {
             this.hostConfigurations = hostConfigurations;
         }
         public CopyOnWriteList<BapSshHostConfiguration> run() throws IllegalAccessException {

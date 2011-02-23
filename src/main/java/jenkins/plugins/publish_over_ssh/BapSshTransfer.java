@@ -61,7 +61,7 @@ public class BapSshTransfer extends BPTransfer {
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
-        BapSshTransfer thatTransfer = (BapSshTransfer) that;
+        final BapSshTransfer thatTransfer = (BapSshTransfer) that;
 
         return createEqualsBuilder(thatTransfer)
             .append(execCommand, thatTransfer.execCommand)

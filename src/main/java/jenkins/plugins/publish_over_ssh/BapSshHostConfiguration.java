@@ -156,14 +156,14 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         final BPBuildInfo buildInfo = client.getBuildInfo();
         buildInfo.printIfVerbose(Messages.console_usingPwd());
         try {
-            String pwd = sftp.pwd();
+            final String pwd = sftp.pwd();
             if (!isDirectoryAbsolute(pwd))
                 throw new BapPublisherException(Messages.exception_pwdNotAbsolute(pwd));
             return pwd;
         } catch (SftpException sftpe) {
             final String message = Messages.exception_pwd(sftpe.getLocalizedMessage());
             LOG.warn(message, sftpe);
-            throw new BapPublisherException(message);
+            throw new BapPublisherException(message); // NOPMD - it's in the log!
         }
     }
 
@@ -174,7 +174,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         } catch (JSchException jse) {
             final String message = Messages.exception_sftp_connect(jse.getLocalizedMessage());
             LOG.warn(message, jse);
-            throw new BapPublisherException(message);
+            throw new BapPublisherException(message); // NOPMD - it's in the log!
         }
         buildInfo.printIfVerbose(Messages.console_sftp_connected());
     }
@@ -187,7 +187,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         } catch (JSchException jse) {
             final String message = Messages.exception_sftp_open(jse.getLocalizedMessage());
             LOG.warn(message, jse);
-            throw new BapPublisherException(message);
+            throw new BapPublisherException(message); // NOPMD - it's in the log!
         }
         buildInfo.printIfVerbose(Messages.console_sftp_opened());
         return sftp;
@@ -206,7 +206,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         } catch (JSchException jse) {
             final String message = Messages.exception_session_connect(getName(), jse.getLocalizedMessage());
             LOG.warn(message, jse);
-            throw new BapPublisherException(message);
+            throw new BapPublisherException(message); // NOPMD - it's in the log!
         }
         buildInfo.printIfVerbose(Messages.console_session_connected());
     }

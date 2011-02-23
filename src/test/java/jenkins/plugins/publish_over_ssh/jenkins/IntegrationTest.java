@@ -102,7 +102,7 @@ public class IntegrationTest extends HudsonTestCase {
         when(mockJsch.getSession(testHostConfig.getUsername(), testHostConfig.getHostname(), testHostConfig.getPort()))
                 .thenReturn(mockSession);
         when(mockSession.openChannel("sftp")).thenReturn(mockSftp);
-        SftpATTRS mockAttrs = mock(SftpATTRS.class);
+        final SftpATTRS mockAttrs = mock(SftpATTRS.class);
         when(mockAttrs.isDir()).thenReturn(true);
         when(mockSftp.stat(anyString())).thenReturn(mockAttrs);
 

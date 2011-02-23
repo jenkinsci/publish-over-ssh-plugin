@@ -143,7 +143,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         } catch (JSchException jse) {
             final String message = Messages.exception_exec_connect(jse.getLocalizedMessage());
             LOG.warn(message, jse);
-            throw new BapPublisherException(message);
+            throw new BapPublisherException(message); // NOPMD - it's in the log!
         }
         buildInfo.printIfVerbose(Messages.console_exec_connected());
     }
@@ -157,7 +157,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         } catch (JSchException jse) {
             final String message = Messages.exception_exec_open(jse.getLocalizedMessage());
             LOG.warn(message, jse);
-            throw new BapPublisherException(message);
+            throw new BapPublisherException(message); // NOPMD - it's in the log!
         }
     }
 
