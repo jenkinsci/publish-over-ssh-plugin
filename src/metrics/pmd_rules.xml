@@ -51,13 +51,16 @@
     <rule ref="rulesets/controversial.xml/DataflowAnomalyAnalysis"/>
     <rule ref="rulesets/design.xml">
         <exclude name="UseSingleton"/>
+        <exclude name="UncommentedEmptyConstructor"/>
     </rule>
     <rule ref="rulesets/finalizers.xml"/>
     <rule ref="rulesets/javabeans.xml"/>
     <rule ref="rulesets/logging-jakarta-commons.xml"/>
     <rule ref="rulesets/logging-java.xml"/>
     <rule ref="rulesets/migrating.xml"/>
-    <rule ref="rulesets/naming.xml"/>
+    <rule ref="rulesets/naming.xml">
+        <exclude name="LongVariable"/>
+    </rule>
     <rule ref="rulesets/optimizations.xml"/>
     <rule ref="rulesets/strings.xml"/>
     <rule ref="rulesets/sunsecure.xml"/>
