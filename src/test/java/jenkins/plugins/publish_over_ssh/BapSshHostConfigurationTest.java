@@ -94,7 +94,7 @@ public class BapSshHostConfigurationTest {
         assertCreateWithDefaultInfo(null);
     }
 
-    private BapSshClient assertCreateWithDefaultInfo(String responseFromPwd) throws JSchException, SftpException {
+    private BapSshClient assertCreateWithDefaultInfo(final String responseFromPwd) throws JSchException, SftpException {
         BapSshCommonConfiguration commonConfiguration = new BapSshCommonConfiguration("Ignore me", null, null);
         hostConfig.setCommonConfig(commonConfiguration);
         expect(mockJSch.getSession(hostConfig.getUsername(), hostConfig.getHostname(), hostConfig.getPort())).andReturn(mockSession);
