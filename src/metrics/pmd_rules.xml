@@ -1,0 +1,69 @@
+<!--
+  ~ The MIT License
+  ~
+  ~ Copyright (C) 2010-2011 by Anthony Robinson
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in
+  ~ all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  ~ THE SOFTWARE.
+  -->
+
+<?xml version="1.0"?>
+<ruleset name="Publish Over ruleset"
+         xmlns="http://pmd.sf.net/ruleset/1.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+         xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+
+    <description>
+        Ruleset for the Publish Over projects
+    </description>
+
+    <!-- defaults (sets only - haz mods!) -->
+    <rule ref="rulesets/basic.xml"/>
+    <rule ref="rulesets/imports.xml">
+        <exclude name="TooManyStaticImports"/>
+    </rule>
+    <rule ref="rulesets/unusedcode.xml"/>
+
+    <!-- additional checks -->
+    <rule ref="rulesets/clone.xml"/>
+    <rule ref="rulesets/codesize.xml"/>
+    <rule ref="rulesets/controversial.xml/UnusedModifier"/>
+    <rule ref="rulesets/controversial.xml/DontImportSun"/>
+    <rule ref="rulesets/controversial.xml/SuspiciousOctalEscape"/>
+    <rule ref="rulesets/controversial.xml/DefaultPackage"/>
+    <rule ref="rulesets/controversial.xml/UnnecessaryParentheses"/>
+    <rule ref="rulesets/controversial.xml/DataflowAnomalyAnalysis"/>
+    <rule ref="rulesets/design.xml">
+        <exclude name="UseSingleton"/>
+    </rule>
+    <rule ref="rulesets/finalizers.xml"/>
+    <rule ref="rulesets/javabeans.xml"/>
+    <rule ref="rulesets/logging-jakarta-commons.xml"/>
+    <rule ref="rulesets/logging-java.xml"/>
+    <rule ref="rulesets/migrating.xml"/>
+    <rule ref="rulesets/naming.xml"/>
+    <rule ref="rulesets/optimizations.xml"/>
+    <rule ref="rulesets/strings.xml"/>
+    <rule ref="rulesets/sunsecure.xml"/>
+    <rule ref="rulesets/typeresolution.xml"/>
+    
+    <!-- notable absentees -->
+    <!-- braces, strict exceptions -->
+    
+</ruleset>
