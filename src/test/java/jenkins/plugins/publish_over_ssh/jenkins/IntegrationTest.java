@@ -59,8 +59,8 @@ public class IntegrationTest extends HudsonTestCase {
         final JSch mockJsch = mock(JSch.class);
         Session mockSession = mock(Session.class);
         ChannelSftp mockSftp = mock(ChannelSftp.class);
-        int port = 28;
-        int timeout = 3000;
+        final int port = 28;
+        final int timeout = 3000;
         BapSshHostConfiguration testHostConfig = new BapSshHostConfiguration("testConfig", "testHostname", "testUsername", "",
                                                                              "/testRemoteRoot", port, timeout, false, "", "") {
             @Override
@@ -71,7 +71,7 @@ public class IntegrationTest extends HudsonTestCase {
         BapSshCommonConfiguration commonConfig = new BapSshCommonConfiguration("passphrase", "key", "");
         new JenkinsTestHelper().setGlobalConfig(commonConfig, testHostConfig);
         final String dirToIgnore = "target";
-        int execTimeout = 10000;
+        final int execTimeout = 10000;
         BapSshTransfer transfer = new BapSshTransfer("**/*", "sub-home", dirToIgnore, false, false, "", execTimeout);
         BapSshPublisher publisher = new BapSshPublisher(testHostConfig.getName(), false, Collections.singletonList(transfer));
         BapSshPublisherPlugin plugin = new BapSshPublisherPlugin(Collections.singletonList(publisher), false, false, false, "master");

@@ -42,7 +42,7 @@ import static org.junit.Assert.assertArrayEquals;
 public class LegacyConfigurationTest extends HudsonTestCase {
 
     @LocalData
-    public void testLoad_0_1_minimal() throws Exception {
+    public void testLoadR0x1Minimal() throws Exception {
         List<BapSshHostConfiguration> configurations = BapSshPublisherPlugin.DESCRIPTOR.getHostConfigurations();
         assertEquals(1, configurations.size());
         final int expectedPort = 22;
@@ -52,7 +52,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         expected.setCommonConfig(new BapSshCommonConfiguration("", "", ""));
         assertEquals(expected, configurations.get(0));
 
-        int expectedExecTimeout = 120000;
+        final int expectedExecTimeout = 120000;
         List<BapSshTransfer> transfers = Collections.singletonList(
                     new BapSshTransfer("**/*", "", "", false, false, "", expectedExecTimeout));
         BapSshPublisher publisher = new BapSshPublisher("default", false, transfers);
@@ -63,7 +63,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
     }
 
     @LocalData
-    public void testLoad_0_1() throws Exception {
+    public void testLoadR0x1() throws Exception {
         final int defaultPort = 22;
         final int defaultTimeout = 300000;
         final int configDPort = 8022;

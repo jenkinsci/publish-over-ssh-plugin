@@ -55,10 +55,10 @@ public class JenkinsTestHelper {
             throw (IllegalAccessException) pae.getException();
         }
     }
-    
+
     private static final class GetMeTheHostConfigurations implements PrivilegedExceptionAction<CopyOnWriteList<BapSshHostConfiguration>> {
         private final Field hostConfigurations;
-        private GetMeTheHostConfigurations(Field hostConfigurations) {
+        private GetMeTheHostConfigurations(final Field hostConfigurations) {
             this.hostConfigurations = hostConfigurations;
         }
         public CopyOnWriteList<BapSshHostConfiguration> run() throws IllegalAccessException {
