@@ -49,7 +49,7 @@ public class BapSshPromotionPublisherPlugin extends Notifier {
     @Extension
     public static final Descriptor DESCRIPTOR = new Descriptor();
 
-    private BapSshPublisherPlugin delegate;
+    private final BapSshPublisherPlugin delegate;
 
     @DataBoundConstructor
     public BapSshPromotionPublisherPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
@@ -87,11 +87,11 @@ public class BapSshPromotionPublisherPlugin extends Notifier {
         return builder.append("delegate", delegate);
     }
 
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(final Object that) {
+        if (this == that) return true;
+        if (that == null || getClass() != that.getClass()) return false;
 
-        return createEqualsBuilder((BapSshPromotionPublisherPlugin) o).isEquals();
+        return createEqualsBuilder((BapSshPromotionPublisherPlugin) that).isEquals();
     }
 
     public int hashCode() {

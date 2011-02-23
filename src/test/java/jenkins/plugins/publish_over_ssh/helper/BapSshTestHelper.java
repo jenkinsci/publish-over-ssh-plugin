@@ -44,7 +44,6 @@ import static org.junit.Assert.fail;
 
 public class BapSshTestHelper {
 
-
     public static BPBuildEnv createEmptyBuildEnv() {
         return new BPBuildEnv(new TreeMap<String, String>(), new FilePath(new File("")), Calendar.getInstance());
     }
@@ -54,7 +53,7 @@ public class BapSshTestHelper {
     }
 
     public static BPBuildInfo createEmpty(final boolean setEffectiveEnvironment) {
-        BPBuildInfo buildInfo = new BPBuildInfo(TaskListener.NULL, "", new FilePath(new File("")), createEmptyBuildEnv(), null);
+        final BPBuildInfo buildInfo = new BPBuildInfo(TaskListener.NULL, "", new FilePath(new File("")), createEmptyBuildEnv(), null);
         if (setEffectiveEnvironment) {
             buildInfo.setBuildTime(buildInfo.getCurrentBuildEnv().getBuildTime());
             buildInfo.setBaseDirectory(buildInfo.getCurrentBuildEnv().getBaseDirectory());
@@ -64,8 +63,8 @@ public class BapSshTestHelper {
     }
 
 
-    private IMocksControl mockControl;
-    private ChannelSftp mockSftp;
+    private final IMocksControl mockControl;
+    private final ChannelSftp mockSftp;
 
     public BapSshTestHelper(final IMocksControl mockControl, final ChannelSftp mockSftp) {
         this.mockControl = mockControl;
@@ -73,7 +72,7 @@ public class BapSshTestHelper {
     }
 
     public void expectDirectoryCheck(final String directory, final boolean isDirectory) throws SftpException {
-        SftpATTRS mockAttrs = mockControl.createMock(SftpATTRS.class);
+        final SftpATTRS mockAttrs = mockControl.createMock(SftpATTRS.class);
         expect(mockSftp.stat(directory)).andReturn(mockAttrs);
         expect(mockAttrs.isDir()).andReturn(isDirectory);
     }

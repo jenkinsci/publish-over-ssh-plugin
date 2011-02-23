@@ -47,8 +47,11 @@ import java.util.logging.Logger;
 
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+@SuppressWarnings({ "PMD.SignatureDeclareThrowsException", "PMD.TooManyMethods" })
 public class BapSshClientTest {
 
     private static final String DIRECTORY_PATH = "a/directory/with/sub/dirs";
@@ -56,29 +59,28 @@ public class BapSshClientTest {
     private static final String DIRECTORY = "aDirectory";
     private static final String FILENAME = "my.file";
     private static final FilePath FILE_PATH = new FilePath(new File(FILENAME));
+    private static final Logger SSH_CLIENT_LOGGER = Logger.getLogger(BapSshClient.class.getCanonicalName());
     private static  Level originalLogLevel;
-    private static Logger logger;
 
     @BeforeClass
     public static void before() {
-        logger = Logger.getLogger(BapSshClient.class.getCanonicalName());
-        originalLogLevel = logger.getLevel();
-        logger.setLevel(Level.OFF);
+        originalLogLevel = SSH_CLIENT_LOGGER.getLevel();
+        SSH_CLIENT_LOGGER.setLevel(Level.OFF);
     }
 
     @AfterClass
     public static void after() {
-        logger.setLevel(originalLogLevel);
+        SSH_CLIENT_LOGGER.setLevel(originalLogLevel);
     }
 
-    private IMocksControl mockControl = EasyMock.createStrictControl();
-    private BPBuildInfo buildInfo = BapSshTestHelper.createEmpty(true);
-    private Session mockSession = mockControl.createMock(Session.class);
-    private ChannelSftp mockSftp = mockControl.createMock(ChannelSftp.class);
-    private BapSshClient bapSshClient = new BapSshClient(buildInfo, mockSession);
-    private BapSshTransfer mockTransfer = mockControl.createMock(BapSshTransfer.class);
-    private InputStream anInputStream = mockControl.createMock(InputStream.class);
-    private BapSshTestHelper testHelper = new BapSshTestHelper(mockControl, mockSftp);
+    private final IMocksControl mockControl = EasyMock.createStrictControl();
+    private final BPBuildInfo buildInfo = BapSshTestHelper.createEmpty(true);
+    private final Session mockSession = mockControl.createMock(Session.class);
+    private final ChannelSftp mockSftp = mockControl.createMock(ChannelSftp.class);
+    private final BapSshClient bapSshClient = new BapSshClient(buildInfo, mockSession);
+    private final BapSshTransfer mockTransfer = mockControl.createMock(BapSshTransfer.class);
+    private final InputStream anInputStream = mockControl.createMock(InputStream.class);
+    private final BapSshTestHelper testHelper = new BapSshTestHelper(mockControl, mockSftp);
 
     @Before public void setUp() throws Exception {
         bapSshClient.setSftp(mockSftp);
@@ -110,7 +112,7 @@ public class BapSshClientTest {
         bapSshClient.setSftp(mockSftp);
         testHelper.expectDirectoryCheck(DIRECTORY_PATH, true);
         mockSftp.cd(DIRECTORY_PATH);
-        String message = "nah. not doin' that";
+        final String message = "nah. not doin' that";
         expectLastCall().andThrow(new SftpException(1, message));
         testHelper.assertBPE(message, new Runnable() { public void run() {
             bapSshClient.changeDirectory(DIRECTORY_PATH);
@@ -207,7 +209,7 @@ public class BapSshClientTest {
         final int expectedConnectTimeout = 30000;
         final int exitStatus = 0;
         final int pollsBeforeClosed = 10;
-        TestExec exec = new TestExec(expectedCommand, expectedConnectTimeout, exitStatus, pollsBeforeClosed);
+        final TestExec exec = new TestExec(expectedCommand, expectedConnectTimeout, exitStatus, pollsBeforeClosed);
         expect(mockSession.openChannel("exec")).andReturn(exec);
         expect(mockSession.getTimeout()).andReturn(expectedConnectTimeout);
         mockControl.replay();
@@ -222,11 +224,11 @@ public class BapSshClientTest {
         final int expectedConnectTimeout = 30000;
         final int expectedExitStatus = 44;
         final int pollsBeforeClosed = 10;
-        TestExec exec = new TestExec(command, expectedConnectTimeout, expectedExitStatus, pollsBeforeClosed);
+        final TestExec exec = new TestExec(command, expectedConnectTimeout, expectedExitStatus, pollsBeforeClosed);
         expect(mockSession.openChannel("exec")).andReturn(exec);
         expect(mockSession.getTimeout()).andReturn(expectedConnectTimeout);
         final int execCommandTimeout = 120000;
-        testHelper.assertBPE("" + expectedExitStatus, new Runnable() { public void run() {
+        testHelper.assertBPE(Integer.toString(expectedExitStatus), new Runnable() { public void run() {
             bapSshClient.endTransfers(new BapSshTransfer("", "", "", false, false, command, execCommandTimeout));
         } });
         exec.assertMethodsCalled();
@@ -238,15 +240,15 @@ public class BapSshClientTest {
         final int exitStatus = 44;
         // ~ 40s
         final int pollsBeforeClosed = 200;
-        TestExec exec = new TestExec(command, connectTimeout, exitStatus, pollsBeforeClosed);
+        final TestExec exec = new TestExec(command, connectTimeout, exitStatus, pollsBeforeClosed);
         expect(mockSession.openChannel("exec")).andReturn(exec);
         expect(mockSession.getTimeout()).andReturn(connectTimeout);
-        long start = System.currentTimeMillis();
+        final long start = System.currentTimeMillis();
         final int shortExecTimeout = 2000;
         testHelper.assertBPE("timed out", new Runnable() { public void run() {
             bapSshClient.endTransfers(new BapSshTransfer("", "", "", false, false, command, shortExecTimeout));
         } });
-        long duration = System.currentTimeMillis() - start;
+        final long duration = System.currentTimeMillis() - start;
         // expect to return in 2s + some overhead 4 test and pre thread prod code + very slow machines.
         // @ 10s this should never fail ...
         final int lenientMaxExecutionTime = 10000;
@@ -262,9 +264,9 @@ public class BapSshClientTest {
     }
 
     public static class TestExec extends ChannelExec {
-        private String expectedCommand;
-        private int expectedTimeout;
-        private int exitStatus;
+        private final String expectedCommand;
+        private final int expectedTimeout;
+        private final int exitStatus;
         private int pollsBeforeClosed;
         private boolean setCommandCalled, connectCalled;
         public TestExec(final String expectedCommand, final int expectedConnectTimeout, final int exitStatus, final int pollsBeforeClosed) {
@@ -276,14 +278,14 @@ public class BapSshClientTest {
         public boolean isConnected() {
             return false;
         }
-        public synchronized boolean isClosed() {
+        public synchronized boolean isClosed() { // NOPMD
             return --pollsBeforeClosed < 0;
         }
-        public void setInputStream(final InputStream is) { }
-        public void setOutputStream(final OutputStream os, final boolean dontClose) {
+        public void setInputStream(final InputStream inputStream) { }
+        public void setOutputStream(final OutputStream outputStream, final boolean dontClose) {
             assertTrue(dontClose);
         }
-        public void setErrStream(final OutputStream os, final boolean dontClose) {
+        public void setErrStream(final OutputStream outputStream, final boolean dontClose) {
             assertTrue(dontClose);
         }
         public void setCommand(final String command) {

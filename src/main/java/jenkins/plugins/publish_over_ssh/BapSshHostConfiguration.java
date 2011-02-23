@@ -35,14 +35,20 @@ import jenkins.plugins.publish_over.BPHostConfiguration;
 import jenkins.plugins.publish_over.BapPublisherException;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
 import java.util.Properties;
 
+@SuppressWarnings("PMD.TooManyMethods")
 public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, BapSshCommonConfiguration> {
 
     private static final long serialVersionUID = 1L;
+    public static final int DEFAULT_PORT = 22;
+    public static final int DEFAULT_TIMEOUT = 300000;
+    private static final Log LOG = LogFactory.getLog(BapSshHostConfiguration.class);
 
     public static int getDefaultPort() {
         return DEFAULT_PORT;
@@ -51,14 +57,13 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         return DEFAULT_TIMEOUT;
     }
 
-    public static final int DEFAULT_PORT = 22;
-    public static final int DEFAULT_TIMEOUT = 300000;
     private int timeout;
     private boolean overrideKey;
     private BapSshConcreteKeyInfo keyInfo;
 
     // CSOFF: ParameterNumberCheck
     @DataBoundConstructor
+    @SuppressWarnings("PMD.ExcessiveParameterList") // DBC for you!
     public BapSshHostConfiguration(final String name, final String hostname, final String username, final String password,
                                    final String remoteRootDir, final int port, final int timeout, final boolean overrideKey,
                                    final String keyPath, final String key) {
@@ -96,18 +101,18 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     public boolean isOverrideKey() { return overrideKey; }
     public void setOverrideKey(final boolean overrideKey) { this.overrideKey = overrideKey; }
 
-    BapSshKeyInfo getEffectiveKeyInfo() {
+    private BapSshKeyInfo getEffectiveKeyInfo() {
         return overrideKey ? keyInfo : getCommonConfig();
     }
 
     @Override
     public BapSshClient createClient(final BPBuildInfo buildInfo) {
-        JSch ssh = createJSch();
-        Session session = createSession(buildInfo, ssh);
-        BapSshClient bapClient = new BapSshClient(buildInfo, session);
+        final JSch ssh = createJSch();
+        final Session session = createSession(buildInfo, ssh);
+        final BapSshClient bapClient = new BapSshClient(buildInfo, session);
         try {
-            BapSshKeyInfo keyInfo = getEffectiveKeyInfo();
-            Properties sessionProperties = getSessionProperties();
+            final BapSshKeyInfo keyInfo = getEffectiveKeyInfo();
+            final Properties sessionProperties = getSessionProperties();
             if (getEffectiveKeyInfo().useKey()) {
                 setKey(buildInfo, ssh, keyInfo);
                 sessionProperties.put("PreferredAuthentications", "publickey");
@@ -116,7 +121,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             }
             session.setConfig(sessionProperties);
             connect(buildInfo, session);
-            ChannelSftp sftp = openSftpChannel(buildInfo, session);
+            final ChannelSftp sftp = openSftpChannel(buildInfo, session);
             bapClient.setSftp(sftp);
             connectSftpChannel(buildInfo, sftp);
             changeToRootDirectory(bapClient);
@@ -148,7 +153,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     }
 
     private String getRootDirectoryFromPwd(final BapSshClient client, final ChannelSftp sftp) {
-        BPBuildInfo buildInfo = client.getBuildInfo();
+        final BPBuildInfo buildInfo = client.getBuildInfo();
         buildInfo.printIfVerbose(Messages.console_usingPwd());
         try {
             String pwd = sftp.pwd();
@@ -156,7 +161,9 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
                 throw new BapPublisherException(Messages.exception_pwdNotAbsolute(pwd));
             return pwd;
         } catch (SftpException sftpe) {
-            throw new BapPublisherException(Messages.exception_pwd(sftpe.getLocalizedMessage()));
+            final String message = Messages.exception_pwd(sftpe.getLocalizedMessage());
+            LOG.warn(message, sftpe);
+            throw new BapPublisherException(message);
         }
     }
 
@@ -165,25 +172,29 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         try {
             channel.connect(getTimeout());
         } catch (JSchException jse) {
-            throw new BapPublisherException(Messages.exception_sftp_connect(jse.getLocalizedMessage()));
+            final String message = Messages.exception_sftp_connect(jse.getLocalizedMessage());
+            LOG.warn(message, jse);
+            throw new BapPublisherException(message);
         }
         buildInfo.printIfVerbose(Messages.console_sftp_connected());
     }
 
     private ChannelSftp openSftpChannel(final BPBuildInfo buildInfo, final Session session) {
         buildInfo.printIfVerbose(Messages.console_sftp_opening());
-        ChannelSftp sftp;
+        final ChannelSftp sftp;
         try {
             sftp = (ChannelSftp) session.openChannel("sftp");
         } catch (JSchException jse) {
-            throw new BapPublisherException(Messages.exception_sftp_open(jse.getLocalizedMessage()));
+            final String message = Messages.exception_sftp_open(jse.getLocalizedMessage());
+            LOG.warn(message, jse);
+            throw new BapPublisherException(message);
         }
         buildInfo.printIfVerbose(Messages.console_sftp_opened());
         return sftp;
     }
 
     private Properties getSessionProperties() {
-        Properties props = new Properties();
+        final Properties props = new Properties();
         props.put("StrictHostKeyChecking", "no");
         return props;
     }
@@ -193,7 +204,9 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         try {
             session.connect(getTimeout());
         } catch (JSchException jse) {
-            throw new BapPublisherException(Messages.exception_session_connect(getName(), jse.getLocalizedMessage()));
+            final String message = Messages.exception_session_connect(getName(), jse.getLocalizedMessage());
+            LOG.warn(message, jse);
+            throw new BapPublisherException(message);
         }
         buildInfo.printIfVerbose(Messages.console_session_connected());
     }
@@ -212,15 +225,15 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         return new JSch();
     }
 
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BapSshHostConfiguration that = (BapSshHostConfiguration) o;
+    public boolean equals(final Object that) {
+        if (this == that) return true;
+        if (that == null || getClass() != that.getClass()) return false;
+        final BapSshHostConfiguration thatHostConfiguration = (BapSshHostConfiguration) that;
 
-        return createEqualsBuilder(that)
-            .append(keyInfo, that.keyInfo)
-            .append(timeout, that.timeout)
-            .append(overrideKey, that.overrideKey)
+        return createEqualsBuilder(thatHostConfiguration)
+            .append(keyInfo, thatHostConfiguration.keyInfo)
+            .append(timeout, thatHostConfiguration.timeout)
+            .append(overrideKey, thatHostConfiguration.overrideKey)
             .isEquals();
     }
 

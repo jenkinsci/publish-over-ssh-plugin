@@ -46,11 +46,11 @@ public class BapSshPublisher extends BapPublisher<BapSshTransfer> {
         super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp);
     }
 
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(final Object that) {
+        if (this == that) return true;
+        if (that == null || getClass() != that.getClass()) return false;
 
-        return createEqualsBuilder((BapSshPublisher) o).isEquals();
+        return createEqualsBuilder((BapSshPublisher) that).isEquals();
     }
 
     public int hashCode() {

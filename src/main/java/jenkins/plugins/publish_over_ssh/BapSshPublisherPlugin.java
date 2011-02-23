@@ -40,6 +40,7 @@ import org.kohsuke.stapler.QueryParameter;
 import java.io.IOException;
 import java.util.List;
 
+@SuppressWarnings("PMD.TooManyMethods")
 public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClient, BapSshCommonConfiguration> {
 
     @Extension
@@ -51,11 +52,11 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
         super(Messages.console_message_prefix(), publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
 
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(final Object that) {
+        if (this == that) return true;
+        if (that == null || getClass() != that.getClass()) return false;
 
-        return createEqualsBuilder((BapSshPublisherPlugin) o).isEquals();
+        return createEqualsBuilder((BapSshPublisherPlugin) that).isEquals();
     }
 
     public int hashCode() {

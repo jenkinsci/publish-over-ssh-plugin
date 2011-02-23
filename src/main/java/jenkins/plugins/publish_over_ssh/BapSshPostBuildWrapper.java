@@ -42,7 +42,7 @@ public class BapSshPostBuildWrapper extends BuildWrapper {
     @Extension(ordinal = BapSshUtil.EXTENSION_ORDINAL_POST_BUILD_WRAPPER)
     public static final Descriptor DESCRIPTOR = new Descriptor();
 
-    private BapSshAlwaysRunPublisherPlugin postBuild;
+    private final BapSshAlwaysRunPublisherPlugin postBuild;
 
     @DataBoundConstructor
     public BapSshPostBuildWrapper(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
@@ -50,10 +50,12 @@ public class BapSshPostBuildWrapper extends BuildWrapper {
         postBuild = new BapSshAlwaysRunPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
 
+    @SuppressWarnings("PMD.JUnit4TestShouldUseBeforeAnnotation")
     public Environment setUp(final AbstractBuild build, final Launcher launcher, final BuildListener listener)
                     throws IOException, InterruptedException {
-        Environment runPostBuild = new Environment() {
-            public boolean tearDown(final AbstractBuild build, final BuildListener listener) throws IOException, InterruptedException {
+        final Environment runPostBuild = new Environment() {
+            @SuppressWarnings("PMD.JUnit4TestShouldUseAfterAnnotation")
+            public boolean tearDown(final AbstractBuild build, final BuildListener listener) throws IOException, InterruptedException { 
                 return postBuild.perform(build, listener);
             }
         };

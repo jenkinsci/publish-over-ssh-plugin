@@ -35,6 +35,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.Serializable;
 
+@SuppressWarnings("PMD.TooManyMethods")
 public class BapSshConcreteKeyInfo implements Serializable, BapSshKeyInfo {
 
     private static final long serialVersionUID = 1L;
@@ -48,7 +49,7 @@ public class BapSshConcreteKeyInfo implements Serializable, BapSshKeyInfo {
 
     @DataBoundConstructor
     public BapSshConcreteKeyInfo(final String passphrase, final String key, final String keyPath) {
-        setPassphrase(passphrase);
+        secretPassphrase = Secret.fromString(passphrase);
         this.key = key;
         this.keyPath = keyPath;
     }
@@ -110,11 +111,11 @@ public class BapSshConcreteKeyInfo implements Serializable, BapSshKeyInfo {
             .append("keyPath", keyPath);
     }
 
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(final Object that) {
+        if (this == that) return true;
+        if (that == null || getClass() != that.getClass()) return false;
 
-        return createEqualsBuilder((BapSshConcreteKeyInfo) o).isEquals();
+        return createEqualsBuilder((BapSshConcreteKeyInfo) that).isEquals();
     }
 
     public int hashCode() {

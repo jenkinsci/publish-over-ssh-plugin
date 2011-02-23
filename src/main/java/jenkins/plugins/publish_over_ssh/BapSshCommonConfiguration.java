@@ -39,12 +39,12 @@ public class BapSshCommonConfiguration extends BapSshConcreteKeyInfo {
         super(passphrase, key, keyPath);
     }
 
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BapSshCommonConfiguration that = (BapSshCommonConfiguration) o;
+    public boolean equals(final Object that) {
+        if (this == that) return true;
+        if (that == null || getClass() != that.getClass()) return false;
+        final BapSshCommonConfiguration thatCommonConfiguration = (BapSshCommonConfiguration) that;
 
-        return createEqualsBuilder(that).isEquals();
+        return createEqualsBuilder(thatCommonConfiguration).isEquals();
     }
 
     public int hashCode() {

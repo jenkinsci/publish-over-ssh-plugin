@@ -42,7 +42,7 @@ public class BapSshPreBuildWrapper extends BuildWrapper {
     @Extension(ordinal = BapSshUtil.EXTENSION_ORDINAL_PRE_BUILD_WRAPPER)
     public static final Descriptor DESCRIPTOR = new Descriptor();
 
-    private BapSshAlwaysRunPublisherPlugin preBuild;
+    private final BapSshAlwaysRunPublisherPlugin preBuild;
 
     @DataBoundConstructor
     public BapSshPreBuildWrapper(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
@@ -50,7 +50,7 @@ public class BapSshPreBuildWrapper extends BuildWrapper {
         preBuild = new BapSshAlwaysRunPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
 
-    @Override
+    @SuppressWarnings("PMD.JUnit4TestShouldUseBeforeAnnotation")
     public Environment setUp(final AbstractBuild build, final Launcher launcher, final BuildListener listener)
                     throws IOException, InterruptedException {
         return preBuild.perform(build, launcher, listener) ? new Environment() { } : null;

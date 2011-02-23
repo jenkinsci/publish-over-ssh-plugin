@@ -30,6 +30,7 @@ import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshPublisher;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import jenkins.plugins.publish_over_ssh.BapSshTransfer;
+import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 import org.jvnet.hudson.test.recipes.LocalData;
 
@@ -39,77 +40,80 @@ import java.util.List;
 
 import static org.junit.Assert.assertArrayEquals;
 
+@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 public class LegacyConfigurationTest extends HudsonTestCase {
 
     @LocalData
+    @Test
     public void testLoadR0x1Minimal() throws Exception {
-        List<BapSshHostConfiguration> configurations = BapSshPublisherPlugin.DESCRIPTOR.getHostConfigurations();
+        final List<BapSshHostConfiguration> configurations = BapSshPublisherPlugin.DESCRIPTOR.getHostConfigurations();
         assertEquals(1, configurations.size());
         final int expectedPort = 22;
         final int expectedTimeout = 300000;
-        BapSshHostConfiguration expected = new BapSshHostConfiguration("default", "hostname", "username", "password", "",
+        final BapSshHostConfiguration expected = new BapSshHostConfiguration("default", "hostname", "username", "password", "",
                                                                        expectedPort, expectedTimeout, true, "", "");
         expected.setCommonConfig(new BapSshCommonConfiguration("", "", ""));
         assertEquals(expected, configurations.get(0));
 
         final int expectedExecTimeout = 120000;
-        List<BapSshTransfer> transfers = Collections.singletonList(
+        final List<BapSshTransfer> transfers = Collections.singletonList(
                     new BapSshTransfer("**/*", "", "", false, false, "", expectedExecTimeout));
-        BapSshPublisher publisher = new BapSshPublisher("default", false, transfers);
-        List<BapSshPublisher> publishers = new LinkedList<BapSshPublisher>();
+        final BapSshPublisher publisher = new BapSshPublisher("default", false, transfers);
+        final List<BapSshPublisher> publishers = new LinkedList<BapSshPublisher>();
         publishers.add(publisher);
-        BapSshPublisherPlugin expectedPlugin = new BapSshPublisherPlugin(publishers, false, false, false, "");
+        final BapSshPublisherPlugin expectedPlugin = new BapSshPublisherPlugin(publishers, false, false, false, "");
         assertEquals(expectedPlugin, getConfiguredPlugin());
     }
 
     @LocalData
+    @Test
     public void testLoadR0x1() throws Exception {
         final int defaultPort = 22;
         final int defaultTimeout = 300000;
         final int configDPort = 8022;
         final int configDTimeout = 10000;
-        BapSshHostConfiguration[] expectedConfig = new BapSshHostConfiguration[] {
+        final BapSshHostConfiguration[] expectedConfig = new BapSshHostConfiguration[] {
             new BapSshHostConfiguration("config a", "hostname.a", "username.a", "password.a", "remoteDirectory.a",
                                         defaultPort, defaultTimeout, false, "", ""),
             new BapSshHostConfiguration("config b", "hostname.b", "username.b", "", "",
                                         defaultPort, defaultTimeout, true, "/an/unencrypted/key", ""),
             new BapSshHostConfiguration("config c", "hostname.c", "username.c", "", "",
-                                        defaultPort, defaultTimeout, true, "", key2),
+                                        defaultPort, defaultTimeout, true, "", KEY_2),
             new BapSshHostConfiguration("config d", "hostname.d", "username.d", "passphrase", "remoteDirectory.d",
-                                        configDPort, configDTimeout, true, "path/to/key", key2)
+                                        configDPort, configDTimeout, true, "path/to/key", KEY_2)
         };
-        BapSshCommonConfiguration common = new BapSshCommonConfiguration("hello", commonKey, "/this/will/be/ignored");
+        final BapSshCommonConfiguration common = new BapSshCommonConfiguration("hello", COMMON_KEY, "/this/will/be/ignored");
         for (BapSshHostConfiguration hostConfig : expectedConfig) {
             hostConfig.setCommonConfig(common);
         }
         assertEquals(common, BapSshPublisherPlugin.DESCRIPTOR.getCommonConfig());
         assertEquals(expectedConfig.length, BapSshPublisherPlugin.DESCRIPTOR.getHostConfigurations().size());
-        BapSshHostConfiguration[] actualHostConfigurations = BapSshPublisherPlugin.DESCRIPTOR.getHostConfigurations()
+        final BapSshHostConfiguration[] actualHostConfigurations = BapSshPublisherPlugin.DESCRIPTOR.getHostConfigurations()
                     .toArray(new BapSshHostConfiguration[expectedConfig.length]);
         assertArrayEquals(expectedConfig, actualHostConfigurations);
 
         final int tarnsfer11Timeout = 120000;
         final int transfer12Timeout = 15000;
-        BapSshTransfer transfer11 = new BapSshTransfer("", "", "", false, false, "date", tarnsfer11Timeout);
-        BapSshTransfer transfer12 = new BapSshTransfer("target/*.jar", "'builds/'yyyy_MM_dd/'build-${BUILD_NUMBER}'", "target",
+        final BapSshTransfer transfer11 = new BapSshTransfer("", "", "", false, false, "date", tarnsfer11Timeout);
+        final BapSshTransfer transfer12 = new BapSshTransfer("target/*.jar", "'builds/'yyyy_MM_dd/'build-${BUILD_NUMBER}'", "target",
                                                        true, true, "ls -la /tmp", transfer12Timeout);
-        List<BapSshTransfer> transfers1 = new LinkedList<BapSshTransfer>();
+        final List<BapSshTransfer> transfers1 = new LinkedList<BapSshTransfer>();
         transfers1.add(transfer11);
         transfers1.add(transfer12);
-        BapSshPublisher publisher1 = new BapSshPublisher("config a", true, transfers1);
+        final BapSshPublisher publisher1 = new BapSshPublisher("config a", true, transfers1);
         final int transfer21Timeout = 10000;
-        BapSshTransfer transfer21 = new BapSshTransfer("out\\dist\\**\\*", "", "out\\dist", false, false, "", transfer21Timeout);
-        List<BapSshTransfer> transfers2 = new LinkedList<BapSshTransfer>();
+        final BapSshTransfer transfer21 = new BapSshTransfer("out\\dist\\**\\*", "", "out\\dist", false, false, "", transfer21Timeout);
+        final List<BapSshTransfer> transfers2 = new LinkedList<BapSshTransfer>();
         transfers2.add(transfer21);
-        BapSshPublisher publisher2 = new BapSshPublisher("config c", false, transfers2);
-        List<BapSshPublisher> publishers = new LinkedList<BapSshPublisher>();
+        final BapSshPublisher publisher2 = new BapSshPublisher("config c", false, transfers2);
+        final List<BapSshPublisher> publishers = new LinkedList<BapSshPublisher>();
         publishers.add(publisher1);
         publishers.add(publisher2);
-        BapSshPublisherPlugin expectedPlugin = new BapSshPublisherPlugin(publishers, true, true, true, "essien");
+        final BapSshPublisherPlugin expectedPlugin = new BapSshPublisherPlugin(publishers, true, true, true, "essien");
         assertEquals(expectedPlugin, getConfiguredPlugin());
     }
 
-    private String commonKey =
+    private static final String COMMON_KEY =
         "-----BEGIN RSA PRIVATE KEY-----\n"
             + "Proc-Type: 4,ENCRYPTED\n"
             + "DEK-Info: AES-128-CBC,8885F902F99146AA580E7A6D270020D4\n"
@@ -141,7 +145,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
             + "dpXL/6h5McOOlG4Q8H6bpAvjcgtHlH99QVJIibI9pUAuzwaRPXtD6ivO+Xw2H3c7\n"
             + "-----END RSA PRIVATE KEY-----\n";
 
-    private String key2 =
+    private static final String KEY_2 =
         "-----BEGIN DSA PRIVATE KEY-----\n"
             + "MIIBuwIBAAKBgQCCwrvPcyl0tJhXxbWGKgO966l/Vhxg8w+rlqVWXNqOsY+n7xdr\n"
             + "vMNnos0qXV9+iYXJ0mBLeTLOO1q/ezTDEGXDyGdf3ubouF64YaBu0VU/us2rviQb\n"

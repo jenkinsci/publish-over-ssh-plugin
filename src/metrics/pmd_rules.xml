@@ -51,6 +51,7 @@
     <rule ref="rulesets/design.xml">
         <exclude name="UseSingleton"/>
         <exclude name="UncommentedEmptyConstructor"/>
+        <exclude name="UncommentedEmptyMethod"/>
     </rule>
     <rule ref="rulesets/finalizers.xml"/>
     <rule ref="rulesets/javabeans.xml/MissingSerialVersionUID"/>

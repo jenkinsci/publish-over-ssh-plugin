@@ -39,12 +39,13 @@ import org.apache.commons.logging.LogFactory;
 
 import java.io.InputStream;
 
+@SuppressWarnings("PMD.TooManyMethods")
 public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
 
     private static final transient Log LOG = LogFactory.getLog(BapSshClient.class);
 
-    private BPBuildInfo buildInfo;
-    private Session session;
+    private final BPBuildInfo buildInfo;
+    private final Session session;
     private ChannelSftp sftp;
 
     public BapSshClient(final BPBuildInfo buildInfo, final Session session) {
@@ -126,7 +127,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
             exec.setErrStream(buildInfo.getListener().getLogger(), true);
             connectExecChannel(exec, Util.replaceMacro(transfer.getExecCommand(), buildInfo.getEnvVars()));
             waitForExec(exec, transfer.getExecTimeout());
-            int status = exec.getExitStatus();
+            final int status = exec.getExitStatus();
             if (status != 0)
                 throw new BapPublisherException(Messages.exception_exec_exitStatus(status));
         } finally {
@@ -140,7 +141,9 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         try {
             exec.connect(session.getTimeout());
         } catch (JSchException jse) {
-            throw new BapPublisherException(Messages.exception_exec_connect(jse.getLocalizedMessage()));
+            final String message = Messages.exception_exec_connect(jse.getLocalizedMessage());
+            LOG.warn(message, jse);
+            throw new BapPublisherException(message);
         }
         buildInfo.printIfVerbose(Messages.console_exec_connected());
     }
@@ -148,11 +151,13 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     private ChannelExec openExecChannel() {
         buildInfo.printIfVerbose(Messages.console_exec_opening());
         try {
-            ChannelExec exec = (ChannelExec) session.openChannel("exec");
+            final ChannelExec exec = (ChannelExec) session.openChannel("exec");
             buildInfo.printIfVerbose(Messages.console_exec_opened());
             return exec;
         } catch (JSchException jse) {
-            throw new BapPublisherException(Messages.exception_exec_open(jse.getLocalizedMessage()));
+            final String message = Messages.exception_exec_open(jse.getLocalizedMessage());
+            LOG.warn(message, jse);
+            throw new BapPublisherException(message);
         }
     }
 
@@ -170,7 +175,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
             exec.disconnect();
     }
 
-    public void disconnect() throws Exception {
+    public void disconnect() {
         disconnectSftp();
         disconnectSession();
     }
@@ -201,13 +206,13 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     }
 
     private void waitForExec(final ChannelExec exec, final long timeout) {
-        long start = System.currentTimeMillis();
-        Thread waiter = new ExecCheckThread(exec);
+        final long start = System.currentTimeMillis();
+        final Thread waiter = new ExecCheckThread(exec);
         waiter.start();
         try {
             waiter.join(timeout);
         } catch (InterruptedException ie) { }
-        long duration = System.currentTimeMillis() - start;
+        final long duration = System.currentTimeMillis() - start;
         if (waiter.isAlive()) {
             waiter.interrupt();
         }

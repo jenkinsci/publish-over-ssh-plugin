@@ -58,14 +58,14 @@ public class BapSshTransfer extends BPTransfer {
         return Util.fixEmptyAndTrim(getExecCommand()) != null;
     }
 
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BapSshTransfer that = (BapSshTransfer) o;
+    public boolean equals(final Object that) {
+        if (this == that) return true;
+        if (that == null || getClass() != that.getClass()) return false;
+        BapSshTransfer thatTransfer = (BapSshTransfer) that;
 
-        return createEqualsBuilder(that)
-            .append(execCommand, that.execCommand)
-            .append(execTimeout, that.execTimeout)
+        return createEqualsBuilder(thatTransfer)
+            .append(execCommand, thatTransfer.execCommand)
+            .append(execTimeout, thatTransfer.execTimeout)
             .isEquals();
     }
 

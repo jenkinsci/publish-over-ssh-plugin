@@ -40,6 +40,7 @@ import jenkins.plugins.publish_over_ssh.BapSshPublisher;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import jenkins.plugins.publish_over_ssh.BapSshTransfer;
 import jenkins.plugins.publish_over_ssh.BapSshUtil;
+import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 import org.jvnet.hudson.test.TestBuilder;
 
@@ -49,34 +50,40 @@ import java.util.Collections;
 
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+@SuppressWarnings("PMD.SignatureDeclareThrowsException")
 public class IntegrationTest extends HudsonTestCase {
 
 //    @TODO test that we get the expected result when in a promotion
 
+    @Test
     public void testIntegration() throws Exception {
         final JSch mockJsch = mock(JSch.class);
-        Session mockSession = mock(Session.class);
-        ChannelSftp mockSftp = mock(ChannelSftp.class);
+        final Session mockSession = mock(Session.class);
+        final ChannelSftp mockSftp = mock(ChannelSftp.class);
         final int port = 28;
         final int timeout = 3000;
-        BapSshHostConfiguration testHostConfig = new BapSshHostConfiguration("testConfig", "testHostname", "testUsername", "",
+        final BapSshHostConfiguration testHostConfig = new BapSshHostConfiguration("testConfig", "testHostname", "testUsername", "",
                                                                              "/testRemoteRoot", port, timeout, false, "", "") {
             @Override
             public JSch createJSch() {
                 return mockJsch;
             }
         };
-        BapSshCommonConfiguration commonConfig = new BapSshCommonConfiguration("passphrase", "key", "");
+        final BapSshCommonConfiguration commonConfig = new BapSshCommonConfiguration("passphrase", "key", "");
         new JenkinsTestHelper().setGlobalConfig(commonConfig, testHostConfig);
         final String dirToIgnore = "target";
         final int execTimeout = 10000;
-        BapSshTransfer transfer = new BapSshTransfer("**/*", "sub-home", dirToIgnore, false, false, "", execTimeout);
-        BapSshPublisher publisher = new BapSshPublisher(testHostConfig.getName(), false, Collections.singletonList(transfer));
-        BapSshPublisherPlugin plugin = new BapSshPublisherPlugin(Collections.singletonList(publisher), false, false, false, "master");
+        final BapSshTransfer transfer = new BapSshTransfer("**/*", "sub-home", dirToIgnore, false, false, "", execTimeout);
+        final BapSshPublisher publisher = new BapSshPublisher(testHostConfig.getName(), false, Collections.singletonList(transfer));
+        final BapSshPublisherPlugin plugin = new BapSshPublisherPlugin(Collections.singletonList(publisher),
+                                                                                            false, false, false, "master");
 
-        FreeStyleProject project = createFreeStyleProject();
+        final FreeStyleProject project = createFreeStyleProject();
         project.getPublishersList().add(plugin);
         final String buildDirectory = "build-dir";
         final String buildFileName = "file.txt";
@@ -84,7 +91,7 @@ public class IntegrationTest extends HudsonTestCase {
             @Override
             public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener)
                                    throws InterruptedException, IOException {
-                FilePath dir = build.getWorkspace().child(dirToIgnore).child(buildDirectory);
+                final FilePath dir = build.getWorkspace().child(dirToIgnore).child(buildDirectory);
                 dir.mkdirs();
                 dir.child(buildFileName).write("Helloooooo", "UTF-8");
                 build.setResult(Result.SUCCESS);
