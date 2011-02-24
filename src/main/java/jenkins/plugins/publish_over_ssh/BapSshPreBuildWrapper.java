@@ -37,6 +37,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import java.io.IOException;
 import java.util.ArrayList;
 
+@SuppressWarnings("PMD.LooseCoupling") // serializable
 public class BapSshPreBuildWrapper extends BuildWrapper {
 
     @Extension(ordinal = BapSshUtil.EXTENSION_ORDINAL_PRE_BUILD_WRAPPER)

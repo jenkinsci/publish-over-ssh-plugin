@@ -40,7 +40,7 @@ import org.kohsuke.stapler.QueryParameter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-@SuppressWarnings("PMD.TooManyMethods")
+@SuppressWarnings({ "PMD.TooManyMethods", "PMD.LooseCoupling" })
 public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClient, BapSshCommonConfiguration> {
 
     private static final long serialVersionUID = 1L;
@@ -81,15 +81,14 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
             return !BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
         }
         public FormValidation doCheckKeyPath(@QueryParameter final String value) {
-            //@todo confirm version number then enable
-            if (false && Hudson.getVersion().isNewerThan(new VersionNumber("1.399"))) {
-                try {
-                    return Hudson.getInstance().getRootPath().validateRelativePath(value, true, true);
-                } catch (IOException ioe) {
-                    return FormValidation.error(ioe, "");
-                }
+            //@todo double check version
+            if (Hudson.getVersion().isOlderThan(new VersionNumber("1.399")))
+                return FormValidation.ok();
+            try {
+                return Hudson.getInstance().getRootPath().validateRelativePath(value, true, true);
+            } catch (IOException ioe) {
+                return FormValidation.error(ioe, "");
             }
-            return FormValidation.ok();
         }
         public FormValidation doCheckSourceFiles(@QueryParameter final String sourceFiles, @QueryParameter final String execCommand) {
             return checkTransferSet(sourceFiles, execCommand);

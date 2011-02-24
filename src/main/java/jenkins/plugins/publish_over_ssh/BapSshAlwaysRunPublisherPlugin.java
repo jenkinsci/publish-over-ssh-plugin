@@ -31,12 +31,13 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
+@SuppressWarnings("PMD.LooseCoupling") // serializable
 public class BapSshAlwaysRunPublisherPlugin extends BapSshPublisherPlugin {
 
     private static final long serialVersionUID = 1L;
 
-    public BapSshAlwaysRunPublisherPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
-                                          final boolean alwaysPublishFromMaster, final String masterNodeName) {
+    public BapSshAlwaysRunPublisherPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError,
+                                          final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName) {
         super(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
 

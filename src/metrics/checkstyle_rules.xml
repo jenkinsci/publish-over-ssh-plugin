@@ -33,9 +33,7 @@
     <module name="FileLength"/>
     <module name="FileTabCharacter"/>
     <module name="RegexpSingleline">
-       <property name="format" value="\s+$"/>
-       <property name="minimum" value="0"/>
-       <property name="maximum" value="0"/>
+       <property name="format" value="\s+$"/> <!-- be nice to lower priority here. useful but not the MOST important check! -->
        <property name="message" value="Line has trailing spaces."/>
     </module>
     <module name="TreeWalker">
@@ -84,7 +82,9 @@
         <module name="SimplifyBooleanReturn"/>
         <module name="FinalClass"/>
         <module name="InterfaceIsType"/>
-        <module name="VisibilityModifier"/>
+        <module name="VisibilityModifier">
+            <property name="publicMemberPattern" value="^jenkinsHome$"/> <!-- TemporaryDirectory needs to be public -->
+        </module>
         <module name="ArrayTypeStyle"/>
         <module name="FinalParameters"/>
         <module name="TodoComment"/>

@@ -44,6 +44,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import java.io.IOException;
 import java.util.ArrayList;
 
+@SuppressWarnings("PMD.LooseCoupling") // serializable
 public class BapSshPromotionPublisherPlugin extends Notifier {
 
     @Extension
@@ -52,8 +53,8 @@ public class BapSshPromotionPublisherPlugin extends Notifier {
     private final BapSshPublisherPlugin delegate;
 
     @DataBoundConstructor
-    public BapSshPromotionPublisherPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
-                                          final boolean alwaysPublishFromMaster, final String masterNodeName) {
+    public BapSshPromotionPublisherPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError,
+                                          final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName) {
         this.delegate = new BapSshPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
 

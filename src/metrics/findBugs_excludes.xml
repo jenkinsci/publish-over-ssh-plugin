@@ -28,7 +28,7 @@
     </Match>
     <Match>
         <Class name="~.*Test\$.*"/>
-        <Bug code="SE"/>
+        <Bug code="Se"/>
     </Match>
     <Match>
         <Class name="~.*\.BapSshUtil"/>
