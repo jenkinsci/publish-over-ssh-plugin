@@ -24,13 +24,111 @@
 
 package jenkins.plugins.publish_over_ssh;
 
+import hudson.Util;
+import hudson.util.Secret;
 import jenkins.plugins.publish_over.BPBuildInfo;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.kohsuke.stapler.DataBoundConstructor;
 
-public interface BapSshKeyInfo {
+import java.io.Serializable;
 
-    String getPassphrase();
-    String getEncryptedPassphrase();
-    byte[] getEffectiveKey(BPBuildInfo buildInfo);
-    boolean useKey();
+@SuppressWarnings("PMD.TooManyMethods")
+public class BapSshKeyInfo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private String passphrase;
+    private Secret secretPassphrase;
+    private String key;
+    private String keyPath;
+
+    @DataBoundConstructor
+    public BapSshKeyInfo(final String passphrase, final String key, final String keyPath) {
+        secretPassphrase = Secret.fromString(passphrase);
+        this.key = key;
+        this.keyPath = keyPath;
+    }
+
+    protected final String getPassphrase() { return Secret.toString(secretPassphrase); }
+    public final void setPassphrase(final String passphrase) { secretPassphrase = Secret.fromString(passphrase); }
+
+    public final String getEncryptedPassphrase() {
+        return (secretPassphrase == null) ? null : secretPassphrase.getEncryptedValue();
+    }
+
+    public String getKey() { return key; }
+    public void setKey(final String key) { this.key = key; }
+
+    public String getKeyPath() { return keyPath; }
+    public void setKeyPath(final String keyPath) { this.keyPath = keyPath; }
+
+    public byte[] getEffectiveKey(final BPBuildInfo buildInfo) {
+        if (hasKey())
+            return BapSshUtil.toBytes(key);
+        return buildInfo.readFileFromMaster(keyPath.trim());
+    }
+
+    public boolean useKey() {
+        return hasKey() || hasKeyPath();
+    }
+
+    private boolean hasKey() {
+        return Util.fixEmptyAndTrim(key) != null;
+    }
+
+    private boolean hasKeyPath() {
+        return Util.fixEmptyAndTrim(keyPath) != null;
+    }
+
+    protected HashCodeBuilder createHashCodeBuilder() {
+        return addToHashCode(new HashCodeBuilder());
+    }
+
+    protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
+        return builder.append(secretPassphrase)
+            .append(key)
+            .append(keyPath);
+    }
+
+    protected EqualsBuilder createEqualsBuilder(final BapSshKeyInfo that) {
+        return addToEquals(new EqualsBuilder(), that);
+    }
+
+    protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshKeyInfo that) {
+        return builder.append(secretPassphrase, that.secretPassphrase)
+            .append(key, that.key)
+            .append(keyPath, that.keyPath);
+    }
+
+    protected ToStringBuilder addToToString(final ToStringBuilder builder) {
+        return builder.append("passphrase", "***")
+            .append("key", "***")
+            .append("keyPath", keyPath);
+    }
+
+    public boolean equals(final Object that) {
+        if (this == that) return true;
+        if (that == null || getClass() != that.getClass()) return false;
+
+        return createEqualsBuilder((BapSshKeyInfo) that).isEquals();
+    }
+
+    public int hashCode() {
+        return createHashCodeBuilder().toHashCode();
+    }
+
+    public String toString() {
+        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+    }
+
+    public Object readResolve() {
+        if (secretPassphrase == null)
+            secretPassphrase = Secret.fromString(passphrase);
+        passphrase = null;
+        return this;
+    }
 
 }

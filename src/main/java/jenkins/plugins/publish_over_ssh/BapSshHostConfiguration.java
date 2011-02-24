@@ -59,7 +59,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
     private int timeout;
     private boolean overrideKey;
-    private BapSshConcreteKeyInfo keyInfo;
+    private BapSshKeyInfo keyInfo;
 
     // CSOFF: ParameterNumberCheck
     @DataBoundConstructor
@@ -71,26 +71,16 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         super(name, hostname, username, null, remoteRootDir, port);
         this.timeout = timeout;
         this.overrideKey = overrideKey;
-        setPassword(password);
-        setKey(key);
-        setKeyPath(keyPath);
-    }
-
-    private void createKeyInfoIfNotInit() {
-        if (keyInfo == null)
-            keyInfo = new BapSshConcreteKeyInfo();
+        keyInfo = new BapSshKeyInfo(password, key, keyPath);
     }
 
     public int getTimeout() { return timeout; }
     public void setTimeout(final int timeout) { this.timeout = timeout; }
 
-    public String getPassword() { return keyInfo.getPassphrase(); }
-    public void setPassword(final String password) {
-        createKeyInfoIfNotInit();
-        keyInfo.setPassphrase(password);
-    }
+    protected final String getPassword() { return keyInfo.getPassphrase(); }
+    public final void setPassword(final String password) { keyInfo.setPassphrase(password); }
 
-    public String getEncryptedPassword() { return keyInfo.getEncryptedPassphrase(); }
+    public final String getEncryptedPassword() { return keyInfo.getEncryptedPassphrase(); }
 
     public String getKeyPath() { return keyInfo.getKeyPath(); }
     public void setKeyPath(final String keyPath) { keyInfo.setKeyPath(keyPath); }

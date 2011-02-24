@@ -28,11 +28,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-public class BapSshCommonConfiguration extends BapSshConcreteKeyInfo {
+public class BapSshCommonConfiguration extends BapSshKeyInfo {
 
     private static final long serialVersionUID = 1L;
-
-    public BapSshCommonConfiguration() { }
 
     @DataBoundConstructor
     public BapSshCommonConfiguration(final String passphrase, final String key, final String keyPath) {
