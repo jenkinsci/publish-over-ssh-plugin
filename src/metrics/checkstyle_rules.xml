@@ -83,7 +83,7 @@
         <module name="FinalClass"/>
         <module name="InterfaceIsType"/>
         <module name="VisibilityModifier">
-            <property name="publicMemberPattern" value="^jenkinsHome$"/> <!-- TemporaryDirectory needs to be public -->
+            <property name="publicMemberPattern" value="^jenkinsHome$"/> <!-- @Rule TemporaryFolder needs to be public -->
         </module>
         <module name="ArrayTypeStyle"/>
         <module name="FinalParameters"/>
