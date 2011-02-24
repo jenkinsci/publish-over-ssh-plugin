@@ -27,7 +27,7 @@
         <Bug pattern="REC_CATCH_EXCEPTION,SIC_INNER_SHOULD_BE_STATIC_ANON"/>
     </Match>
     <Match>
-        <Class name="~.*Test"/>
+        <Class name="~.*Test\$.*"/>
         <Bug pattern="SE_TRANSIENT_FIELD_NOT_RESTORED"/>
     </Match>
     <Match>

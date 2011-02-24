@@ -33,6 +33,8 @@ import java.util.List;
 
 public class BapSshAlwaysRunPublisherPlugin extends BapSshPublisherPlugin {
 
+    private static final long serialVersionUID = 1L;
+
     public BapSshAlwaysRunPublisherPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
                                           final boolean alwaysPublishFromMaster, final String masterNodeName) {
         super(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);

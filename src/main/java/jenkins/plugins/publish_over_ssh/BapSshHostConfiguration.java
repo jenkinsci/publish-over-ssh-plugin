@@ -59,7 +59,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
     private int timeout;
     private boolean overrideKey;
-    private BapSshKeyInfo keyInfo;
+    private final BapSshKeyInfo keyInfo;
 
     // CSOFF: ParameterNumberCheck
     @DataBoundConstructor

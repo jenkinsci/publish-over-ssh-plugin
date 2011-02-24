@@ -43,6 +43,8 @@ import java.util.List;
 @SuppressWarnings("PMD.TooManyMethods")
 public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClient, BapSshCommonConfiguration> {
 
+    private static final long serialVersionUID = 1L;
+
     @Extension
     public static final Descriptor DESCRIPTOR = new Descriptor();
 

@@ -37,8 +37,8 @@ import java.security.PrivilegedExceptionAction;
 
 public class JenkinsTestHelper {
 
-    public void setGlobalConfig(final BapSshCommonConfiguration commonConfig,
-                                final BapSshHostConfiguration... newHostConfigurations) throws Exception {
+    public void setGlobalConfig(final BapSshCommonConfiguration commonConfig, final BapSshHostConfiguration... newHostConfigurations)
+                                                                                throws NoSuchFieldException, IllegalAccessException {
         for (BapSshHostConfiguration hostConfig : newHostConfigurations) {
             hostConfig.setCommonConfig(commonConfig);
         }
