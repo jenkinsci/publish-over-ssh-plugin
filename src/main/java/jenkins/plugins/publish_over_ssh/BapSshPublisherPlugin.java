@@ -38,7 +38,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.ArrayList;
 
 @SuppressWarnings("PMD.TooManyMethods")
 public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClient, BapSshCommonConfiguration> {
@@ -49,7 +49,7 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
     public static final Descriptor DESCRIPTOR = new Descriptor();
 
     @DataBoundConstructor
-    public BapSshPublisherPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
+    public BapSshPublisherPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
                                  final boolean alwaysPublishFromMaster, final String masterNodeName) {
         super(Messages.console_message_prefix(), publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }

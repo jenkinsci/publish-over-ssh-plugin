@@ -38,14 +38,8 @@
        <property name="maximum" value="0"/>
        <property name="message" value="Line has trailing spaces."/>
     </module>
-    <module name="SuppressWithNearbyCommentFilter">
-        <property name="commentFormat" value=".*DataBoundConstructor.*"/>
-        <property name="checkFormat" value="ParameterNumberCheck"/>
-        <property name="influenceFormat" value="-1"/>
-    </module>    
     <module name="TreeWalker">
         <property name="tabWidth" value="4"/>
-        <module name="FileContentsHolder"/>
         <module name="ConstantName"/>
         <module name="LocalFinalVariableName"/>
         <module name="LocalVariableName"/>
@@ -63,7 +57,6 @@
                 <property name="max" value="140"/>
         </module>
         <module name="MethodLength"/>
-        <module name="ParameterNumber"/>
         <module name="EmptyForIteratorPad"/>
         <module name="GenericWhitespace"/>
         <module name="MethodParamPad"/>

@@ -29,19 +29,19 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import java.util.List;
+import java.util.ArrayList;
 
 
 public class BapSshPublisher extends BapPublisher<BapSshTransfer> {
 
     private static final long serialVersionUID = 1L;
 
-    public BapSshPublisher(final String configName, final boolean verbose, final List<BapSshTransfer> transfers) {
+    public BapSshPublisher(final String configName, final boolean verbose, final ArrayList<BapSshTransfer> transfers) {
         this(configName, verbose, transfers, false, false);
     }
 
     @DataBoundConstructor
-    public BapSshPublisher(final String configName, final boolean verbose, final List<BapSshTransfer> transfers,
+    public BapSshPublisher(final String configName, final boolean verbose, final ArrayList<BapSshTransfer> transfers,
                            final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp) {
         super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp);
     }
