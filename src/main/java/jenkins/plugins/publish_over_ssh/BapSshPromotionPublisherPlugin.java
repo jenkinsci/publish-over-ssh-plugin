@@ -42,7 +42,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.ArrayList;
 
 public class BapSshPromotionPublisherPlugin extends Notifier {
 
@@ -52,7 +52,7 @@ public class BapSshPromotionPublisherPlugin extends Notifier {
     private final BapSshPublisherPlugin delegate;
 
     @DataBoundConstructor
-    public BapSshPromotionPublisherPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
+    public BapSshPromotionPublisherPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
                                           final boolean alwaysPublishFromMaster, final String masterNodeName) {
         this.delegate = new BapSshPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }

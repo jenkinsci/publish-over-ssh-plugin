@@ -39,7 +39,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.ArrayList;
 
 public class BapSshBuilderPlugin extends Builder {
 
@@ -49,7 +49,7 @@ public class BapSshBuilderPlugin extends Builder {
     private final BapSshPublisherPlugin delegate;
 
     @DataBoundConstructor
-    public BapSshBuilderPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
+    public BapSshBuilderPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
                                final boolean alwaysPublishFromMaster, final String masterNodeName) {
         this.delegate = new BapSshPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }

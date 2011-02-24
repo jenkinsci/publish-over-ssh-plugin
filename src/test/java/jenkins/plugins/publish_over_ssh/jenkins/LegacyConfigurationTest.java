@@ -34,8 +34,8 @@ import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 import org.jvnet.hudson.test.recipes.LocalData;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -58,8 +58,8 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         final int expectedExecTimeout = 120000;
         final List<BapSshTransfer> transfers = Collections.singletonList(
                     new BapSshTransfer("**/*", "", "", false, false, "", expectedExecTimeout));
-        final BapSshPublisher publisher = new BapSshPublisher("default", false, transfers);
-        final List<BapSshPublisher> publishers = new LinkedList<BapSshPublisher>();
+        final BapSshPublisher publisher = new BapSshPublisher("default", false, new ArrayList<BapSshTransfer>(transfers));
+        final ArrayList<BapSshPublisher> publishers = new ArrayList<BapSshPublisher>();
         publishers.add(publisher);
         final BapSshPublisherPlugin expectedPlugin = new BapSshPublisherPlugin(publishers, false, false, false, "");
         assertEquals(expectedPlugin, getConfiguredPlugin());
@@ -97,16 +97,16 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         final BapSshTransfer transfer11 = new BapSshTransfer("", "", "", false, false, "date", tarnsfer11Timeout);
         final BapSshTransfer transfer12 = new BapSshTransfer("target/*.jar", "'builds/'yyyy_MM_dd/'build-${BUILD_NUMBER}'", "target",
                                                        true, true, "ls -la /tmp", transfer12Timeout);
-        final List<BapSshTransfer> transfers1 = new LinkedList<BapSshTransfer>();
+        final ArrayList<BapSshTransfer> transfers1 = new ArrayList<BapSshTransfer>();
         transfers1.add(transfer11);
         transfers1.add(transfer12);
         final BapSshPublisher publisher1 = new BapSshPublisher("config a", true, transfers1);
         final int transfer21Timeout = 10000;
         final BapSshTransfer transfer21 = new BapSshTransfer("out\\dist\\**\\*", "", "out\\dist", false, false, "", transfer21Timeout);
-        final List<BapSshTransfer> transfers2 = new LinkedList<BapSshTransfer>();
+        final ArrayList<BapSshTransfer> transfers2 = new ArrayList<BapSshTransfer>();
         transfers2.add(transfer21);
         final BapSshPublisher publisher2 = new BapSshPublisher("config c", false, transfers2);
-        final List<BapSshPublisher> publishers = new LinkedList<BapSshPublisher>();
+        final ArrayList<BapSshPublisher> publishers = new ArrayList<BapSshPublisher>();
         publishers.add(publisher1);
         publishers.add(publisher2);
         final BapSshPublisherPlugin expectedPlugin = new BapSshPublisherPlugin(publishers, true, true, true, "essien");

@@ -35,7 +35,7 @@ import jenkins.plugins.publish_over.BPInstanceConfig;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.ArrayList;
 
 public class BapSshPreBuildWrapper extends BuildWrapper {
 
@@ -45,7 +45,7 @@ public class BapSshPreBuildWrapper extends BuildWrapper {
     private final BapSshAlwaysRunPublisherPlugin preBuild;
 
     @DataBoundConstructor
-    public BapSshPreBuildWrapper(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
+    public BapSshPreBuildWrapper(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
                                  final boolean alwaysPublishFromMaster, final String masterNodeName) {
         preBuild = new BapSshAlwaysRunPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }

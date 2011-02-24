@@ -46,6 +46,7 @@ import org.jvnet.hudson.test.TestBuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 
 import static org.mockito.Matchers.anyObject;
@@ -79,9 +80,10 @@ public class IntegrationTest extends HudsonTestCase {
         final String dirToIgnore = "target";
         final int execTimeout = 10000;
         final BapSshTransfer transfer = new BapSshTransfer("**/*", "sub-home", dirToIgnore, false, false, "", execTimeout);
-        final BapSshPublisher publisher = new BapSshPublisher(testHostConfig.getName(), false, Collections.singletonList(transfer));
-        final BapSshPublisherPlugin plugin = new BapSshPublisherPlugin(Collections.singletonList(publisher),
-                                                                                            false, false, false, "master");
+        final BapSshPublisher publisher = new BapSshPublisher(testHostConfig.getName(), false,
+                        new ArrayList<BapSshTransfer>(Collections.singletonList(transfer)));
+        final BapSshPublisherPlugin plugin = new BapSshPublisherPlugin(
+                        new ArrayList<BapSshPublisher>(Collections.singletonList(publisher)), false, false, false, "master");
 
         final FreeStyleProject project = createFreeStyleProject();
         project.getPublishersList().add(plugin);
