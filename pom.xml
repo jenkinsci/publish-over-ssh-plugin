@@ -35,9 +35,9 @@
     <artifactId>publish-over-ssh</artifactId>
     <packaging>hpi</packaging>
     <name>Publish Over SSH</name>
-    <version>0.6-SNAPSHOT</version>
+    <version>0.7-SNAPSHOT</version>
     <description>Send build artifacts over SSH</description>
-    <url>http://wiki.jenkins-ci.org/display/JENKINS/Publish+Over+SSH+Plugin</url> 
+    <url>http://wiki.jenkins-ci.org/display/JENKINS/Publish+Over+SSH+Plugin</url>
 
     <properties>
         <java.net.id>bap</java.net.id>                
