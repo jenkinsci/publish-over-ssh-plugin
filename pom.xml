@@ -117,9 +117,9 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.jvnet.hudson.tools</groupId>
+                <groupId>org.jenkins-ci.tools</groupId>
                 <artifactId>maven-hpi-plugin</artifactId>
-                <version>1.42</version>
+                <version>1.67</version>
                 <extensions>true</extensions>
                 <configuration>
                     <compatibleSinceVersion>0.3</compatibleSinceVersion>
