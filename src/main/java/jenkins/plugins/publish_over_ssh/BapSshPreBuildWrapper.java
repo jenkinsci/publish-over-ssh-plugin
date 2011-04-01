@@ -40,9 +40,6 @@ import java.util.ArrayList;
 @SuppressWarnings("PMD.LooseCoupling") // serializable
 public class BapSshPreBuildWrapper extends BuildWrapper {
 
-    @Extension(ordinal = BapSshUtil.EXTENSION_ORDINAL_PRE_BUILD_WRAPPER)
-    public static final Descriptor DESCRIPTOR = new Descriptor();
-
     private final BapSshAlwaysRunPublisherPlugin preBuild;
 
     @DataBoundConstructor
@@ -61,6 +58,7 @@ public class BapSshPreBuildWrapper extends BuildWrapper {
         return preBuild.getInstanceConfig();
     }
 
+    @Extension(ordinal = BapSshUtil.EXTENSION_ORDINAL_PRE_BUILD_WRAPPER)
     public static class Descriptor extends BuildWrapperDescriptor {
         public boolean isApplicable(final AbstractProject<?, ?> abstractProject) {
             return true;

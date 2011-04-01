@@ -45,9 +45,6 @@ import java.util.ArrayList;
 @SuppressWarnings("PMD.LooseCoupling") // serializable
 public class BapSshBuilderPlugin extends Builder {
 
-    @Extension
-    public static final Descriptor DESCRIPTOR = new Descriptor();
-
     private final BapSshPublisherPlugin delegate;
 
     @DataBoundConstructor
@@ -101,6 +98,7 @@ public class BapSshBuilderPlugin extends Builder {
         return delegate.getInstanceConfig();
     }
 
+    @Extension
     public static class Descriptor extends BuildStepDescriptor<Builder> {
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
             return !BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
