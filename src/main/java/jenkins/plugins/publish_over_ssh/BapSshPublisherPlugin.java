@@ -81,7 +81,6 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
             return !BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
         }
         public FormValidation doCheckKeyPath(@QueryParameter final String value) {
-            //@todo double check version
             if (Hudson.getVersion().isOlderThan(new VersionNumber("1.399")))
                 return FormValidation.ok();
             try {
