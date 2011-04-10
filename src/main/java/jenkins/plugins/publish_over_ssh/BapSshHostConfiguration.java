@@ -59,6 +59,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
     private int timeout;
     private boolean overrideKey;
+    private boolean disableExec;
     private final BapSshKeyInfo keyInfo;
 
     // CSOFF: ParameterNumberCheck
@@ -66,12 +67,13 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     @SuppressWarnings("PMD.ExcessiveParameterList") // DBC for you!
     public BapSshHostConfiguration(final String name, final String hostname, final String username, final String password,
                                    final String remoteRootDir, final int port, final int timeout, final boolean overrideKey,
-                                   final String keyPath, final String key) {
+                                   final String keyPath, final String key, final boolean disableExec) {
         // CSON: ParameterNumberCheck
         super(name, hostname, username, null, remoteRootDir, port);
         this.timeout = timeout;
         this.overrideKey = overrideKey;
         keyInfo = new BapSshKeyInfo(password, key, keyPath);
+        this.disableExec = disableExec;
     }
 
     public int getTimeout() { return timeout; }
@@ -91,6 +93,13 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     public boolean isOverrideKey() { return overrideKey; }
     public void setOverrideKey(final boolean overrideKey) { this.overrideKey = overrideKey; }
 
+    public boolean isDisableExec() { return disableExec; }
+    public void setDisableExec(boolean disableExec) { this.disableExec = disableExec; }
+
+    public boolean isEffectiveDisableExec() {
+        return getCommonConfig().isDisableAllExec() || disableExec;
+    }
+
     private BapSshKeyInfo getEffectiveKeyInfo() {
         return overrideKey ? keyInfo : getCommonConfig();
     }
@@ -99,7 +108,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     public BapSshClient createClient(final BPBuildInfo buildInfo) {
         final JSch ssh = createJSch();
         final Session session = createSession(buildInfo, ssh);
-        final BapSshClient bapClient = new BapSshClient(buildInfo, session);
+        final BapSshClient bapClient = new BapSshClient(buildInfo, session, isEffectiveDisableExec());
         try {
             final BapSshKeyInfo keyInfo = getEffectiveKeyInfo();
             final Properties sessionProperties = getSessionProperties();
@@ -224,6 +233,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             .append(keyInfo, thatHostConfiguration.keyInfo)
             .append(timeout, thatHostConfiguration.timeout)
             .append(overrideKey, thatHostConfiguration.overrideKey)
+            .append(disableExec, thatHostConfiguration.disableExec)
             .isEquals();
     }
 
@@ -232,6 +242,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             .append(keyInfo)
             .append(timeout)
             .append(overrideKey)
+            .append(disableExec)
             .toHashCode();
     }
 
@@ -240,6 +251,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             .append("keyInfo", keyInfo)
             .append("timeout", timeout)
             .append("overrideKey", overrideKey)
+            .append("disableExec", disableExec)
             .toString();
     }
 

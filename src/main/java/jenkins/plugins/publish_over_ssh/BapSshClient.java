@@ -46,11 +46,21 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
 
     private final BPBuildInfo buildInfo;
     private final Session session;
+    private final boolean disableExec;
     private ChannelSftp sftp;
 
     public BapSshClient(final BPBuildInfo buildInfo, final Session session) {
+        this(buildInfo, session, false);
+    }
+
+    public BapSshClient(final BPBuildInfo buildInfo, final Session session, final boolean disableExec) {
         this.buildInfo = buildInfo;
         this.session = session;
+        this.disableExec = disableExec;
+    }
+
+    public boolean isDisableExec() {
+        return disableExec;
     }
 
     public BPBuildInfo getBuildInfo() {
@@ -62,8 +72,13 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     }
 
     public void beginTransfers(final BapSshTransfer transfer) {
-        if (!transfer.hasConfiguredSourceFiles() && !transfer.hasExecCommand())
-            throw new BapPublisherException(Messages.exception_badTransferConfig());
+        if (disableExec) {
+            if (!transfer.hasConfiguredSourceFiles())
+                throw new BapPublisherException(Messages.exception_badTransferConfig_noExec());
+        } else {
+            if (!transfer.hasConfiguredSourceFiles() && !transfer.hasExecCommand())
+                throw new BapPublisherException(Messages.exception_badTransferConfig());
+        }
     }
 
     public boolean changeDirectory(final String directory) {
@@ -114,7 +129,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     }
 
     public void endTransfers(final BapSshTransfer transfer) {
-        if (transfer.hasExecCommand())
+        if (!disableExec && transfer.hasExecCommand())
             exec(transfer);
     }
 

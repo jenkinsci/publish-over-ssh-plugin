@@ -26,8 +26,15 @@
 
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
+    <script type="text/javascript" src="${rootURL}/plugin/publish-over-ssh/js/pos.js" />
     <j:set var="helpUrl" value="${rootURL}/plugin/publish-over-ssh/help/config/"/>
     <j:invokeStatic className="jenkins.plugins.publish_over_ssh.BapSshTransfer" method="getDefaultExecTimeout" var="defaultExecTimeout"/>
+
+    <script type="text/javascript">
+        <j:forEach var="config" items="${descriptor.publisherDescriptor.hostConfigurations}">
+            exec_disabled['${config.name}'] = ${config.effectiveDisableExec};
+        </j:forEach>
+    </script>
 
     <f:entry title="${%publishers.section}">
 
@@ -36,9 +43,9 @@
                 <table width="100%" padding="0">
 
                     <f:entry title="${%hostconfig.title}" help="${helpUrl}configName.html">
-                        <select class="setting-input" name="configName" description="${%hostconfig.description}">
+                        <select class="setting-input ssh-config-name" name="configName" description="${%hostconfig.description}">
                             <j:forEach var="s" items="${descriptor.publisherDescriptor.hostConfigurations}">
-                                <f:option selected="${s.name==publisher.configName}">${s.name}</f:option>
+                                <f:option value="${s.name}" selected="${s.name==publisher.configName}">${s.name}<j:if test="${s.effectiveDisableExec}">${%hostconfig.noexec.suffix}</j:if></f:option>
                             </j:forEach>
                         </select>
                     </f:entry>
@@ -71,10 +78,10 @@
 
                     <f:entry title="${%sshTransfers.section}" help="${helpUrl}sshTransfers.html">
                         <f:repeatable items="${publisher.transfers}" var="transfer" name="transfers" minimum="1" header="${%sshTransfers.dragAndDropLabel}" add="${%addSshTransfers.value}">
-                            <table width="100%" padding="0">
+                            <table width="100%" padding="0" class="ssh-transfer">
 
                                 <f:entry title="${%sourceFiles.title}" help="${helpUrl}sourceFiles${promoHelpSuffix}.html">
-                                    <f:textbox name="sourceFiles" value="${transfer.sourceFiles}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('sourceFiles')}"/>
+                                    <f:textbox name="sourceFiles" value="${transfer.sourceFiles}" checkUrl="'${rootURL}/descriptorByName/jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin/checkSourceFiles'+qs(this).nearBy('sourceFiles').nearBy('execCommand').toString()+bap_get_configName_qs(this)"/>
                                 </f:entry>
 
                                 <f:entry title="${%removePrefix.title}" help="${helpUrl}removePrefix.html">
@@ -86,12 +93,12 @@
                                 </f:entry>
 
                                 <f:entry title="${%execCommand.title}" help="${helpUrl}execCommand.html">
-                                    <f:textbox name="execCommand" value="${transfer.execCommand}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('execCommand')}"/>
+                                    <f:textbox name="execCommand" value="${transfer.execCommand}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('execCommand')}" clazz="ssh-exec-control"/>
                                 </f:entry>
 
-                                <f:entry>
+                                <f:description>
                                     <j:out value='${%transfers.envVars(rootURL)}'/>
-                                </f:entry>
+                                </f:description>
                                 
                                 <f:advanced>
 
@@ -104,9 +111,9 @@
                                     </f:entry>
 
                                     <f:entry title="${%execTimeout.title}" help="${helpUrl}execTimeout.html">
-                                        <f:textbox name="execTimeout" value="${transfer.execTimeout}" default="${defaultExecTimeout}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('execTimeout')}"/>
+                                        <f:textbox name="execTimeout" value="${transfer.execTimeout}" default="${defaultExecTimeout}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('execTimeout')}" clazz="ssh-exec-control"/>
                                     </f:entry>
-                                
+
                                 </f:advanced>
 
                                 <f:entry title="">

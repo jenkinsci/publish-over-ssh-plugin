@@ -202,6 +202,18 @@ public class BapSshClientTest {
         }
     }
 
+    @Test public void testBeginTransfersFailIfNoSourceFilesWhenExecDisabled() throws Exception {
+        try {
+            final BapSshClient noExecBapSshClient = new BapSshClient(buildInfo, mockSession, true);
+            noExecBapSshClient.setSftp(mockSftp);
+            final int execTimeout = 10000;
+            noExecBapSshClient.beginTransfers(new BapSshTransfer("", "", "", false, false, "something to exec", execTimeout));
+            fail();
+        } catch (BapPublisherException bpe) {
+            assertEquals(Messages.exception_badTransferConfig_noExec(), bpe.getMessage());
+        }
+    }
+
     @Test public void testEndTransfersAndCanUseEnvVars() throws Exception {
         final String command = "ls -ltr /var/log/$BUILD_NUMBER*";
         buildInfo.getEnvVars().put("BUILD_NUMBER", "42");
@@ -260,6 +272,15 @@ public class BapSshClientTest {
         final int execTimeout = 10000;
         mockControl.replay();
         bapSshClient.endTransfers(new BapSshTransfer("*.java", "", "", false, false, "", execTimeout));
+        mockControl.verify();
+    }
+
+    @Test public void testEndTransfersDoesNothingIfExecDisabled() throws Exception {
+        final BapSshClient noExecBapSshClient = new BapSshClient(buildInfo, mockSession, true);
+        noExecBapSshClient.setSftp(mockSftp);
+        final int execTimeout = 10000;
+        mockControl.replay();
+        noExecBapSshClient.endTransfers(new BapSshTransfer("*.java", "", "", false, false, "something fun to exec", execTimeout));
         mockControl.verify();
     }
 

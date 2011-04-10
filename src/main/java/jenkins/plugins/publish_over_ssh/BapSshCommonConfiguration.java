@@ -32,9 +32,16 @@ public class BapSshCommonConfiguration extends BapSshKeyInfo {
 
     private static final long serialVersionUID = 1L;
 
+    private final boolean disableAllExec;
+
     @DataBoundConstructor
-    public BapSshCommonConfiguration(final String passphrase, final String key, final String keyPath) {
+    public BapSshCommonConfiguration(final String passphrase, final String key, final String keyPath, final boolean disableAllExec) {
         super(passphrase, key, keyPath);
+        this.disableAllExec = disableAllExec;
+    }
+
+    public boolean isDisableAllExec() {
+        return disableAllExec;
     }
 
     public boolean equals(final Object that) {
@@ -42,15 +49,17 @@ public class BapSshCommonConfiguration extends BapSshKeyInfo {
         if (that == null || getClass() != that.getClass()) return false;
         final BapSshCommonConfiguration thatCommonConfiguration = (BapSshCommonConfiguration) that;
 
-        return createEqualsBuilder(thatCommonConfiguration).isEquals();
+        return createEqualsBuilder(thatCommonConfiguration)
+                .append(disableAllExec, thatCommonConfiguration.disableAllExec).isEquals();
     }
 
     public int hashCode() {
-        return createHashCodeBuilder().toHashCode();
+        return createHashCodeBuilder().append(disableAllExec).toHashCode();
     }
 
     public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE))
+                .append("disableAllExec", disableAllExec).toString();
     }
 
 }

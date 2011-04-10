@@ -43,6 +43,9 @@
         <f:entry title="${%default.key.title}" help="${helpUrl}defaultKey.html">
           <f:textarea name="common.key" value="${descriptor.commonConfig.key}"/>
         </f:entry>
+        <f:entry title="${%disableAllExec.title}" help="${helpUrl}disableAllExec.html">
+          <f:checkbox name="common.disableAllExec" checked="${descriptor.commonConfig.disableAllExec}"/>
+        </f:entry>
       </f:rowSet>
     <f:entry title="${%hostconfig.entry.title}">
       <f:repeatable var="hostconfig" items="${descriptor.hostConfigurations}" header="${%hostconfig.dragAndDrop}">
@@ -79,6 +82,9 @@
             </f:entry>
             <f:entry title="${%timeout.title}" help="${helpUrl}timeout.html">
               <f:textbox name="bap-pub.timeout" value="${hostconfig.timeout}" default="${defaultTimeout}" checkUrl="${descriptor.getCheckUrl('timeout')}"/>
+            </f:entry>
+            <f:entry title="${%disableExec.title}" help="${helpUrl}disableExec.html">
+              <f:checkbox name="bap-pub.disableExec" checked="${hostconfig.disableExec}" />
             </f:entry>
           </f:advanced>
           <f:validateButton

@@ -89,8 +89,13 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
                 return FormValidation.error(ioe, "");
             }
         }
-        public FormValidation doCheckSourceFiles(@QueryParameter final String sourceFiles, @QueryParameter final String execCommand) {
-            return checkTransferSet(sourceFiles, execCommand);
+        public FormValidation doCheckSourceFiles(@QueryParameter final String configName, @QueryParameter final String sourceFiles,
+                                                 @QueryParameter final String execCommand) {
+            if (getConfiguration(configName).isEffectiveDisableExec()) {
+                return FormValidation.validateRequired(sourceFiles);
+            } else {
+                return checkTransferSet(sourceFiles, execCommand);
+            }
         }
         public FormValidation doCheckExecCommand(@QueryParameter final String sourceFiles, @QueryParameter final String execCommand) {
             return checkTransferSet(sourceFiles, execCommand);

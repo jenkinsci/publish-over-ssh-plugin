@@ -69,13 +69,13 @@ public class IntegrationTest extends HudsonTestCase {
         final int port = 28;
         final int timeout = 3000;
         final BapSshHostConfiguration testHostConfig = new BapSshHostConfiguration("testConfig", "testHostname", "testUsername", "",
-                                                                             "/testRemoteRoot", port, timeout, false, "", "") {
+                                                                             "/testRemoteRoot", port, timeout, false, "", "", false) {
             @Override
             public JSch createJSch() {
                 return mockJsch;
             }
         };
-        final BapSshCommonConfiguration commonConfig = new BapSshCommonConfiguration("passphrase", "key", "");
+        final BapSshCommonConfiguration commonConfig = new BapSshCommonConfiguration("passphrase", "key", "", false);
         new JenkinsTestHelper().setGlobalConfig(commonConfig, testHostConfig);
         final String dirToIgnore = "target";
         final int execTimeout = 10000;
