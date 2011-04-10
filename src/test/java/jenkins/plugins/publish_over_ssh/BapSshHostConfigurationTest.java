@@ -134,8 +134,17 @@ public class BapSshHostConfigurationTest {
     }
 
     @Test public void testCreateClientWithDefaultKey() throws Exception {
+        assertCreateClientWithDefaultKey(false);
+    }
+
+    @Test public void testCreateClientWithGlobalExecDisabled() throws Exception {
+        final BapSshClient client = assertCreateClientWithDefaultKey(true);
+        assertTrue(client.isDisableExec());
+    }
+
+    private BapSshClient assertCreateClientWithDefaultKey(final boolean disableExec) throws Exception {
         final String testKey = "MyVeryBigKey";
-        final BapSshCommonConfiguration defaultKeyInfo = new BapSshCommonConfiguration(TEST_PASSPHRASE, testKey, null, false);
+        final BapSshCommonConfiguration defaultKeyInfo = new BapSshCommonConfiguration(TEST_PASSPHRASE, testKey, null, disableExec);
         hostConfig = createWithDefaultKeyInfo(mockJSch, defaultKeyInfo);
         hostConfig.setPassword("Ignore me");
         expect(mockJSch.getSession(hostConfig.getUsername(), hostConfig.getHostname(), hostConfig.getPort())).andReturn(mockSession);
@@ -147,7 +156,7 @@ public class BapSshHostConfigurationTest {
         mockSftp.connect(hostConfig.getTimeout());
         testHelper.expectDirectoryCheck(hostConfig.getRemoteRootDir(), true);
         mockSftp.cd(hostConfig.getRemoteRootDir());
-        assertCreateClient();
+        return assertCreateClient();
     }
 
     @Test public void testCreateClientWithOverrideKeyPath() throws Exception {
@@ -262,24 +271,6 @@ public class BapSshHostConfigurationTest {
     @Test public void testCreateClientWithExecDisabled() throws Exception {
         hostConfig.setDisableExec(true);
         final BapSshClient client = assertCreateWithDefaultInfo(null);
-        assertTrue(client.isDisableExec());
-    }
-
-    @Test public void testCreateClientWithGlobalExecDisabled() throws Exception {
-        final String testKey = "MyVeryBigKey";
-        final BapSshCommonConfiguration defaultKeyInfo = new BapSshCommonConfiguration(TEST_PASSPHRASE, testKey, null, true);
-        hostConfig = createWithDefaultKeyInfo(mockJSch, defaultKeyInfo);
-        hostConfig.setPassword("Ignore me");
-        expect(mockJSch.getSession(hostConfig.getUsername(), hostConfig.getHostname(), hostConfig.getPort())).andReturn(mockSession);
-        mockJSch.addIdentity(isA(String.class), aryEq(BapSshUtil.toBytes(testKey)), (byte[]) isNull(),
-                    aryEq(BapSshUtil.toBytes(defaultKeyInfo.getPassphrase())));
-        mockSession.setConfig((Properties) anyObject());
-        mockSession.connect(hostConfig.getTimeout());
-        expect(mockSession.openChannel("sftp")).andReturn(mockSftp);
-        mockSftp.connect(hostConfig.getTimeout());
-        testHelper.expectDirectoryCheck(hostConfig.getRemoteRootDir(), true);
-        mockSftp.cd(hostConfig.getRemoteRootDir());
-        final BapSshClient client = assertCreateClient();
         assertTrue(client.isDisableExec());
     }
 

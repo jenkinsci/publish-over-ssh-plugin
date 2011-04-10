@@ -94,7 +94,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     public void setOverrideKey(final boolean overrideKey) { this.overrideKey = overrideKey; }
 
     public boolean isDisableExec() { return disableExec; }
-    public void setDisableExec(boolean disableExec) { this.disableExec = disableExec; }
+    public void setDisableExec(final boolean disableExec) { this.disableExec = disableExec; }
 
     public boolean isEffectiveDisableExec() {
         return getCommonConfig().isDisableAllExec() || disableExec;
