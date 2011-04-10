@@ -57,7 +57,7 @@
             <f:textbox name="bap-pub.hostname" value="${hostconfig.hostname}" checkUrl="${descriptor.getCheckUrl('hostname')}"/>
           </f:entry>
           <f:entry title="${%username.title}" help="${helpUrl}username.html">
-            <f:textbox name="bap-pub.username" value="${hostconfig.username}"/>
+            <f:textbox name="bap-pub.username" value="${hostconfig.username}" checkUrl="${descriptor.getCheckUrl('username')}"/>
           </f:entry>      
           <f:entry title="${%remotePath.title}" help="${helpUrl}remoteRootDir.html">
             <f:textbox name="bap-pub.remoteRootDir" value="${hostconfig.remoteRootDir}"/>
