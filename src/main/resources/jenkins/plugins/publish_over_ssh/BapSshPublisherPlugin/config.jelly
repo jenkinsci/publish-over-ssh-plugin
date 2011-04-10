@@ -28,6 +28,7 @@
 
     <script type="text/javascript" src="${rootURL}/plugin/publish-over-ssh/js/pos.js" />
     <j:set var="helpUrl" value="${rootURL}/plugin/publish-over-ssh/help/config/"/>
+    <j:set var="inPromotionSection" value='${descriptor.getClass().canonicalName.contains("BapSshPromotionPublisherPlugin")}'/>
     <j:invokeStatic className="jenkins.plugins.publish_over_ssh.BapSshTransfer" method="getDefaultExecTimeout" var="defaultExecTimeout"/>
 
     <script type="text/javascript">
@@ -36,7 +37,7 @@
         </j:forEach>
     </script>
 
-    <f:entry title="${%publishers.section}">
+    <f:entry title='${inPromotionSection ? "" : "%publishers.section"}'>
 
             <f:repeatable items="${instance.instanceConfig.publishers}" var="publisher" name="publishers" minimum="1" header="${%publisher.dragAndDropLabel}" add="${%addPublisher.value}">
 
@@ -54,7 +55,7 @@
                         <f:checkbox name="verbose" checked="${publisher.verbose}" />
                     </f:entry>
                     
-                    <j:if test='${descriptor.getClass().canonicalName.contains("BapSshPromotionPublisherPlugin")}'>
+                    <j:if test="${inPromotionSection}">
                         <j:choose>
                             <j:when test="${it.getClass().canonicalName == 'hudson.matrix.MatrixProject'}">
                                 <f:entry title="${%useWorkspaceInPromotion.title}" help="${helpUrl}useWorkspaceInPromotionForMatrix.html">
