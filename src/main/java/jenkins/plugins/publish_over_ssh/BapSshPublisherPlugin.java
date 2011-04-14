@@ -91,11 +91,14 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
         }
         public FormValidation doCheckSourceFiles(@QueryParameter final String configName, @QueryParameter final String sourceFiles,
                                                  @QueryParameter final String execCommand) {
-            if (getConfiguration(configName).isEffectiveDisableExec()) {
-                return FormValidation.validateRequired(sourceFiles);
-            } else {
-                return checkTransferSet(sourceFiles, execCommand);
+            if (Util.fixEmptyAndTrim(configName) != null) {
+                final BapSshHostConfiguration hostConfig = getConfiguration(configName);
+                if (hostConfig == null)
+                    return FormValidation.error(Messages.descriptor_sourceFiles_check_configNotFound(configName));
+                if (hostConfig.isEffectiveDisableExec())
+                    return FormValidation.validateRequired(sourceFiles);
             }
+            return checkTransferSet(sourceFiles, execCommand);
         }
         public FormValidation doCheckExecCommand(@QueryParameter final String sourceFiles, @QueryParameter final String execCommand) {
             return checkTransferSet(sourceFiles, execCommand);
