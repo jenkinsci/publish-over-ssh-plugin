@@ -37,7 +37,7 @@ function bap_get_configName(setting) {
 }
 
 function bap_get_configName_qs(setting) {
-    return "&configName=" + escape(bap_get_configName(setting).value);
+    return "&configName=" + encodeURIComponent(bap_get_configName(setting).value);
 }
 
 function bap_show_row(row) {
