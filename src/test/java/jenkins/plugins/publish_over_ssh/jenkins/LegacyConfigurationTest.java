@@ -57,7 +57,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
 
         final int expectedExecTimeout = 120000;
         final List<BapSshTransfer> transfers = Collections.singletonList(
-                    new BapSshTransfer("**/*", "", "", false, false, "", expectedExecTimeout));
+                    new BapSshTransfer("**/*", null, "", "", false, false, "", expectedExecTimeout));
         final BapSshPublisher publisher = new BapSshPublisher("default", false, new ArrayList<BapSshTransfer>(transfers));
         final ArrayList<BapSshPublisher> publishers = new ArrayList<BapSshPublisher>();
         publishers.add(publisher);
@@ -94,15 +94,15 @@ public class LegacyConfigurationTest extends HudsonTestCase {
 
         final int tarnsfer11Timeout = 120000;
         final int transfer12Timeout = 15000;
-        final BapSshTransfer transfer11 = new BapSshTransfer("", "", "", false, false, "date", tarnsfer11Timeout);
-        final BapSshTransfer transfer12 = new BapSshTransfer("target/*.jar", "'builds/'yyyy_MM_dd/'build-${BUILD_NUMBER}'", "target",
+        final BapSshTransfer transfer11 = new BapSshTransfer("", null, "", "", false, false, "date", tarnsfer11Timeout);
+        final BapSshTransfer transfer12 = new BapSshTransfer("target/*.jar", null, "'builds/'yyyy_MM_dd/'build-${BUILD_NUMBER}'", "target",
                                                        true, true, "ls -la /tmp", transfer12Timeout);
         final ArrayList<BapSshTransfer> transfers1 = new ArrayList<BapSshTransfer>();
         transfers1.add(transfer11);
         transfers1.add(transfer12);
         final BapSshPublisher publisher1 = new BapSshPublisher("config a", true, transfers1);
         final int transfer21Timeout = 10000;
-        final BapSshTransfer transfer21 = new BapSshTransfer("out\\dist\\**\\*", "", "out\\dist", false, false, "", transfer21Timeout);
+        final BapSshTransfer transfer21 = new BapSshTransfer("out\\dist\\**\\*", null, "", "out\\dist", false, false, "", transfer21Timeout);
         final ArrayList<BapSshTransfer> transfers2 = new ArrayList<BapSshTransfer>();
         transfers2.add(transfer21);
         final BapSshPublisher publisher2 = new BapSshPublisher("config c", false, transfers2);

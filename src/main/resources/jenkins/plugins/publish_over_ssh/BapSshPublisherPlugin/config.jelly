@@ -103,6 +103,12 @@
                                 
                                 <f:advanced>
 
+                                    <j:if test="${descriptor.publisherDescriptor.canUseExcludes()}">
+                                        <f:entry title="${%excludes.title}" help="${helpUrl}excludes.html">
+                                            <f:textbox name="excludes" value="${transfer.excludes}"/>
+                                        </f:entry>
+                                    </j:if>
+
                                     <f:entry title="${%flatten.title}" help="${helpUrl}flatten.html">
                                         <f:checkbox name="flatten" checked="${transfer.flatten}" />
                                     </f:entry>

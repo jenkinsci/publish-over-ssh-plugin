@@ -79,7 +79,7 @@ public class IntegrationTest extends HudsonTestCase {
         new JenkinsTestHelper().setGlobalConfig(commonConfig, testHostConfig);
         final String dirToIgnore = "target";
         final int execTimeout = 10000;
-        final BapSshTransfer transfer = new BapSshTransfer("**/*", "sub-home", dirToIgnore, false, false, "", execTimeout);
+        final BapSshTransfer transfer = new BapSshTransfer("**/*", null, "sub-home", dirToIgnore, false, false, "", execTimeout);
         final BapSshPublisher publisher = new BapSshPublisher(testHostConfig.getName(), false,
                         new ArrayList<BapSshTransfer>(Collections.singletonList(transfer)));
         final BapSshPublisherPlugin plugin = new BapSshPublisherPlugin(

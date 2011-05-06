@@ -40,10 +40,15 @@ public class BapSshTransfer extends BPTransfer {
     private String execCommand;
     private int execTimeout;
 
-    @DataBoundConstructor
-    public BapSshTransfer(final String sourceFiles, final String remoteDirectory, final String removePrefix,
+    BapSshTransfer(final String sourceFiles, final String remoteDirectory, final String removePrefix,
                           final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout) {
-        super(sourceFiles, remoteDirectory, removePrefix, remoteDirectorySDF, flatten);
+        this(sourceFiles, null, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, execCommand, execTimeout);
+    }
+
+    @DataBoundConstructor
+    public BapSshTransfer(final String sourceFiles, final String excludes, final String remoteDirectory, final String removePrefix,
+                          final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout) {
+        super(sourceFiles, excludes, remoteDirectory, removePrefix, remoteDirectorySDF, flatten);
         this.execCommand = execCommand;
         this.execTimeout = execTimeout;
     }
