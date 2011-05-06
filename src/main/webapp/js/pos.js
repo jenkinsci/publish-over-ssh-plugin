@@ -69,6 +69,9 @@ function bap_blur_inputs(container) {
     $(container).getElementsBySelector('input').each(function(inputControl) {
         fireEvent(inputControl, 'change');
     });
+    $(container).getElementsBySelector('textarea').each(function(inputControl) {
+        fireEvent(inputControl, 'change');
+    });
 }
 
 var sshBehave = {

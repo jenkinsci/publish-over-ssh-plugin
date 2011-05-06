@@ -24,7 +24,7 @@
   ~ THE SOFTWARE.
   -->
 
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:poj="/pojelly">
 
     <script type="text/javascript" src="${rootURL}/plugin/publish-over-ssh/js/pos.js" />
     <j:set var="helpUrl" value="${rootURL}/plugin/publish-over-ssh/help/config/"/>
@@ -94,7 +94,7 @@
                                 </f:entry>
 
                                 <f:entry title="${%execCommand.title}" help="${helpUrl}execCommand.html">
-                                    <f:textbox name="execCommand" value="${transfer.execCommand}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('execCommand')}" clazz="ssh-exec-control"/>
+                                    <poj:textarea name="execCommand" value="${transfer.execCommand}" minRows="1" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('execCommand')}" class="ssh-exec-control"/>
                                 </f:entry>
 
                                 <f:description>
