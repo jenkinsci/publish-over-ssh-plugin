@@ -102,7 +102,8 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         transfers1.add(transfer12);
         final BapSshPublisher publisher1 = new BapSshPublisher("config a", true, transfers1);
         final int transfer21Timeout = 10000;
-        final BapSshTransfer transfer21 = new BapSshTransfer("out\\dist\\**\\*", null, "", "out\\dist", false, false, "", transfer21Timeout);
+        final BapSshTransfer transfer21 = new BapSshTransfer("out\\dist\\**\\*", null, "", "out\\dist", false, false, "",
+                                                             transfer21Timeout);
         final ArrayList<BapSshTransfer> transfers2 = new ArrayList<BapSshTransfer>();
         transfers2.add(transfer21);
         final BapSshPublisher publisher2 = new BapSshPublisher("config c", false, transfers2);
