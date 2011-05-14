@@ -7,7 +7,6 @@
   <scm class="hudson.scm.NullSCM"/>
   <canRoam>true</canRoam>
   <disabled>false</disabled>
-  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <triggers class="vector"/>
   <concurrentBuild>false</concurrentBuild>
@@ -36,7 +35,7 @@
               <usePromotionTimestamp>false</usePromotionTimestamp>
             </jenkins.plugins.publish__over__ssh.BapSshPublisher>
           </publishers>
-          <continueOnError>false</continueOnError>
+          <continueOnError>true</continueOnError>
           <failOnError>false</failOnError>
           <alwaysPublishFromMaster>false</alwaysPublishFromMaster>
           <masterNodeName></masterNodeName>
@@ -131,7 +130,7 @@
             </jenkins.plugins.publish__over__ssh.BapSshPublisher>
           </publishers>
           <continueOnError>false</continueOnError>
-          <failOnError>false</failOnError>
+          <failOnError>true</failOnError>
           <alwaysPublishFromMaster>false</alwaysPublishFromMaster>
           <masterNodeName></masterNodeName>
           <hostConfigurationAccess class="jenkins.plugins.publish_over_ssh.BapSshAlwaysRunPublisherPlugin" reference="../.."/>
@@ -149,7 +148,7 @@
               <transfers>
                 <jenkins.plugins.publish__over__ssh.BapSshTransfer>
                   <remoteDirectory></remoteDirectory>
-                  <sourceFiles>afterB/</sourceFiles>
+                  <sourceFiles>afterD/</sourceFiles>
                   <removePrefix></removePrefix>
                   <remoteDirectorySDF>false</remoteDirectorySDF>
                   <flatten>false</flatten>
@@ -164,7 +163,7 @@
           </publishers>
           <continueOnError>false</continueOnError>
           <failOnError>false</failOnError>
-          <alwaysPublishFromMaster>false</alwaysPublishFromMaster>
+          <alwaysPublishFromMaster>true</alwaysPublishFromMaster>
           <masterNodeName></masterNodeName>
           <hostConfigurationAccess class="jenkins.plugins.publish_over_ssh.BapSshAlwaysRunPublisherPlugin" reference="../.."/>
         </delegate>

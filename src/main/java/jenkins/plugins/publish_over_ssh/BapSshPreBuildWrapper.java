@@ -32,6 +32,10 @@ import hudson.model.BuildListener;
 import hudson.tasks.BuildWrapper;
 import hudson.tasks.BuildWrapperDescriptor;
 import jenkins.plugins.publish_over.BPInstanceConfig;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
@@ -56,6 +60,41 @@ public class BapSshPreBuildWrapper extends BuildWrapper {
 
     public BPInstanceConfig getInstanceConfig() {
         return preBuild.getInstanceConfig();
+    }
+
+    protected HashCodeBuilder createHashCodeBuilder() {
+        return addToHashCode(new HashCodeBuilder());
+    }
+
+    protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
+        return builder.append(preBuild);
+    }
+
+    protected EqualsBuilder createEqualsBuilder(final BapSshPreBuildWrapper that) {
+        return addToEquals(new EqualsBuilder(), that);
+    }
+
+    protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshPreBuildWrapper that) {
+        return builder.append(preBuild, that.preBuild);
+    }
+
+    protected ToStringBuilder addToToString(final ToStringBuilder builder) {
+        return builder.append("preBuild", preBuild);
+    }
+
+    public boolean equals(final Object that) {
+        if (this == that) return true;
+        if (that == null || getClass() != that.getClass()) return false;
+
+        return createEqualsBuilder((BapSshPreBuildWrapper) that).isEquals();
+    }
+
+    public int hashCode() {
+        return createHashCodeBuilder().toHashCode();
+    }
+
+    public String toString() {
+        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
 
     @Extension(ordinal = BapSshUtil.EXTENSION_ORDINAL_PRE_BUILD_WRAPPER)

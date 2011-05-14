@@ -26,6 +26,8 @@ package jenkins.plugins.publish_over_ssh;
 
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -49,4 +51,21 @@ public class BapSshAlwaysRunPublisherPlugin extends BapSshPublisherPlugin {
     public boolean perform(final AbstractBuild<?, ?> build, final BuildListener listener) throws InterruptedException, IOException {
         return perform(build, null, listener);
     }
+
+    public boolean equals(final Object that) {
+        if (this == that) return true;
+        if (that == null || getClass() != that.getClass()) return false;
+        final BapSshAlwaysRunPublisherPlugin thatPublisher = (BapSshAlwaysRunPublisherPlugin) that;
+
+        return createEqualsBuilder(thatPublisher).isEquals();
+    }
+
+    public int hashCode() {
+        return createHashCodeBuilder().toHashCode();
+    }
+
+    public String toString() {
+        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+    }
+
 }

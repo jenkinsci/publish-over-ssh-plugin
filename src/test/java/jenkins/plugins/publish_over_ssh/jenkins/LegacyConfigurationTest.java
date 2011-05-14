@@ -24,12 +24,11 @@
 
 package jenkins.plugins.publish_over_ssh.jenkins;
 
+import hudson.model.Descriptor;
 import hudson.model.Project;
-import jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration;
-import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
-import jenkins.plugins.publish_over_ssh.BapSshPublisher;
-import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
-import jenkins.plugins.publish_over_ssh.BapSshTransfer;
+import hudson.tasks.BuildWrapper;
+import hudson.util.DescribableList;
+import jenkins.plugins.publish_over_ssh.*;
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 import org.jvnet.hudson.test.recipes.LocalData;
@@ -43,15 +42,17 @@ import static org.junit.Assert.assertArrayEquals;
 @SuppressWarnings("PMD.SignatureDeclareThrowsException")
 public class LegacyConfigurationTest extends HudsonTestCase {
 
+    private final int DEFAULT_PORT = 22;
+    private final int DEFAULT_TIMEOUT = 300000;
+    private final int DEFAULT_EXEC_TIMEOUT = 120000;
+    
     @LocalData
     @Test
     public void testLoadR0x1Minimal() throws Exception {
         final List<BapSshHostConfiguration> configurations = BapSshPublisherPlugin.DESCRIPTOR.getHostConfigurations();
         assertEquals(1, configurations.size());
-        final int expectedPort = 22;
-        final int expectedTimeout = 300000;
         final BapSshHostConfiguration expected = new BapSshHostConfiguration("default", "hostname", "username", "password", "",
-                                                                       expectedPort, expectedTimeout, true, "", "", false);
+                                                                       DEFAULT_PORT, DEFAULT_TIMEOUT, true, "", "", false);
         expected.setCommonConfig(new BapSshCommonConfiguration("", "", "", false));
         assertEquals(expected, configurations.get(0));
 
@@ -62,23 +63,21 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         final ArrayList<BapSshPublisher> publishers = new ArrayList<BapSshPublisher>();
         publishers.add(publisher);
         final BapSshPublisherPlugin expectedPlugin = new BapSshPublisherPlugin(publishers, false, false, false, "");
-        assertEquals(expectedPlugin, getConfiguredPlugin());
+        assertEquals(expectedPlugin, getConfiguredPublisherPlugin());
     }
 
     @LocalData
     @Test
     public void testLoadR0x1() throws Exception {
-        final int defaultPort = 22;
-        final int defaultTimeout = 300000;
         final int configDPort = 8022;
         final int configDTimeout = 10000;
         final BapSshHostConfiguration[] expectedConfig = new BapSshHostConfiguration[] {
             new BapSshHostConfiguration("config a", "hostname.a", "username.a", "password.a", "remoteDirectory.a",
-                                        defaultPort, defaultTimeout, false, "", "", false),
+                    DEFAULT_PORT, DEFAULT_TIMEOUT, false, "", "", false),
             new BapSshHostConfiguration("config b", "hostname.b", "username.b", "", "",
-                                        defaultPort, defaultTimeout, true, "/an/unencrypted/key", "", false),
+                    DEFAULT_PORT, DEFAULT_TIMEOUT, true, "/an/unencrypted/key", "", false),
             new BapSshHostConfiguration("config c", "hostname.c", "username.c", "", "",
-                                        defaultPort, defaultTimeout, true, "", KEY_2, false),
+                    DEFAULT_PORT, DEFAULT_TIMEOUT, true, "", KEY_2, false),
             new BapSshHostConfiguration("config d", "hostname.d", "username.d", "passphrase", "remoteDirectory.d",
                                         configDPort, configDTimeout, true, "path/to/key", KEY_2, false)
         };
@@ -111,7 +110,77 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         publishers.add(publisher1);
         publishers.add(publisher2);
         final BapSshPublisherPlugin expectedPlugin = new BapSshPublisherPlugin(publishers, true, true, true, "essien");
-        assertEquals(expectedPlugin, getConfiguredPlugin());
+        assertEquals(expectedPlugin, getConfiguredPublisherPlugin());
+    }
+
+    @LocalData
+    @Test
+    public void testLoadR0x12() throws Exception {
+        final int configDPort = 8022;
+        final int configDTimeout = 10000;
+        final BapSshHostConfiguration[] expectedConfig = new BapSshHostConfiguration[] {
+            new BapSshHostConfiguration("config a", "hostname.a", "username.a", "password.a", "remoteDirectory.a",
+                    DEFAULT_PORT, DEFAULT_TIMEOUT, false, "", "", false),
+            new BapSshHostConfiguration("config b", "hostname.b", "username.b", "", "",
+                    DEFAULT_PORT, DEFAULT_TIMEOUT, true, "/an/unencrypted/key", "", false),
+            new BapSshHostConfiguration("config c", "hostname.c", "username.c", "", "",
+                    DEFAULT_PORT, DEFAULT_TIMEOUT, true, "", KEY_2, true),
+            new BapSshHostConfiguration("config d", "hostname.d", "username.d", "passphrase", "remoteDirectory.d",
+                                        configDPort, configDTimeout, true, "path/to/key", KEY_2, false)
+        };
+        final BapSshCommonConfiguration common = new BapSshCommonConfiguration("hello", COMMON_KEY, "/this/will/be/ignored", false);
+        for (BapSshHostConfiguration hostConfig : expectedConfig) {
+            hostConfig.setCommonConfig(common);
+        }
+        assertEquals(common, BapSshPublisherPlugin.DESCRIPTOR.getCommonConfig());
+        assertEquals(expectedConfig.length, BapSshPublisherPlugin.DESCRIPTOR.getHostConfigurations().size());
+        final BapSshHostConfiguration[] actualHostConfigurations = BapSshPublisherPlugin.DESCRIPTOR.getHostConfigurations()
+                    .toArray(new BapSshHostConfiguration[expectedConfig.length]);
+        assertArrayEquals(expectedConfig, actualHostConfigurations);
+
+        final int transfer12Timeout = 15000;
+        final BapSshTransfer transfer11 = new BapSshTransfer("", null, "", "", false, false, "date", DEFAULT_EXEC_TIMEOUT);
+        final BapSshTransfer transfer12 = new BapSshTransfer("target/*.jar", null, "'builds/'yyyy_MM_dd/'build-${BUILD_NUMBER}'", "target",
+                                                       true, true, "ls -la /tmp", transfer12Timeout);
+        final ArrayList<BapSshTransfer> transfers1 = new ArrayList<BapSshTransfer>();
+        transfers1.add(transfer11);
+        transfers1.add(transfer12);
+        final BapSshPublisher publisher1 = new BapSshPublisher("config a", true, transfers1);
+        final int transfer21Timeout = 10000;
+        final BapSshTransfer transfer21 = new BapSshTransfer("out\\dist\\**\\*", null, "", "out\\dist", false, false, "",
+                                                             transfer21Timeout);
+        final ArrayList<BapSshTransfer> transfers2 = new ArrayList<BapSshTransfer>();
+        transfers2.add(transfer21);
+        final BapSshPublisher publisher2 = new BapSshPublisher("config c", false, transfers2);
+        final ArrayList<BapSshPublisher> publishers = new ArrayList<BapSshPublisher>();
+        publishers.add(publisher1);
+        publishers.add(publisher2);
+        final BapSshPublisherPlugin expectedPublisher = new BapSshPublisherPlugin(publishers, true, true, true, "essien");
+        assertEquals(expectedPublisher, getConfiguredPublisherPlugin());
+
+        final List<BapSshTransfer> builderTransfers = Collections.singletonList(
+                                        new BapSshTransfer("builderC/", null, "", "", false, false, "", DEFAULT_EXEC_TIMEOUT));
+        final List<BapSshPublisher> builderPublishers = Collections.singletonList(
+                                        new BapSshPublisher("config c", false, new ArrayList<BapSshTransfer>(builderTransfers)));
+        final BapSshBuilderPlugin expectedBuilderPlugin = new BapSshBuilderPlugin(new ArrayList<BapSshPublisher>(builderPublishers),
+                                          true, false, false, "");
+        assertEquals(expectedBuilderPlugin, getConfiguredBuilderPlugin());
+
+        final List<BapSshTransfer> preTransfers = Collections.singletonList(
+                                        new BapSshTransfer("beforeA/", null, "", "", false, false, "", DEFAULT_EXEC_TIMEOUT));
+        final List<BapSshPublisher> prePublishers = Collections.singletonList(
+                                        new BapSshPublisher("config a", false, new ArrayList<BapSshTransfer>(preTransfers)));
+        final BapSshPreBuildWrapper expectedPreBuildPlugin = new BapSshPreBuildWrapper(new ArrayList<BapSshPublisher>(prePublishers),
+                                          false, true, false, "");
+        assertEquals(expectedPreBuildPlugin, getConfiguredBuildWrapper(BapSshPreBuildWrapper.class));
+
+        final List<BapSshTransfer> postTransfers = Collections.singletonList(
+                                        new BapSshTransfer("afterD/", null, "", "", false, false, "", DEFAULT_EXEC_TIMEOUT));
+        final List<BapSshPublisher> postPublishers = Collections.singletonList(
+                                        new BapSshPublisher("config d", false, new ArrayList<BapSshTransfer>(postTransfers)));
+        final BapSshPostBuildWrapper expectedPostBuildPlugin = new BapSshPostBuildWrapper(new ArrayList<BapSshPublisher>(postPublishers),
+                                          false, false, true, "");
+        assertEquals(expectedPostBuildPlugin, getConfiguredBuildWrapper(BapSshPostBuildWrapper.class));
     }
 
     private static final String COMMON_KEY =
@@ -160,10 +229,30 @@ public class LegacyConfigurationTest extends HudsonTestCase {
             + "4xWDtv+JzBP0SclOU6Fz\n"
             + "-----END DSA PRIVATE KEY-----\n";
 
-    private BapSshPublisherPlugin getConfiguredPlugin() {
+    private BapSshPublisherPlugin getConfiguredPublisherPlugin() {
         for (Project project : hudson.getProjects()) {
             if (project.getPublisher(BapSshPublisherPlugin.DESCRIPTOR) != null)
                 return (BapSshPublisherPlugin) project.getPublisher(BapSshPublisherPlugin.DESCRIPTOR);
+        }
+        fail();
+        return null;
+    }
+
+    private BapSshBuilderPlugin getConfiguredBuilderPlugin() {
+        for (Project project : hudson.getProjects()) {
+            for (Object builder : project.getBuilders())
+                if (builder instanceof BapSshBuilderPlugin)
+                    return (BapSshBuilderPlugin) builder;
+        }
+        fail();
+        return null;
+    }
+
+    private BuildWrapper getConfiguredBuildWrapper(final Class<? extends BuildWrapper> wrapperClass) {
+        for (Project project : hudson.getProjects()) {
+            final DescribableList<BuildWrapper, Descriptor<BuildWrapper>> wrappers = project.getBuildWrappersList();
+            final BuildWrapper wrapper = wrappers.get(wrapperClass);
+            if (wrapper != null) return wrapper;
         }
         fail();
         return null;
