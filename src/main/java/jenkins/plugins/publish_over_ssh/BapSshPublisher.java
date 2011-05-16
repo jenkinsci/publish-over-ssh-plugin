@@ -24,6 +24,10 @@
 
 package jenkins.plugins.publish_over_ssh;
 
+import hudson.Extension;
+import hudson.model.Describable;
+import hudson.model.Descriptor;
+import hudson.model.Hudson;
 import jenkins.plugins.publish_over.BapPublisher;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -31,19 +35,18 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.util.ArrayList;
 
-@SuppressWarnings("PMD.LooseCoupling") // serializable
-public class BapSshPublisher extends BapPublisher<BapSshTransfer> {
+public class BapSshPublisher extends BapPublisher implements Describable<BapSshPublisher> {
 
     private static final long serialVersionUID = 1L;
-
-    public BapSshPublisher(final String configName, final boolean verbose, final ArrayList<BapSshTransfer> transfers) {
-        this(configName, verbose, transfers, false, false);
-    }
 
     @DataBoundConstructor
     public BapSshPublisher(final String configName, final boolean verbose, final ArrayList<BapSshTransfer> transfers,
                            final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp) {
         super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp);
+    }
+
+    public DescriptorImpl getDescriptor() {
+        return Hudson.getInstance().getDescriptorByType(DescriptorImpl.class);
     }
 
     public boolean equals(final Object that) {
@@ -59,6 +62,20 @@ public class BapSshPublisher extends BapPublisher<BapSshTransfer> {
 
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+    }
+
+    @Extension
+    public static class DescriptorImpl extends Descriptor<BapSshPublisher> {
+        public BapSshPublisherPlugin.Descriptor getPublisherPluginDescriptor() {
+            return Hudson.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+        }
+        public BapSshTransfer.DescriptorImpl getTransferDescriptor() {
+            return Hudson.getInstance().getDescriptorByType(BapSshTransfer.DescriptorImpl.class);
+        }
+        @Override
+        public String getDisplayName() {
+            return "Pub";
+        }
     }
 
 }

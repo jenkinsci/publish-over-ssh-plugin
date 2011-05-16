@@ -27,136 +27,46 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:poj="/pojelly">
 
     <script type="text/javascript" src="${rootURL}/plugin/publish-over-ssh/js/pos.js" />
-    <j:set var="helpUrl" value="${rootURL}/plugin/publish-over-ssh/help/config/"/>
-    <j:set var="inPromotionSection" value='${descriptor.getClass().canonicalName.contains("BapSshPromotionPublisherPlugin")}'/>
-    <j:invokeStatic className="jenkins.plugins.publish_over_ssh.BapSshTransfer" method="getDefaultExecTimeout" var="defaultExecTimeout"/>
-
+    <j:set var="instance" value="${instance.delegate}"/>
+    <!-- hack for scope failure -->
+    <j:set var="xDescriptor" value="${descriptor}"/>
+    
     <script type="text/javascript">
-        <j:forEach var="config" items="${descriptor.publisherDescriptor.hostConfigurations}">
+        <j:forEach var="config" items="${descriptor.hostConfigurations}">
             exec_disabled['${config.name}'] = ${config.effectiveDisableExec};
         </j:forEach>
     </script>
 
-    <f:entry title='${inPromotionSection ? "" : "%publishers.section"}'>
-
-            <f:repeatable items="${instance.instanceConfig.publishers}" var="publisher" name="publishers" minimum="1" header="${%publisher.dragAndDropLabel}" add="${%addPublisher.value}">
-
+    <f:entry title='${inPromotion ? "" : "%publishers.section"}'>
+        <scope>
+            <j:set var="descriptor" value="${descriptor.publisherDescriptor}"/>
+            <f:repeatable items="${instance.publishers}" var="instance" name="publishers" minimum="1" header="${%publisher.dragAndDropLabel}" add="${%addPublisher.value}">
                 <table width="100%" padding="0">
-
-                    <f:entry title="${%hostconfig.title}" help="${helpUrl}configName.html">
-                        <select class="setting-input ssh-config-name" name="configName" description="${%hostconfig.description}">
-                            <j:forEach var="s" items="${descriptor.publisherDescriptor.hostConfigurations}">
-                                <f:option value="${s.name}" selected="${s.name==publisher.configName}">${s.name}<j:if test="${s.effectiveDisableExec}">${%hostconfig.noexec.suffix}</j:if></f:option>
-                            </j:forEach>
-                        </select>
-                    </f:entry>
-
-                    <f:entry title="${%verbose.title}" help="${helpUrl}verbose.html">
-                        <f:checkbox name="verbose" checked="${publisher.verbose}" />
-                    </f:entry>
-                    
-                    <j:if test="${inPromotionSection}">
-                        <j:choose>
-                            <j:when test="${it.getClass().canonicalName == 'hudson.matrix.MatrixProject'}">
-                                <f:entry title="${%useWorkspaceInPromotion.title}" help="${helpUrl}useWorkspaceInPromotionForMatrix.html">
-                                    <input type="checkbox" checked="true" disabled="true"/>
-                                </f:entry>
-                                <f:invisiblEntry>
-                                    <f:checkbox name="useWorkspaceInPromotion" checked="true"/>
-                                </f:invisiblEntry>
-                            </j:when>
-                            <j:otherwise>
-                                <f:entry title="${%useWorkspaceInPromotion.title}" help="${helpUrl}useWorkspaceInPromotion.html">
-                                    <f:checkbox name="useWorkspaceInPromotion" checked="${publisher.useWorkspaceInPromotion}" />
-                                </f:entry>
-                            </j:otherwise>
-                        </j:choose>
-                        <f:entry title="${%usePromotionTimestamp.title}" help="${helpUrl}usePromotionTimestamp.html">
-                            <f:checkbox name="usePromotionTimestamp" checked="${publisher.usePromotionTimestamp}" />
-                        </f:entry>
-                        <j:set var="promoHelpSuffix" value="ForPromotion"/>
-                    </j:if>
-
-                    <f:entry title="${%sshTransfers.section}" help="${helpUrl}sshTransfers.html">
-                        <f:repeatable items="${publisher.transfers}" var="transfer" name="transfers" minimum="1" header="${%sshTransfers.dragAndDropLabel}" add="${%addSshTransfers.value}">
-                            <table width="100%" padding="0" class="ssh-transfer">
-
-                                <f:entry title="${%sourceFiles.title}" help="${helpUrl}sourceFiles${promoHelpSuffix}.html">
-                                    <f:textbox name="sourceFiles" value="${transfer.sourceFiles}" checkUrl="'${rootURL}/descriptorByName/jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin/checkSourceFiles'+qs(this).nearBy('sourceFiles').nearBy('execCommand').toString()+bap_get_configName_qs(this)"/>
-                                </f:entry>
-
-                                <f:entry title="${%removePrefix.title}" help="${helpUrl}removePrefix.html">
-                                    <f:textbox name="removePrefix" value="${transfer.removePrefix}" />
-                                </f:entry>
-
-                                <f:entry title="${%remoteDirectory.title}" help="${helpUrl}remoteDirectory.html">
-                                    <f:textbox name="remoteDirectory" value="${transfer.remoteDirectory}" />
-                                </f:entry>
-
-                                <f:entry title="${%execCommand.title}" help="${helpUrl}execCommand.html">
-                                    <poj:textarea name="execCommand" value="${transfer.execCommand}" minRows="1" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('execCommand')}" class="ssh-exec-control"/>
-                                </f:entry>
-
-                                <f:description>
-                                    <j:out value='${%transfers.envVars(rootURL)}'/>
-                                </f:description>
-                                
-                                <f:advanced>
-
-                                    <j:if test="${descriptor.publisherDescriptor.canUseExcludes()}">
-                                        <f:entry title="${%excludes.title}" help="${helpUrl}excludes.html">
-                                            <f:textbox name="excludes" value="${transfer.excludes}"/>
-                                        </f:entry>
-                                    </j:if>
-
-                                    <f:entry title="${%flatten.title}" help="${helpUrl}flatten.html">
-                                        <f:checkbox name="flatten" checked="${transfer.flatten}" />
-                                    </f:entry>
-
-                                    <f:entry title="${%remoteDirectorySDF.title}" help="${helpUrl}remoteDirectorySDF.html">
-                                        <f:checkbox name="remoteDirectorySDF" checked="${transfer.remoteDirectorySDF}" />
-                                    </f:entry>
-
-                                    <f:entry title="${%execTimeout.title}" help="${helpUrl}execTimeout.html">
-                                        <f:textbox name="execTimeout" value="${transfer.execTimeout}" default="${defaultExecTimeout}" checkUrl="${descriptor.publisherDescriptor.getCheckUrl('execTimeout')}" clazz="ssh-exec-control"/>
-                                    </f:entry>
-
-                                </f:advanced>
-
-                                <f:entry title="">
-                                    <div align="right" class="show-if-not-only">
-                                        <f:repeatableDeleteButton value="${%deleteSshTransfers.value}"/>
-                                    </div>
-                                </f:entry>
-
-                           </table>
-                        </f:repeatable>
-                    </f:entry>
-
+                    <st:include page="config.jelly" class="${descriptor.clazz}"/>
                     <f:entry title="">
                         <div align="right" class="show-if-not-only">
                             <f:repeatableDeleteButton value="${%deletePublisher.value}"/>
                         </div>
                     </f:entry>
-
                 </table>
-
             </f:repeatable>
+        </scope>
 
-            <f:advanced>
-                <f:entry title="${%continueOnError.title}" help="${helpUrl}continueOnError.html">
-                    <f:checkbox name="continueOnError" checked="${instance.instanceConfig.continueOnError}" />
-                </f:entry>
-                <f:entry title="${%failOnError.title}" help="${helpUrl}failOnError.html">
-                    <f:checkbox name="failOnError" checked="${instance.instanceConfig.failOnError}" />
-                </f:entry>
-                <f:entry title="${%alwaysSshFromMaster.title}" help="${helpUrl}alwaysSshFromMaster.html">
-                    <f:checkbox name="alwaysPublishFromMaster" checked="${instance.instanceConfig.alwaysPublishFromMaster}" />
-                </f:entry>
-                <f:entry title="${%masterNodeName.title}" help="${helpUrl}masterNodeName.html">
-                    <f:textbox name="masterNodeName" value="${instance.instanceConfig.masterNodeName}"/>
-                </f:entry>
-            </f:advanced>
+        <j:set var="descriptor" value="${xDescriptor}"/>
+        <f:advanced>
+            <f:entry title="${%continueOnError.title}" field="continueOnError">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry title="${%failOnError.title}" field="failOnError">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry title="${%alwaysPublishFromMaster.title}" field="alwaysPublishFromMaster">
+                <f:checkbox/>
+            </f:entry>
+            <f:entry title="${%masterNodeName.title}" field="masterNodeName">
+                <f:textbox/>
+            </f:entry>
+        </f:advanced>
 
     </f:entry>
 

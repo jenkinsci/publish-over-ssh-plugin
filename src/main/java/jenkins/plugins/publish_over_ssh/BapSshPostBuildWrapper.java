@@ -29,9 +29,9 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
+import hudson.model.Hudson;
 import hudson.tasks.BuildWrapper;
 import hudson.tasks.BuildWrapperDescriptor;
-import jenkins.plugins.publish_over.BPInstanceConfig;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -52,6 +52,10 @@ public class BapSshPostBuildWrapper extends BuildWrapper {
         postBuild = new BapSshAlwaysRunPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
 
+    public BapSshPublisherPlugin getPostBuild() {
+        return postBuild;
+    }
+
     @SuppressWarnings("PMD.JUnit4TestShouldUseBeforeAnnotation")
     public Environment setUp(final AbstractBuild build, final Launcher launcher, final BuildListener listener)
                     throws IOException, InterruptedException {
@@ -62,10 +66,6 @@ public class BapSshPostBuildWrapper extends BuildWrapper {
             }
         };
         return runPostBuild;
-    }
-
-    public BPInstanceConfig getInstanceConfig() {
-        return postBuild.getInstanceConfig();
     }
 
     protected HashCodeBuilder createHashCodeBuilder() {
@@ -111,11 +111,8 @@ public class BapSshPostBuildWrapper extends BuildWrapper {
         public String getDisplayName() {
             return Messages.postBuild_descriptor_displayName();
         }
-        public String getConfigPage() {
-            return getViewPage(BapSshPublisherPlugin.class, "config.jelly");
-        }
         public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return BapSshPublisherPlugin.DESCRIPTOR;
+            return Hudson.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
         }
     }
 

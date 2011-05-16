@@ -40,7 +40,7 @@ import org.apache.commons.logging.LogFactory;
 import java.io.InputStream;
 
 @SuppressWarnings("PMD.TooManyMethods")
-public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
+public class BapSshClient extends BPDefaultClient<BapTransfer> {
 
     private static final transient Log LOG = LogFactory.getLog(BapSshClient.class);
 
@@ -71,7 +71,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         this.sftp = sftp;
     }
 
-    public void beginTransfers(final BapSshTransfer transfer) {
+    public void beginTransfers(final BapTransfer transfer) {
         if (disableExec) {
             if (!transfer.hasConfiguredSourceFiles())
                 throw new BapPublisherException(Messages.exception_badTransferConfig_noExec());
@@ -113,7 +113,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         }
     }
 
-    public void transferFile(final BapSshTransfer bapSshTransfer, final FilePath filePath,
+    public void transferFile(final BapTransfer bapSshTransfer, final FilePath filePath,
                              final InputStream inputStream) throws SftpException {
         buildInfo.printIfVerbose(Messages.console_put(filePath.getName()));
         sftp.put(inputStream, filePath.getName());
@@ -128,12 +128,12 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         return directory.contains("/") || directory.contains("\\");
     }
 
-    public void endTransfers(final BapSshTransfer transfer) {
+    public void endTransfers(final BapTransfer transfer) {
         if (!disableExec && transfer.hasExecCommand())
             exec(transfer);
     }
 
-    private void exec(final BapSshTransfer transfer) {
+    private void exec(final BapTransfer transfer) {
         ChannelExec exec = null;
         try {
             exec = openExecChannel();

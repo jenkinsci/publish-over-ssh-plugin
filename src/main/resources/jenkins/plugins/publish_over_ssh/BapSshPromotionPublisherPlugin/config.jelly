@@ -1,3 +1,5 @@
+<?jelly escape-by-default='true'?>
+
 <!--
   ~ The MIT License
   ~
@@ -22,4 +24,11 @@
   ~ THE SOFTWARE.
   -->
 
-<div>Sets of files to transfer, and associated options for the transfer.</div>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler">
+
+    <j:set var="inPromotion" value="true"/>
+    <j:set var="instance" value="${instance.delegate}"/>
+    <j:set var="descriptor" value="${descriptor.publisherDescriptor}"/>
+    <st:include page="config.jelly" class="${descriptor.clazz}"/>
+
+</j:jelly>

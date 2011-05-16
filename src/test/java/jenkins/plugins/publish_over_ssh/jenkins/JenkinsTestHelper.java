@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_ssh.jenkins;
 
+import hudson.model.Hudson;
 import hudson.util.CopyOnWriteList;
 import jenkins.plugins.publish_over.BPPluginDescriptor;
 import jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration;
@@ -44,7 +45,7 @@ public class JenkinsTestHelper {
         }
         final CopyOnWriteList<BapSshHostConfiguration> hostConfigurations = getHostConfigurations();
         hostConfigurations.replaceBy(newHostConfigurations);
-        BapSshPublisherPlugin.DESCRIPTOR.setCommonConfig(commonConfig);
+        Hudson.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class).setCommonConfig(commonConfig);
     }
 
     public CopyOnWriteList<BapSshHostConfiguration> getHostConfigurations() throws NoSuchFieldException, IllegalAccessException {
@@ -63,7 +64,8 @@ public class JenkinsTestHelper {
         }
         public CopyOnWriteList<BapSshHostConfiguration> run() throws IllegalAccessException {
             hostConfigurations.setAccessible(true);
-            return (CopyOnWriteList) hostConfigurations.get(BapSshPublisherPlugin.DESCRIPTOR);
+            return (CopyOnWriteList) hostConfigurations.get(Hudson.getInstance().getDescriptorByType(
+                                                            BapSshPublisherPlugin.Descriptor.class));
         }
     }
 

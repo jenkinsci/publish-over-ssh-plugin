@@ -24,68 +24,58 @@
 
 package jenkins.plugins.publish_over_ssh;
 
-import hudson.Util;
-import jenkins.plugins.publish_over.BPTransfer;
+import hudson.Extension;
+import hudson.model.Describable;
+import hudson.model.Descriptor;
+import hudson.model.Hudson;
+import hudson.util.FormValidation;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
 
-public class BapSshTransfer extends BPTransfer {
+public class BapSshTransfer extends BapTransfer implements Describable<BapSshTransfer> {
 
     private static final long serialVersionUID = 1L;
-    public static final int DEFAULT_EXEC_TIMEOUT = 120000;
-
-    public static int getDefaultExecTimeout() { return DEFAULT_EXEC_TIMEOUT; }
-
-    private String execCommand;
-    private int execTimeout;
-
-    BapSshTransfer(final String sourceFiles, final String remoteDirectory, final String removePrefix,
-                          final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout) {
-        this(sourceFiles, null, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, execCommand, execTimeout);
-    }
 
     @DataBoundConstructor
     public BapSshTransfer(final String sourceFiles, final String excludes, final String remoteDirectory, final String removePrefix,
                           final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout) {
-        super(sourceFiles, excludes, remoteDirectory, removePrefix, remoteDirectorySDF, flatten);
-        this.execCommand = execCommand;
-        this.execTimeout = execTimeout;
+        super(sourceFiles, excludes, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, execCommand, execTimeout);
     }
 
-    public String getExecCommand() { return execCommand; }
-    public void setExecCommand(final String execCommand) { this.execCommand = execCommand; }
-
-    public int getExecTimeout() { return execTimeout; }
-    public void setExecTimeout(final int execTimeout) { this.execTimeout = execTimeout; }
-
-    public boolean hasExecCommand() {
-        return Util.fixEmptyAndTrim(getExecCommand()) != null;
+    public DescriptorImpl getDescriptor() {
+        return Hudson.getInstance().getDescriptorByType(DescriptorImpl.class);
     }
-
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
-        final BapSshTransfer thatTransfer = (BapSshTransfer) that;
 
-        return createEqualsBuilder(thatTransfer)
-            .append(execCommand, thatTransfer.execCommand)
-            .append(execTimeout, thatTransfer.execTimeout)
-            .isEquals();
+        return createEqualsBuilder((BapSshTransfer) that).isEquals();
     }
 
     public int hashCode() {
-        return createHashCodeBuilder()
-            .append(execCommand)
-            .append(execTimeout)
-            .toHashCode();
+        return createHashCodeBuilder().toHashCode();
     }
 
     public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE))
-            .append(execCommand)
-            .append(execTimeout)
-            .toString();
+        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
 
+    @Extension
+    public static class DescriptorImpl extends Descriptor<BapSshTransfer> {
+        public BapSshPublisherPlugin.Descriptor getPublisherPluginDescriptor() {
+            return Hudson.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+        }
+        @Override
+        public String getDisplayName() {
+            return "transfer";
+        }
+        public FormValidation doCheckExecTimeout(@QueryParameter final String value) {
+            return FormValidation.validateNonNegativeInteger(value);
+        }        
+        public static int getDefaultExecTimeout() {
+            return BapTransfer.DEFAULT_EXEC_TIMEOUT;
+        }
+    }
 }

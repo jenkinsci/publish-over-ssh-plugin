@@ -29,6 +29,7 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
+import hudson.model.Hudson;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
@@ -59,6 +60,10 @@ public class BapSshPromotionPublisherPlugin extends Notifier {
     public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener)
                     throws InterruptedException, IOException {
         return delegate.perform(build, launcher, listener);
+    }
+
+    public BapSshPublisherPlugin getDelegate() {
+        return delegate;
     }
 
     public BuildStepMonitor getRequiredMonitorService() {
@@ -112,11 +117,8 @@ public class BapSshPromotionPublisherPlugin extends Notifier {
         public String getDisplayName() {
             return Messages.promotion_descriptor_displayName();
         }
-        public String getConfigPage() {
-            return getViewPage(BapSshPublisherPlugin.class, "config.jelly");
-        }
         public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return BapSshPublisherPlugin.DESCRIPTOR;
+            return Hudson.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
         }
     }
 

@@ -29,9 +29,9 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
+import hudson.model.Hudson;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
-import jenkins.plugins.publish_over.BPInstanceConfig;
 import jenkins.plugins.publish_over.BPPlugin;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -51,6 +51,10 @@ public class BapSshBuilderPlugin extends Builder {
     public BapSshBuilderPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
                                final boolean alwaysPublishFromMaster, final String masterNodeName) {
         this.delegate = new BapSshPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
+    }
+
+    public BapSshPublisherPlugin getDelegate() {
+        return delegate;
     }
 
     @Override
@@ -94,10 +98,6 @@ public class BapSshBuilderPlugin extends Builder {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
 
-    public BPInstanceConfig getInstanceConfig() {
-        return delegate.getInstanceConfig();
-    }
-
     @Extension
     public static class Descriptor extends BuildStepDescriptor<Builder> {
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
@@ -106,11 +106,8 @@ public class BapSshBuilderPlugin extends Builder {
         public String getDisplayName() {
             return Messages.builder_descriptor_displayName();
         }
-        public String getConfigPage() {
-            return getViewPage(BapSshPublisherPlugin.class, "config.jelly");
-        }
         public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return BapSshPublisherPlugin.DESCRIPTOR;
+            return Hudson.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
         }
     }
 

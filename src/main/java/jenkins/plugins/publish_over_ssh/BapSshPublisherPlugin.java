@@ -45,9 +45,6 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
 
     private static final long serialVersionUID = 1L;
 
-    @Extension
-    public static final Descriptor DESCRIPTOR = new Descriptor();
-
     @DataBoundConstructor
     public BapSshPublisherPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
                                  final boolean alwaysPublishFromMaster, final String masterNodeName) {
@@ -69,10 +66,15 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
 
-    public BapSshHostConfiguration getConfiguration(final String name) {
-        return DESCRIPTOR.getConfiguration(name);
+    public Descriptor getDescriptor() {
+        return Hudson.getInstance().getDescriptorByType(Descriptor.class);
     }
 
+    public BapSshHostConfiguration getConfiguration(final String name) {
+        return getDescriptor().getConfiguration(name);
+    }
+
+    @Extension
     public static class Descriptor extends BPPluginDescriptor<BapSshHostConfiguration, BapSshCommonConfiguration> {
         public Descriptor() {
             super(new DescriptorMessages(), BapSshPublisherPlugin.class, BapSshHostConfiguration.class, BapSshCommonConfiguration.class);
@@ -103,9 +105,6 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
         public FormValidation doCheckExecCommand(@QueryParameter final String sourceFiles, @QueryParameter final String execCommand) {
             return checkTransferSet(sourceFiles, execCommand);
         }
-        public FormValidation doCheckExecTimeout(@QueryParameter final String value) {
-            return FormValidation.validateNonNegativeInteger(value);
-        }
         private FormValidation checkTransferSet(final String sourceFiles, final String execCommand) {
             return haveAtLeastOne(sourceFiles, execCommand) ? FormValidation.ok()
                 : FormValidation.error(Messages.descriptor_sourceOrExec());
@@ -116,8 +115,8 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
                     return true;
             return false;
         }
-        public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return this;
+        public BapSshPublisher.DescriptorImpl getPublisherDescriptor() {
+            return Hudson.getInstance().getDescriptorByType(BapSshPublisher.DescriptorImpl.class);
         }
     }
 

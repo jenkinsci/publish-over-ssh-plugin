@@ -1,3 +1,5 @@
+<?jelly escape-by-default='true'?>
+
 <!--
   ~ The MIT License
   ~
@@ -22,4 +24,10 @@
   ~ THE SOFTWARE.
   -->
 
-<div>Send files or execute commands over SSH</div>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler">
+
+    <j:set var="instance" value="${instance.postBuild}"/>
+    <j:set var="descriptor" value="${descriptor.publisherDescriptor}"/>
+    <st:include page="config.jelly" class="${descriptor.clazz}"/>
+
+</j:jelly>
