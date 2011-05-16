@@ -69,7 +69,7 @@ public class BapSshTransfer extends BapTransfer implements Describable<BapSshTra
         }
         @Override
         public String getDisplayName() {
-            return "transfer";
+            return Messages.transfer_descriptor_displayName();
         }
         public FormValidation doCheckExecTimeout(@QueryParameter final String value) {
             return FormValidation.validateNonNegativeInteger(value);

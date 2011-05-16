@@ -75,7 +75,7 @@ public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Des
         }
         @Override
         public String getDisplayName() {
-            return "Pub";
+            return Messages.publisher_descriptor_displayName();
         }
     }
 
