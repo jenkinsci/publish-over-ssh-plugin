@@ -29,6 +29,7 @@ import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.model.Hudson;
 import hudson.util.FormValidation;
+import jenkins.plugins.publish_over.BPTransfer;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -74,6 +75,9 @@ public class BapSshTransfer extends BapTransfer implements Describable<BapSshTra
         public FormValidation doCheckExecTimeout(@QueryParameter final String value) {
             return FormValidation.validateNonNegativeInteger(value);
         }
+        public boolean canUseExcludes() {
+            return BPTransfer.canUseExcludes();
+        }        
         public static int getDefaultExecTimeout() {
             return BapTransfer.DEFAULT_EXEC_TIMEOUT;
         }

@@ -34,7 +34,6 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Notifier;
 import hudson.tasks.Publisher;
-import jenkins.plugins.publish_over.BPInstanceConfig;
 import jenkins.plugins.publish_over.BPPlugin;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -103,10 +102,6 @@ public class BapSshPromotionPublisherPlugin extends Notifier {
 
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
-    }
-
-    public BPInstanceConfig getInstanceConfig() {
-        return delegate.getInstanceConfig();
     }
 
     @Extension
