@@ -36,7 +36,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import java.util.ArrayList;
 
 @SuppressWarnings("PMD.LooseCoupling") // serializable
-public class BapSshPublisher extends BapPublisher implements Describable<BapSshPublisher> {
+public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Describable<BapSshPublisher> {
 
     private static final long serialVersionUID = 1L;
 
