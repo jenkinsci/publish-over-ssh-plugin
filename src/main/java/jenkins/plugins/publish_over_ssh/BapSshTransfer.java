@@ -73,7 +73,7 @@ public class BapSshTransfer extends BapTransfer implements Describable<BapSshTra
         }
         public FormValidation doCheckExecTimeout(@QueryParameter final String value) {
             return FormValidation.validateNonNegativeInteger(value);
-        }        
+        }
         public static int getDefaultExecTimeout() {
             return BapTransfer.DEFAULT_EXEC_TIMEOUT;
         }
