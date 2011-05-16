@@ -77,7 +77,7 @@ public class BapSshTransfer extends BapTransfer implements Describable<BapSshTra
         }
         public boolean canUseExcludes() {
             return BPTransfer.canUseExcludes();
-        }        
+        }
         public static int getDefaultExecTimeout() {
             return BapTransfer.DEFAULT_EXEC_TIMEOUT;
         }
