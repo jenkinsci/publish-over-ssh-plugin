@@ -171,11 +171,11 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         }
     }
 
-    private static final String configName(final char idLetter) {
+    private static String configName(final char idLetter) {
         return "config " + idLetter;
     }
 
-    private static final String hostname(final char idLetter) {
+    private static String hostname(final char idLetter) {
         return "hostname." + idLetter;
     }
 
