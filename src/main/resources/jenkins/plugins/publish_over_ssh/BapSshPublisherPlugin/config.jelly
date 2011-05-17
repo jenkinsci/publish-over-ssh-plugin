@@ -63,9 +63,11 @@
             <f:entry title="${%alwaysPublishFromMaster.title}" field="alwaysPublishFromMaster">
                 <f:checkbox/>
             </f:entry>
-            <f:entry title="${%masterNodeName.title}" field="masterNodeName">
-                <f:textbox/>
-            </f:entry>
+            <j:if test="${descriptor.canSetMasterNodeName()}">
+                <f:entry title="${%masterNodeName.title}" field="masterNodeName">
+                    <f:textbox default="${descriptor.defaultMasterNodeName}"/>
+                </f:entry>
+            </j:if>
         </f:advanced>
 
     </f:entry>
