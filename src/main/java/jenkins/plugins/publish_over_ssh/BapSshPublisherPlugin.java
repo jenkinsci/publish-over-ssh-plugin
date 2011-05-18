@@ -25,23 +25,18 @@
 package jenkins.plugins.publish_over_ssh;
 
 import hudson.Extension;
-import hudson.Util;
 import hudson.model.AbstractProject;
 import hudson.model.Hudson;
-import hudson.util.FormValidation;
-import hudson.util.VersionNumber;
 import jenkins.plugins.publish_over.BPPlugin;
 import jenkins.plugins.publish_over.BPPluginDescriptor;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 @SuppressWarnings({ "PMD.TooManyMethods", "PMD.LooseCoupling" })
-public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClient, BapSshCommonConfiguration> {
+public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClient, BapCommonConfiguration> {
 
     private static final long serialVersionUID = 1L;
 
@@ -74,6 +69,7 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
         return getDescriptor().getConfiguration(name);
     }
 
+    // most of the time runtime erasure is a real pita, but here it saves the day! I'm not doing anything wrong - honestly
     @Extension
     public static class Descriptor extends BPPluginDescriptor<BapSshHostConfiguration, BapSshCommonConfiguration> {
         public Descriptor() {
@@ -82,41 +78,15 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
             return !BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
         }
-        public FormValidation doCheckKeyPath(@QueryParameter final String value) {
-            if (Hudson.getVersion().isOlderThan(new VersionNumber("1.399")))
-                return FormValidation.ok();
-            try {
-                return Hudson.getInstance().getRootPath().validateRelativePath(value, true, true);
-            } catch (IOException ioe) {
-                return FormValidation.error(ioe, "");
-            }
-        }
-        public FormValidation doCheckSourceFiles(@QueryParameter final String configName, @QueryParameter final String sourceFiles,
-                                                 @QueryParameter final String execCommand) {
-            if (Util.fixEmptyAndTrim(configName) != null) {
-                final BapSshHostConfiguration hostConfig = getConfiguration(configName);
-                if (hostConfig == null)
-                    return FormValidation.error(Messages.descriptor_sourceFiles_check_configNotFound(configName));
-                if (hostConfig.isEffectiveDisableExec())
-                    return FormValidation.validateRequired(sourceFiles);
-            }
-            return checkTransferSet(sourceFiles, execCommand);
-        }
-        public FormValidation doCheckExecCommand(@QueryParameter final String sourceFiles, @QueryParameter final String execCommand) {
-            return checkTransferSet(sourceFiles, execCommand);
-        }
-        private FormValidation checkTransferSet(final String sourceFiles, final String execCommand) {
-            return haveAtLeastOne(sourceFiles, execCommand) ? FormValidation.ok()
-                : FormValidation.error(Messages.descriptor_sourceOrExec());
-        }
-        private boolean haveAtLeastOne(final String... values) {
-            for (String value : values)
-                if (Util.fixEmptyAndTrim(value) != null)
-                    return true;
-            return false;
-        }
         public BapSshPublisher.DescriptorImpl getPublisherDescriptor() {
             return Hudson.getInstance().getDescriptorByType(BapSshPublisher.DescriptorImpl.class);
+        }
+        // enable type to be identified for f:property
+        public BapSshCommonConfiguration getCommon() {
+            return super.getCommonConfig();
+        }
+        public BapSshHostConfiguration.DescriptorImpl getHostConfigurationDescriptor() {
+            return Hudson.getInstance().getDescriptorByType(BapSshHostConfiguration.DescriptorImpl.class);
         }
     }
 

@@ -1,3 +1,5 @@
+<?jelly escape-by-default='true'?>
+
 <!--
   ~ The MIT License
   ~
@@ -22,8 +24,20 @@
   ~ THE SOFTWARE.
   -->
 
-<div>
-    <p>Timeout in milliseconds for the SSH connections.</p>
-    <p>Defaults to 300000 (5 minutes).<br />
-    Set to zero to disable.</p>
-</div>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+
+    <!-- need to add names for the validate button to get the common config, and for binding on the server when button clicked -->
+    <f:entry title="${%passphrase.title}" field="encryptedPassphrase">
+        <f:password name="common.encryptedPassphrase"/>
+    </f:entry>
+    <f:entry title="${%keyPath.title}" field="keyPath">
+        <f:textbox name="common.keyPath"/>
+    </f:entry>
+    <f:entry title="${%key.title}" field="key">
+        <f:textarea name="common.key"/>
+    </f:entry>
+    <f:entry title="${%disableAllExec.title}" field="disableAllExec">
+        <f:checkbox name="common.disableAllExec"/>
+    </f:entry>
+
+</j:jelly>

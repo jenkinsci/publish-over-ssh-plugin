@@ -31,7 +31,6 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.Serializable;
 
@@ -45,9 +44,8 @@ public class BapSshKeyInfo implements Serializable {
     private String key;
     private String keyPath;
 
-    @DataBoundConstructor
-    public BapSshKeyInfo(final String passphrase, final String key, final String keyPath) {
-        secretPassphrase = Secret.fromString(passphrase);
+    public BapSshKeyInfo(final String encryptedPassphrase, final String key, final String keyPath) {
+        secretPassphrase = Secret.fromString(encryptedPassphrase);
         this.key = key;
         this.keyPath = keyPath;
     }

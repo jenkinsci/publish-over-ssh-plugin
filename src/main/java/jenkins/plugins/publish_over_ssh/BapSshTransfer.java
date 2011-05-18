@@ -25,6 +25,7 @@
 package jenkins.plugins.publish_over_ssh;
 
 import hudson.Extension;
+import hudson.Util;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.model.Hudson;
@@ -65,21 +66,44 @@ public class BapSshTransfer extends BapTransfer implements Describable<BapSshTra
 
     @Extension
     public static class DescriptorImpl extends Descriptor<BapSshTransfer> {
-        public BapSshPublisherPlugin.Descriptor getPublisherPluginDescriptor() {
-            return Hudson.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
-        }
         @Override
         public String getDisplayName() {
             return Messages.transfer_descriptor_displayName();
-        }
-        public FormValidation doCheckExecTimeout(@QueryParameter final String value) {
-            return FormValidation.validateNonNegativeInteger(value);
         }
         public boolean canUseExcludes() {
             return BPTransfer.canUseExcludes();
         }
         public static int getDefaultExecTimeout() {
             return BapTransfer.DEFAULT_EXEC_TIMEOUT;
+        }
+        public FormValidation doCheckExecTimeout(@QueryParameter final String value) {
+            return FormValidation.validateNonNegativeInteger(value);
+        }
+        public FormValidation doCheckSourceFiles(@QueryParameter final String configName, @QueryParameter final String sourceFiles,
+                                                 @QueryParameter final String execCommand) {
+            if (Util.fixEmptyAndTrim(configName) != null) {
+                final BapSshPublisherPlugin.Descriptor pluginDescriptor = Hudson.getInstance().getDescriptorByType(
+                                                                                                BapSshPublisherPlugin.Descriptor.class);
+                final BapSshHostConfiguration hostConfig = pluginDescriptor.getConfiguration(configName);
+                if (hostConfig == null)
+                    return FormValidation.error(Messages.descriptor_sourceFiles_check_configNotFound(configName));
+                if (hostConfig.isEffectiveDisableExec())
+                    return FormValidation.validateRequired(sourceFiles);
+            }
+            return checkTransferSet(sourceFiles, execCommand);
+        }
+        public FormValidation doCheckExecCommand(@QueryParameter final String sourceFiles, @QueryParameter final String execCommand) {
+            return checkTransferSet(sourceFiles, execCommand);
+        }
+        private FormValidation checkTransferSet(final String sourceFiles, final String execCommand) {
+            return haveAtLeastOne(sourceFiles, execCommand) ? FormValidation.ok()
+                : FormValidation.error(Messages.descriptor_sourceOrExec());
+        }
+        private boolean haveAtLeastOne(final String... values) {
+            for (String value : values)
+                if (Util.fixEmptyAndTrim(value) != null)
+                    return true;
+            return false;
         }
     }
 }
