@@ -133,7 +133,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         }
     }
 
-    private void assertPublisherPluginConfiguration(int transfer11Timeout) {
+    private void assertPublisherPluginConfiguration(final int transfer11Timeout) {
         final int transfer12Timeout = 15000;
         final BapSshTransfer transfer11 = new BapSshTransfer("", null, "", "", false, false, "date", transfer11Timeout);
         final BapSshTransfer transfer12 = new BapSshTransfer("target/*.jar", null, "'builds/'yyyy_MM_dd/'build-${BUILD_NUMBER}'", "target",
