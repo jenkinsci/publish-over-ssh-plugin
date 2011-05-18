@@ -27,3 +27,4 @@
 <div>
     Send build artifacts over SSH
 </div>
+<!-- test local post receive hook -->
