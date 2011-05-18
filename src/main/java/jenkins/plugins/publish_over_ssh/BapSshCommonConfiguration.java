@@ -40,7 +40,8 @@ public class BapSshCommonConfiguration extends BapCommonConfiguration implements
     private static final long serialVersionUID = 1L;
 
     @DataBoundConstructor
-    public BapSshCommonConfiguration(final String encryptedPassphrase, final String key, final String keyPath, final boolean disableAllExec) {
+    public BapSshCommonConfiguration(final String encryptedPassphrase, final String key, final String keyPath,
+                                                                                                    final boolean disableAllExec) {
         super(encryptedPassphrase, key, keyPath, disableAllExec);
     }
 

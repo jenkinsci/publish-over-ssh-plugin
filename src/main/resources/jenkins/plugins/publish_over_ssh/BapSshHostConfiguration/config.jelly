@@ -66,6 +66,6 @@
     </f:advanced>
     
     <f:validateButton title="${%test.title}" progress="${%test.progress}" method="testConnection"
-                                              with="name,hostname,username,encryptedPassword,remoteRootDir,port,timeout,keyPath,key,overrideKey,common.encryptedPassphrase,common.key,common.keyPath"/>                        
+                      with="name,hostname,username,encryptedPassword,remoteRootDir,port,timeout,keyPath,key,overrideKey,common.encryptedPassphrase,common.key,common.keyPath"/>                        
             
 </j:jelly>

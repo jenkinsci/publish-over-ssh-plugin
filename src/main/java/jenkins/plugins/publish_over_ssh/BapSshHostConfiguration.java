@@ -99,7 +99,7 @@ public class BapSshHostConfiguration extends BapHostConfiguration implements Des
         public FormValidation doCheckKeyPath(@QueryParameter final String value) {
             return BPValidators.validateFileOnMaster(value);
         }
-        public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) throws Exception {
+        public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
             final BapSshPublisherPlugin.Descriptor pluginDescriptor = Hudson.getInstance().getDescriptorByType(
                                                                                                 BapSshPublisherPlugin.Descriptor.class);
             return pluginDescriptor.doTestConnection(request, response);
