@@ -61,7 +61,7 @@
     </j:if>
 
     <f:entry title="${%transfers.section}">
-        <scope>
+        <j:scope>
             <j:set var="descriptor" value="${descriptor.transferDescriptor}"/>
             <f:repeatable items="${instance.transfers}" var="instance" name="transfers" minimum="1" header="${%transfers.dragAndDropLabel}" add="${%addTransfer.value}">
                 <table width="100%" padding="0" class="ssh-transfer">
@@ -73,7 +73,7 @@
                     </f:entry>
                 </table>
             </f:repeatable>
-        </scope>
+        </j:scope>
     </f:entry>
 
 </j:jelly>
