@@ -56,9 +56,9 @@ public class BapSshHostConfiguration extends BapHostConfiguration implements Des
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
-        final BapSshHostConfiguration thatSshCommonConfiguration = (BapSshHostConfiguration) that;
+        final BapSshHostConfiguration thatHostConfig = (BapSshHostConfiguration) that;
 
-        return createEqualsBuilder(thatSshCommonConfiguration).isEquals();
+        return createEqualsBuilder(thatHostConfig).isEquals();
     }
 
     public int hashCode() {
