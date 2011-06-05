@@ -30,6 +30,8 @@ import hudson.model.Descriptor;
 import hudson.model.Hudson;
 import hudson.util.FormValidation;
 import jenkins.plugins.publish_over.BPValidators;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -43,10 +45,10 @@ public class BapSshHostConfiguration extends BapHostConfiguration implements Des
 
     @DataBoundConstructor
     @SuppressWarnings("PMD.ExcessiveParameterList")
-    public BapSshHostConfiguration(final String name, final String hostname, final String username, final String password,
+    public BapSshHostConfiguration(final String name, final String hostname, final String username, final String encryptedPassword,
                                    final String remoteRootDir, final int port, final int timeout, final boolean overrideKey,
                                    final String keyPath, final String key, final boolean disableExec) {
-        super(name, hostname, username, password, remoteRootDir, port, timeout, overrideKey, keyPath, key, disableExec);
+        super(name, hostname, username, encryptedPassword, remoteRootDir, port, timeout, overrideKey, keyPath, key, disableExec);
     }
 
     public DescriptorImpl getDescriptor() {
@@ -58,11 +60,11 @@ public class BapSshHostConfiguration extends BapHostConfiguration implements Des
         if (that == null || getClass() != that.getClass()) return false;
         final BapSshHostConfiguration thatHostConfig = (BapSshHostConfiguration) that;
 
-        return createEqualsBuilder(thatHostConfig).isEquals();
+        return addToEquals(new EqualsBuilder(), thatHostConfig).isEquals();
     }
 
     public int hashCode() {
-        return createHashCodeBuilder().toHashCode();
+        return addToHashCode(new HashCodeBuilder()).toHashCode();
     }
 
     public String toString() {

@@ -33,6 +33,8 @@ import hudson.Util;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPHostConfiguration;
 import jenkins.plugins.publish_over.BapPublisherException;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.commons.logging.Log;
@@ -103,7 +105,7 @@ public class BapHostConfiguration extends BPHostConfiguration<BapSshClient, BapC
         try {
             final BapSshKeyInfo keyInfo = getEffectiveKeyInfo();
             final Properties sessionProperties = getSessionProperties();
-            if (getEffectiveKeyInfo().useKey()) {
+            if (keyInfo.useKey()) {
                 setKey(buildInfo, ssh, keyInfo);
                 sessionProperties.put("PreferredAuthentications", "publickey");
             } else {
@@ -215,35 +217,44 @@ public class BapHostConfiguration extends BPHostConfiguration<BapSshClient, BapC
         return new JSch();
     }
 
+    protected EqualsBuilder addToEquals(EqualsBuilder builder, BapHostConfiguration that) {
+        return super.addToEquals(builder, that)
+            .append(keyInfo, that.keyInfo)
+            .append(timeout, that.timeout)
+            .append(overrideKey, that.overrideKey)
+            .append(disableExec, that.disableExec);
+    }
+
+    protected HashCodeBuilder addToHashCode(HashCodeBuilder builder) {
+        return super.addToHashCode(builder)
+            .append(keyInfo)
+            .append(timeout)
+            .append(overrideKey)
+            .append(disableExec);
+    }
+
+    protected ToStringBuilder addToToString(ToStringBuilder builder) {
+        return super.addToToString(builder)
+            .append("keyInfo", keyInfo)
+            .append("timeout", timeout)
+            .append("overrideKey", overrideKey)
+            .append("disableExec", disableExec);
+    }
+
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
         final BapHostConfiguration thatHostConfiguration = (BapHostConfiguration) that;
 
-        return createEqualsBuilder(thatHostConfiguration)
-            .append(keyInfo, thatHostConfiguration.keyInfo)
-            .append(timeout, thatHostConfiguration.timeout)
-            .append(overrideKey, thatHostConfiguration.overrideKey)
-            .append(disableExec, thatHostConfiguration.disableExec)
-            .isEquals();
+        return addToEquals(new EqualsBuilder(), thatHostConfiguration).isEquals();
     }
 
     public int hashCode() {
-        return createHashCodeBuilder()
-            .append(keyInfo)
-            .append(timeout)
-            .append(overrideKey)
-            .append(disableExec)
-            .toHashCode();
+        return addToHashCode(new HashCodeBuilder()).toHashCode();
     }
 
     public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE))
-            .append("keyInfo", keyInfo)
-            .append("timeout", timeout)
-            .append("overrideKey", overrideKey)
-            .append("disableExec", disableExec)
-            .toString();
+        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
 
 }
