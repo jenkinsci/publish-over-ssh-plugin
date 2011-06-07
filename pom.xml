@@ -36,7 +36,7 @@
     <artifactId>publish-over-ssh</artifactId>
     <packaging>hpi</packaging>
     <name>Publish Over SSH</name>
-    <version>0.15-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
     <description>Send build artifacts over SSH</description>
     <url>http://wiki.jenkins-ci.org/display/JENKINS/Publish+Over+SSH+Plugin</url>
 
@@ -64,7 +64,7 @@
         <dependency>
             <groupId>com.jcraft</groupId>
             <artifactId>jsch</artifactId>
-            <version>0.1.44</version>
+            <version>0.1.44-1</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
@@ -128,19 +128,6 @@
             </plugin>
         </plugins>
     </build>
-    
-    <repositories>
-        <repository>
-            <id>jcraft</id>
-                <url>http://jsch.sourceforge.net/maven2/</url>
-                <releases>
-                    <enabled>true</enabled>
-                </releases>
-                <snapshots>
-                    <enabled>false</enabled>
-                </snapshots>
-        </repository>
-    </repositories>
     
     <profiles>
         <profile>
