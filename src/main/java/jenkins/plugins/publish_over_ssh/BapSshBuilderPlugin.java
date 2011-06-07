@@ -63,16 +63,8 @@ public class BapSshBuilderPlugin extends Builder {
         return delegate.perform(build, launcher, listener);
     }
 
-    protected HashCodeBuilder createHashCodeBuilder() {
-        return addToHashCode(new HashCodeBuilder());
-    }
-
     protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
         return builder.append(delegate);
-    }
-
-    protected EqualsBuilder createEqualsBuilder(final BapSshBuilderPlugin that) {
-        return addToEquals(new EqualsBuilder(), that);
     }
 
     protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshBuilderPlugin that) {
@@ -87,11 +79,11 @@ public class BapSshBuilderPlugin extends Builder {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
 
-        return createEqualsBuilder((BapSshBuilderPlugin) that).isEquals();
+        return addToEquals(new EqualsBuilder(), (BapSshBuilderPlugin) that).isEquals();
     }
 
     public int hashCode() {
-        return createHashCodeBuilder().toHashCode();
+        return addToHashCode(new HashCodeBuilder()).toHashCode();
     }
 
     public String toString() {

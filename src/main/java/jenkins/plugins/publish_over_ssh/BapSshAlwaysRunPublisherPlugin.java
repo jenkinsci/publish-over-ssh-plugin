@@ -26,6 +26,8 @@ package jenkins.plugins.publish_over_ssh;
 
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -55,13 +57,12 @@ public class BapSshAlwaysRunPublisherPlugin extends BapSshPublisherPlugin {
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
-        final BapSshAlwaysRunPublisherPlugin thatPublisher = (BapSshAlwaysRunPublisherPlugin) that;
 
-        return createEqualsBuilder(thatPublisher).isEquals();
+        return addToEquals(new EqualsBuilder(), (BapSshAlwaysRunPublisherPlugin) that).isEquals();
     }
 
     public int hashCode() {
-        return createHashCodeBuilder().toHashCode();
+        return addToHashCode(new HashCodeBuilder()).toHashCode();
     }
 
     public String toString() {

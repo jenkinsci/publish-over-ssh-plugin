@@ -81,18 +81,10 @@ public class BapSshKeyInfo implements Serializable {
         return Util.fixEmptyAndTrim(keyPath) != null;
     }
 
-    protected HashCodeBuilder createHashCodeBuilder() {
-        return addToHashCode(new HashCodeBuilder());
-    }
-
     protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
         return builder.append(secretPassphrase)
             .append(key)
             .append(keyPath);
-    }
-
-    protected EqualsBuilder createEqualsBuilder(final BapSshKeyInfo that) {
-        return addToEquals(new EqualsBuilder(), that);
     }
 
     protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshKeyInfo that) {
@@ -111,11 +103,11 @@ public class BapSshKeyInfo implements Serializable {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
 
-        return createEqualsBuilder((BapSshKeyInfo) that).isEquals();
+        return addToEquals(new EqualsBuilder(), (BapSshKeyInfo) that).isEquals();
     }
 
     public int hashCode() {
-        return createHashCodeBuilder().toHashCode();
+        return addToHashCode(new HashCodeBuilder()).toHashCode();
     }
 
     public String toString() {

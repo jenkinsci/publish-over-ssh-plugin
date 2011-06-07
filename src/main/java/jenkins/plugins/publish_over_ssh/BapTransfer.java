@@ -26,6 +26,8 @@ package jenkins.plugins.publish_over_ssh;
 
 import hudson.Util;
 import jenkins.plugins.publish_over.BPTransfer;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -57,29 +59,35 @@ public class BapTransfer extends BPTransfer {
         return Util.fixEmptyAndTrim(getExecCommand()) != null;
     }
 
+    protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
+        return super.addToHashCode(builder).append(execCommand).append(execTimeout);
+    }
+
+    protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapTransfer that) {
+        return super.addToEquals(builder, that)
+                .append(execCommand, that.execCommand)
+                .append(execTimeout, that.execTimeout);
+    }
+
+    protected ToStringBuilder addToToString(final ToStringBuilder builder) {
+        return super.addToToString(builder)
+                .append("execCommand", execCommand)
+                .append("execTimeout", execTimeout);
+    }
+
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
-        final BapTransfer thatTransfer = (BapTransfer) that;
 
-        return createEqualsBuilder(thatTransfer)
-            .append(execCommand, thatTransfer.execCommand)
-            .append(execTimeout, thatTransfer.execTimeout)
-            .isEquals();
+        return addToEquals(new EqualsBuilder(), (BapTransfer) that).isEquals();
     }
 
     public int hashCode() {
-        return createHashCodeBuilder()
-            .append(execCommand)
-            .append(execTimeout)
-            .toHashCode();
+        return addToHashCode(new HashCodeBuilder()).toHashCode();
     }
 
     public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE))
-            .append(execCommand)
-            .append(execTimeout)
-            .toString();
+        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
 
 }

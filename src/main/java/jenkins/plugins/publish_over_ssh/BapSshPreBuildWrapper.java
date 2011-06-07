@@ -62,16 +62,8 @@ public class BapSshPreBuildWrapper extends BuildWrapper {
         return preBuild.perform(build, launcher, listener) ? new Environment() { } : null;
     }
 
-    protected HashCodeBuilder createHashCodeBuilder() {
-        return addToHashCode(new HashCodeBuilder());
-    }
-
     protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
         return builder.append(preBuild);
-    }
-
-    protected EqualsBuilder createEqualsBuilder(final BapSshPreBuildWrapper that) {
-        return addToEquals(new EqualsBuilder(), that);
     }
 
     protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshPreBuildWrapper that) {
@@ -86,11 +78,11 @@ public class BapSshPreBuildWrapper extends BuildWrapper {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
 
-        return createEqualsBuilder((BapSshPreBuildWrapper) that).isEquals();
+        return addToEquals(new EqualsBuilder(), (BapSshPreBuildWrapper) that).isEquals();
     }
 
     public int hashCode() {
-        return createHashCodeBuilder().toHashCode();
+        return addToHashCode(new HashCodeBuilder()).toHashCode();
     }
 
     public String toString() {

@@ -69,16 +69,8 @@ public class BapSshPromotionPublisherPlugin extends Notifier {
         return delegate.getRequiredMonitorService();
     }
 
-    protected HashCodeBuilder createHashCodeBuilder() {
-        return addToHashCode(new HashCodeBuilder());
-    }
-
     protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
         return builder.append(delegate);
-    }
-
-    protected EqualsBuilder createEqualsBuilder(final BapSshPromotionPublisherPlugin that) {
-        return addToEquals(new EqualsBuilder(), that);
     }
 
     protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshPromotionPublisherPlugin that) {
@@ -93,11 +85,11 @@ public class BapSshPromotionPublisherPlugin extends Notifier {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
 
-        return createEqualsBuilder((BapSshPromotionPublisherPlugin) that).isEquals();
+        return addToEquals(new EqualsBuilder(), (BapSshPromotionPublisherPlugin) that).isEquals();
     }
 
     public int hashCode() {
-        return createHashCodeBuilder().toHashCode();
+        return addToHashCode(new HashCodeBuilder()).toHashCode();
     }
 
     public String toString() {

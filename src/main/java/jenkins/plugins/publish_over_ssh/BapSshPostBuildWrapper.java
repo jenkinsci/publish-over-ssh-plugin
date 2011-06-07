@@ -68,16 +68,8 @@ public class BapSshPostBuildWrapper extends BuildWrapper {
         return runPostBuild;
     }
 
-    protected HashCodeBuilder createHashCodeBuilder() {
-        return addToHashCode(new HashCodeBuilder());
-    }
-
     protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
         return builder.append(postBuild);
-    }
-
-    protected EqualsBuilder createEqualsBuilder(final BapSshPostBuildWrapper that) {
-        return addToEquals(new EqualsBuilder(), that);
     }
 
     protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshPostBuildWrapper that) {
@@ -92,11 +84,11 @@ public class BapSshPostBuildWrapper extends BuildWrapper {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
 
-        return createEqualsBuilder((BapSshPostBuildWrapper) that).isEquals();
+        return addToEquals(new EqualsBuilder(), (BapSshPostBuildWrapper) that).isEquals();
     }
 
     public int hashCode() {
-        return createHashCodeBuilder().toHashCode();
+        return addToHashCode(new HashCodeBuilder()).toHashCode();
     }
 
     public String toString() {

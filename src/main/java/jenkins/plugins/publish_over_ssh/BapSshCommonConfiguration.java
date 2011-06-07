@@ -30,6 +30,8 @@ import hudson.model.Descriptor;
 import hudson.model.Hudson;
 import hudson.util.FormValidation;
 import jenkins.plugins.publish_over.BPValidators;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -52,13 +54,12 @@ public class BapSshCommonConfiguration extends BapCommonConfiguration implements
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
-        final BapSshCommonConfiguration thatSshCommonConfiguration = (BapSshCommonConfiguration) that;
 
-        return createEqualsBuilder(thatSshCommonConfiguration).isEquals();
+        return addToEquals(new EqualsBuilder(), (BapSshCommonConfiguration) that).isEquals();
     }
 
     public int hashCode() {
-        return createHashCodeBuilder().toHashCode();
+        return addToHashCode(new HashCodeBuilder()).toHashCode();
     }
 
     public String toString() {

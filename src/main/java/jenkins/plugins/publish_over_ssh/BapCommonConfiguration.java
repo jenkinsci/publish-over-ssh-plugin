@@ -24,6 +24,8 @@
 
 package jenkins.plugins.publish_over_ssh;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -42,22 +44,34 @@ public class BapCommonConfiguration extends BapSshKeyInfo {
         return disableAllExec;
     }
 
+    protected EqualsBuilder addToEquals(EqualsBuilder builder, BapCommonConfiguration that) {
+        return super.addToEquals(builder, that)
+            .append(disableAllExec, that.disableAllExec);
+    }
+
+    protected HashCodeBuilder addToHashCode(HashCodeBuilder builder) {
+        return super.addToHashCode(builder)
+            .append(disableAllExec);
+    }
+
+    protected ToStringBuilder addToToString(ToStringBuilder builder) {
+        return super.addToToString(builder)
+            .append("disableAllExec", disableAllExec);
+    }
+
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
-        final BapCommonConfiguration thatCommonConfiguration = (BapCommonConfiguration) that;
 
-        return createEqualsBuilder(thatCommonConfiguration)
-                .append(disableAllExec, thatCommonConfiguration.disableAllExec).isEquals();
+        return addToEquals(new EqualsBuilder(), (BapCommonConfiguration) that).isEquals();
     }
 
     public int hashCode() {
-        return createHashCodeBuilder().append(disableAllExec).toHashCode();
+        return addToHashCode(new HashCodeBuilder()).toHashCode();
     }
 
     public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE))
-                .append("disableAllExec", disableAllExec).toString();
+        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
 
 }
