@@ -217,7 +217,7 @@ public class BapHostConfiguration extends BPHostConfiguration<BapSshClient, BapC
         return new JSch();
     }
 
-    protected EqualsBuilder addToEquals(EqualsBuilder builder, BapHostConfiguration that) {
+    protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapHostConfiguration that) {
         return super.addToEquals(builder, that)
             .append(keyInfo, that.keyInfo)
             .append(timeout, that.timeout)
@@ -225,7 +225,7 @@ public class BapHostConfiguration extends BPHostConfiguration<BapSshClient, BapC
             .append(disableExec, that.disableExec);
     }
 
-    protected HashCodeBuilder addToHashCode(HashCodeBuilder builder) {
+    protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
         return super.addToHashCode(builder)
             .append(keyInfo)
             .append(timeout)
@@ -233,7 +233,7 @@ public class BapHostConfiguration extends BPHostConfiguration<BapSshClient, BapC
             .append(disableExec);
     }
 
-    protected ToStringBuilder addToToString(ToStringBuilder builder) {
+    protected ToStringBuilder addToToString(final ToStringBuilder builder) {
         return super.addToToString(builder)
             .append("keyInfo", keyInfo)
             .append("timeout", timeout)

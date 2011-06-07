@@ -44,17 +44,17 @@ public class BapCommonConfiguration extends BapSshKeyInfo {
         return disableAllExec;
     }
 
-    protected EqualsBuilder addToEquals(EqualsBuilder builder, BapCommonConfiguration that) {
+    protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapCommonConfiguration that) {
         return super.addToEquals(builder, that)
             .append(disableAllExec, that.disableAllExec);
     }
 
-    protected HashCodeBuilder addToHashCode(HashCodeBuilder builder) {
+    protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
         return super.addToHashCode(builder)
             .append(disableAllExec);
     }
 
-    protected ToStringBuilder addToToString(ToStringBuilder builder) {
+    protected ToStringBuilder addToToString(final ToStringBuilder builder) {
         return super.addToToString(builder)
             .append("disableAllExec", disableAllExec);
     }
