@@ -26,10 +26,10 @@ package jenkins.plugins.publish_over_ssh.jenkins;
 
 import hudson.model.Hudson;
 import hudson.util.CopyOnWriteList;
-import jenkins.plugins.publish_over.BPPluginDescriptor;
 import jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
+import jenkins.plugins.publish_over_ssh.descriptor.BapSshPublisherPluginDescriptor;
 
 import java.lang.reflect.Field;
 import java.security.AccessController;
@@ -49,7 +49,7 @@ public class JenkinsTestHelper {
     }
 
     public CopyOnWriteList<BapSshHostConfiguration> getHostConfigurations() throws NoSuchFieldException, IllegalAccessException {
-        final Field hostConfigurations = BPPluginDescriptor.class.getDeclaredField("hostConfigurations");
+        final Field hostConfigurations = BapSshPublisherPluginDescriptor.class.getDeclaredField("hostConfigurations");
         try {
             return AccessController.doPrivileged(new GetMeTheHostConfigurations(hostConfigurations));
         } catch (PrivilegedActionException pae) {

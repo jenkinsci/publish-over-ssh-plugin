@@ -25,12 +25,10 @@
 package jenkins.plugins.publish_over_ssh;
 
 import hudson.Extension;
-import hudson.model.AbstractProject;
 import hudson.model.Hudson;
 import jenkins.plugins.publish_over.BPPlugin;
 import jenkins.plugins.publish_over.BPPluginDescriptor;
-import jenkins.plugins.publish_over_ssh.descriptor.BapSshHostConfigurationDescriptor;
-import jenkins.plugins.publish_over_ssh.descriptor.BapSshPublisherDescriptor;
+import jenkins.plugins.publish_over_ssh.descriptor.BapSshPublisherPluginDescriptor;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -74,35 +72,24 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
     }
 
     @Extension
-    public static class Descriptor extends BPPluginDescriptor<BapSshHostConfiguration, BapSshCommonConfiguration> {
-        public Descriptor() {
-            super(new DescriptorMessages(), BapSshPublisherPlugin.class, BapSshHostConfiguration.class, BapSshCommonConfiguration.class);
-        }
-        public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
-            return !BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
-        }
-        public BapSshPublisherDescriptor getPublisherDescriptor() {
-            return Hudson.getInstance().getDescriptorByType(BapSshPublisherDescriptor.class);
-        }
-        // enable type to be identified for f:property
-        public BapSshCommonConfiguration getCommon() {
-            return super.getCommonConfig();
-        }
-        public BapSshHostConfigurationDescriptor getHostConfigurationDescriptor() {
-            return Hudson.getInstance().getDescriptorByType(BapSshHostConfigurationDescriptor.class);
-        }
-    }
+    public static class Descriptor extends BapSshPublisherPluginDescriptor { }
 
+    /** prevent xstream noise */
+    @Deprecated
     public static class DescriptorMessages implements BPPluginDescriptor.BPDescriptorMessages {
+
         public String displayName() {
-            return Messages.descriptor_displayName();
+            return null;
         }
+
         public String connectionOK() {
-            return Messages.descriptor_testConnection_ok();
+            return null;
         }
+
         public String connectionErr() {
-            return Messages.descriptor_testConnection_error();
+            return null;
         }
+
     }
 
 }

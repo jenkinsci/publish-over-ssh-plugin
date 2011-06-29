@@ -28,7 +28,7 @@
 
     <f:section title="${%section.title}" description="${%section.description}">
         <f:entry title="${%common.entry.title}" help="${descriptor.getHelpFile('defaultKeySummary')}"/>
-        <f:property field="common"/>
+        <f:property field="commonConfig"/>
         <f:entry title="${%hostconfig.entry.title}">
             <j:scope>
                 <j:set var="descriptor" value="${descriptor.hostConfigurationDescriptor}"/>
