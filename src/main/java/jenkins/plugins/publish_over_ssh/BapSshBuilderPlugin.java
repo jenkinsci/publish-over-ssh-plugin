@@ -49,8 +49,9 @@ public class BapSshBuilderPlugin extends Builder {
 
     @DataBoundConstructor
     public BapSshBuilderPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
-                               final boolean alwaysPublishFromMaster, final String masterNodeName) {
-        this.delegate = new BapSshPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
+                               final boolean alwaysPublishFromMaster, final String masterNodeName, final boolean verbose) {
+        this.delegate = new BapSshPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName,
+                                                                                                                                verbose);
     }
 
     public BapSshPublisherPlugin getDelegate() {

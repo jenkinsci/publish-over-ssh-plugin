@@ -80,10 +80,10 @@ public class IntegrationTest extends HudsonTestCase {
         final String dirToIgnore = "target";
         final int execTimeout = 10000;
         final BapSshTransfer transfer = new BapSshTransfer("**/*", null, "sub-home", dirToIgnore, false, false, "", execTimeout);
-        final BapSshPublisher publisher = new BapSshPublisher(testHostConfig.getName(), false,
+        final BapSshPublisher publisher = new BapSshPublisher(testHostConfig.getName(),
                         new ArrayList<BapSshTransfer>(Collections.singletonList(transfer)), false, false);
         final BapSshPublisherPlugin plugin = new BapSshPublisherPlugin(
-                        new ArrayList<BapSshPublisher>(Collections.singletonList(publisher)), false, false, false, "master");
+                        new ArrayList<BapSshPublisher>(Collections.singletonList(publisher)), false, false, false, "master", false);
 
         final FreeStyleProject project = createFreeStyleProject();
         project.getPublishersList().add(plugin);
