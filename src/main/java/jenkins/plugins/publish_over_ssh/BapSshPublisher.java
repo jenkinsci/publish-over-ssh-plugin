@@ -37,7 +37,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import java.util.ArrayList;
 
 /**
- * Class required to enable DBC to bind correct SshTransfer - BapSshTransfer
+ * Class required to enable stapler/DBC to bind to correct BPTransfer - BapSshTransfer
  */
 @SuppressWarnings("PMD.LooseCoupling") // serializable
 public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Describable<BapSshPublisher> {
