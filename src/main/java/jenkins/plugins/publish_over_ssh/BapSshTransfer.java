@@ -24,33 +24,66 @@
 
 package jenkins.plugins.publish_over_ssh;
 
-import hudson.Extension;
 import hudson.Util;
 import hudson.model.Describable;
-import hudson.model.Descriptor;
 import hudson.model.Hudson;
-import hudson.util.FormValidation;
 import jenkins.plugins.publish_over.BPTransfer;
+import jenkins.plugins.publish_over_ssh.descriptor.BapSshTransferDescriptor;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
 
-public class BapSshTransfer extends BapTransfer implements Describable<BapSshTransfer> {
+public class BapSshTransfer extends BPTransfer implements Describable<BapSshTransfer> {
 
     private static final long serialVersionUID = 1L;
+    public static final int DEFAULT_EXEC_TIMEOUT = 120000;
+
+    private String execCommand;
+    private int execTimeout;
+
+    BapSshTransfer(final String sourceFiles, final String remoteDirectory, final String removePrefix,
+                   final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout) {
+        this(sourceFiles, null, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, execCommand, execTimeout);
+    }
 
     @DataBoundConstructor
     public BapSshTransfer(final String sourceFiles, final String excludes, final String remoteDirectory, final String removePrefix,
                           final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout) {
-        super(sourceFiles, excludes, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, execCommand, execTimeout);
+        super(sourceFiles, excludes, remoteDirectory, removePrefix, remoteDirectorySDF, flatten);
+        this.execCommand = execCommand;
+        this.execTimeout = execTimeout;
     }
 
-    public DescriptorImpl getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(DescriptorImpl.class);
+    public String getExecCommand() { return execCommand; }
+
+    public int getExecTimeout() { return execTimeout; }
+
+    public boolean hasExecCommand() {
+        return Util.fixEmptyAndTrim(getExecCommand()) != null;
     }
+
+    public BapSshTransferDescriptor getDescriptor() {
+        return Hudson.getInstance().getDescriptorByType(BapSshTransferDescriptor.class);
+    }
+
+    protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
+        return super.addToHashCode(builder).append(execCommand).append(execTimeout);
+    }
+
+    protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshTransfer that) {
+        return super.addToEquals(builder, that)
+                .append(execCommand, that.execCommand)
+                .append(execTimeout, that.execTimeout);
+    }
+
+    protected ToStringBuilder addToToString(final ToStringBuilder builder) {
+        return super.addToToString(builder)
+                .append("execCommand", execCommand)
+                .append("execTimeout", execTimeout);
+    }
+
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
@@ -66,46 +99,4 @@ public class BapSshTransfer extends BapTransfer implements Describable<BapSshTra
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
 
-    @Extension
-    public static class DescriptorImpl extends Descriptor<BapSshTransfer> {
-        @Override
-        public String getDisplayName() {
-            return Messages.transfer_descriptor_displayName();
-        }
-        public boolean canUseExcludes() {
-            return BPTransfer.canUseExcludes();
-        }
-        public static int getDefaultExecTimeout() {
-            return BapTransfer.DEFAULT_EXEC_TIMEOUT;
-        }
-        public FormValidation doCheckExecTimeout(@QueryParameter final String value) {
-            return FormValidation.validateNonNegativeInteger(value);
-        }
-        public FormValidation doCheckSourceFiles(@QueryParameter final String configName, @QueryParameter final String sourceFiles,
-                                                 @QueryParameter final String execCommand) {
-            if (Util.fixEmptyAndTrim(configName) != null) {
-                final BapSshPublisherPlugin.Descriptor pluginDescriptor = Hudson.getInstance().getDescriptorByType(
-                                                                                                BapSshPublisherPlugin.Descriptor.class);
-                final BapSshHostConfiguration hostConfig = pluginDescriptor.getConfiguration(configName);
-                if (hostConfig == null)
-                    return FormValidation.error(Messages.descriptor_sourceFiles_check_configNotFound(configName));
-                if (hostConfig.isEffectiveDisableExec())
-                    return FormValidation.validateRequired(sourceFiles);
-            }
-            return checkTransferSet(sourceFiles, execCommand);
-        }
-        public FormValidation doCheckExecCommand(@QueryParameter final String sourceFiles, @QueryParameter final String execCommand) {
-            return checkTransferSet(sourceFiles, execCommand);
-        }
-        private FormValidation checkTransferSet(final String sourceFiles, final String execCommand) {
-            return haveAtLeastOne(sourceFiles, execCommand) ? FormValidation.ok()
-                : FormValidation.error(Messages.descriptor_sourceOrExec());
-        }
-        private boolean haveAtLeastOne(final String... values) {
-            for (String value : values)
-                if (Util.fixEmptyAndTrim(value) != null)
-                    return true;
-            return false;
-        }
-    }
 }

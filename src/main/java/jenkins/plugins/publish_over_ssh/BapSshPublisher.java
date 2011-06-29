@@ -24,11 +24,10 @@
 
 package jenkins.plugins.publish_over_ssh;
 
-import hudson.Extension;
 import hudson.model.Describable;
-import hudson.model.Descriptor;
 import hudson.model.Hudson;
 import jenkins.plugins.publish_over.BapPublisher;
+import jenkins.plugins.publish_over_ssh.descriptor.BapSshPublisherDescriptor;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -37,6 +36,9 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.util.ArrayList;
 
+/**
+ * Class required to enable DBC to bind correct SshTransfer - BapSshTransfer
+ */
 @SuppressWarnings("PMD.LooseCoupling") // serializable
 public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Describable<BapSshPublisher> {
 
@@ -48,8 +50,8 @@ public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Des
         super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp);
     }
 
-    public DescriptorImpl getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(DescriptorImpl.class);
+    public BapSshPublisherDescriptor getDescriptor() {
+        return Hudson.getInstance().getDescriptorByType(BapSshPublisherDescriptor.class);
     }
 
     public boolean equals(final Object that) {
@@ -65,20 +67,6 @@ public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Des
 
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
-    }
-
-    @Extension
-    public static class DescriptorImpl extends Descriptor<BapSshPublisher> {
-        public BapSshPublisherPlugin.Descriptor getPublisherPluginDescriptor() {
-            return Hudson.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
-        }
-        public BapSshTransfer.DescriptorImpl getTransferDescriptor() {
-            return Hudson.getInstance().getDescriptorByType(BapSshTransfer.DescriptorImpl.class);
-        }
-        @Override
-        public String getDisplayName() {
-            return Messages.publisher_descriptor_displayName();
-        }
     }
 
 }

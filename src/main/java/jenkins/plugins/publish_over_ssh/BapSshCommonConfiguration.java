@@ -24,31 +24,49 @@
 
 package jenkins.plugins.publish_over_ssh;
 
-import hudson.Extension;
 import hudson.model.Describable;
-import hudson.model.Descriptor;
 import hudson.model.Hudson;
-import hudson.util.FormValidation;
-import jenkins.plugins.publish_over.BPValidators;
+import jenkins.plugins.publish_over_ssh.descriptor.BapSshCommonConfigurationDescriptor;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.QueryParameter;
 
-public class BapSshCommonConfiguration extends BapCommonConfiguration implements Describable<BapSshCommonConfiguration> {
+public class BapSshCommonConfiguration extends BapSshKeyInfo implements Describable<BapSshCommonConfiguration> {
 
     private static final long serialVersionUID = 1L;
+
+    private final boolean disableAllExec;
 
     @DataBoundConstructor
     public BapSshCommonConfiguration(final String encryptedPassphrase, final String key, final String keyPath,
                                                                                                     final boolean disableAllExec) {
-        super(encryptedPassphrase, key, keyPath, disableAllExec);
+        super(encryptedPassphrase, key, keyPath);
+        this.disableAllExec = disableAllExec;
     }
 
-    public DescriptorImpl getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(DescriptorImpl.class);
+    public boolean isDisableAllExec() {
+        return disableAllExec;
+    }
+
+    public BapSshCommonConfigurationDescriptor getDescriptor() {
+        return Hudson.getInstance().getDescriptorByType(BapSshCommonConfigurationDescriptor.class);
+    }
+
+    protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshCommonConfiguration that) {
+        return super.addToEquals(builder, that)
+            .append(disableAllExec, that.disableAllExec);
+    }
+
+    protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
+        return super.addToHashCode(builder)
+            .append(disableAllExec);
+    }
+
+    protected ToStringBuilder addToToString(final ToStringBuilder builder) {
+        return super.addToToString(builder)
+            .append("disableAllExec", disableAllExec);
     }
 
     public boolean equals(final Object that) {
@@ -64,17 +82,6 @@ public class BapSshCommonConfiguration extends BapCommonConfiguration implements
 
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
-    }
-
-    @Extension
-    public static class DescriptorImpl extends Descriptor<BapSshCommonConfiguration> {
-        @Override
-        public String getDisplayName() {
-            return Messages.global_common_descriptor();
-        }
-        public FormValidation doCheckKeyPath(@QueryParameter final String value) {
-            return BPValidators.validateFileOnMaster(value);
-        }
     }
 
 }

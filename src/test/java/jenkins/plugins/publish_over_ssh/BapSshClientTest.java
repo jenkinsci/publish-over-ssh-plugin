@@ -78,7 +78,7 @@ public class BapSshClientTest {
     private final Session mockSession = mockControl.createMock(Session.class);
     private final ChannelSftp mockSftp = mockControl.createMock(ChannelSftp.class);
     private final BapSshClient bapSshClient = new BapSshClient(buildInfo, mockSession);
-    private final BapTransfer mockTransfer = mockControl.createMock(BapTransfer.class);
+    private final BapSshTransfer mockTransfer = mockControl.createMock(BapSshTransfer.class);
     private final InputStream anInputStream = mockControl.createMock(InputStream.class);
     private final BapSshTestHelper testHelper = new BapSshTestHelper(mockControl, mockSftp);
 
@@ -195,7 +195,7 @@ public class BapSshClientTest {
     @Test public void testBeginTransfersFailIfNoSourceFilesAndNoExecCommand() throws Exception {
         try {
             final int execTimeout = 10000;
-            bapSshClient.beginTransfers(new BapTransfer("", "", "", false, false, "", execTimeout));
+            bapSshClient.beginTransfers(new BapSshTransfer("", "", "", false, false, "", execTimeout));
             fail();
         } catch (BapPublisherException bpe) {
             assertEquals(Messages.exception_badTransferConfig(), bpe.getMessage());
@@ -207,7 +207,7 @@ public class BapSshClientTest {
             final BapSshClient noExecBapSshClient = new BapSshClient(buildInfo, mockSession, true);
             noExecBapSshClient.setSftp(mockSftp);
             final int execTimeout = 10000;
-            noExecBapSshClient.beginTransfers(new BapTransfer("", "", "", false, false, "something to exec", execTimeout));
+            noExecBapSshClient.beginTransfers(new BapSshTransfer("", "", "", false, false, "something to exec", execTimeout));
             fail();
         } catch (BapPublisherException bpe) {
             assertEquals(Messages.exception_badTransferConfig_noExec(), bpe.getMessage());
@@ -226,7 +226,7 @@ public class BapSshClientTest {
         expect(mockSession.getTimeout()).andReturn(expectedConnectTimeout);
         mockControl.replay();
         final int execCommandTimeout = 120000;
-        bapSshClient.endTransfers(new BapTransfer("", "", "", false, false, command, execCommandTimeout));
+        bapSshClient.endTransfers(new BapSshTransfer("", "", "", false, false, command, execCommandTimeout));
         mockControl.verify();
         exec.assertMethodsCalled();
     }
@@ -241,7 +241,7 @@ public class BapSshClientTest {
         expect(mockSession.getTimeout()).andReturn(expectedConnectTimeout);
         final int execCommandTimeout = 120000;
         testHelper.assertBPE(Integer.toString(expectedExitStatus), new Runnable() { public void run() {
-            bapSshClient.endTransfers(new BapTransfer("", "", "", false, false, command, execCommandTimeout));
+            bapSshClient.endTransfers(new BapSshTransfer("", "", "", false, false, command, execCommandTimeout));
         } });
         exec.assertMethodsCalled();
     }
@@ -258,7 +258,7 @@ public class BapSshClientTest {
         final long start = System.currentTimeMillis();
         final int shortExecTimeout = 2000;
         testHelper.assertBPE("timed out", new Runnable() { public void run() {
-            bapSshClient.endTransfers(new BapTransfer("", "", "", false, false, command, shortExecTimeout));
+            bapSshClient.endTransfers(new BapSshTransfer("", "", "", false, false, command, shortExecTimeout));
         } });
         final long duration = System.currentTimeMillis() - start;
         // expect to return in 2s + some overhead 4 test and pre thread prod code + very slow machines.
@@ -271,7 +271,7 @@ public class BapSshClientTest {
     @Test public void testEndTransfersDoesNothingIfNoExecCommand() throws Exception {
         final int execTimeout = 10000;
         mockControl.replay();
-        bapSshClient.endTransfers(new BapTransfer("*.java", "", "", false, false, "", execTimeout));
+        bapSshClient.endTransfers(new BapSshTransfer("*.java", "", "", false, false, "", execTimeout));
         mockControl.verify();
     }
 
@@ -280,7 +280,7 @@ public class BapSshClientTest {
         noExecBapSshClient.setSftp(mockSftp);
         final int execTimeout = 10000;
         mockControl.replay();
-        noExecBapSshClient.endTransfers(new BapTransfer("*.java", "", "", false, false, "something fun to exec", execTimeout));
+        noExecBapSshClient.endTransfers(new BapSshTransfer("*.java", "", "", false, false, "something fun to exec", execTimeout));
         mockControl.verify();
     }
 
