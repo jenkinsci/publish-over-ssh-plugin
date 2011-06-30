@@ -34,6 +34,10 @@
         </select>
     </f:entry>
 
+    <f:entry title="${%verbose.title}" field="verbose">
+        <f:checkbox />
+    </f:entry>
+
     <j:if test="${inPromotion}">
         <j:choose>
             <j:when test="${it.getClass().canonicalName == 'hudson.matrix.MatrixProject'}">

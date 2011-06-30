@@ -51,10 +51,8 @@ public class BapSshPromotionPublisherPlugin extends Notifier {
 
     @DataBoundConstructor
     public BapSshPromotionPublisherPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError,
-                                          final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName,
-                                          final boolean verbose) {
-        this.delegate = new BapSshPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName,
-                                                                                                                                  verbose);
+                                          final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName) {
+        this.delegate = new BapSshPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
 
     @Override

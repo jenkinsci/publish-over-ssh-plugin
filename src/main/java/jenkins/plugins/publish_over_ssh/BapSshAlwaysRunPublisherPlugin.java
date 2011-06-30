@@ -41,9 +41,8 @@ public class BapSshAlwaysRunPublisherPlugin extends BapSshPublisherPlugin {
     private static final long serialVersionUID = 1L;
 
     public BapSshAlwaysRunPublisherPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError,
-                                          final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName,
-                                          final boolean verbose) {
-        super(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName, verbose);
+                                          final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName) {
+        super(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
 
     @Override

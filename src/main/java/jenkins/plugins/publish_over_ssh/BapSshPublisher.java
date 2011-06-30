@@ -45,9 +45,9 @@ public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Des
     private static final long serialVersionUID = 1L;
 
     @DataBoundConstructor
-    public BapSshPublisher(final String configName, final ArrayList<BapSshTransfer> transfers,
+    public BapSshPublisher(final String configName, final boolean verbose, final ArrayList<BapSshTransfer> transfers,
                            final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp) {
-        super(configName, transfers, useWorkspaceInPromotion, usePromotionTimestamp);
+        super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp);
     }
 
     public BapSshPublisherDescriptor getDescriptor() {

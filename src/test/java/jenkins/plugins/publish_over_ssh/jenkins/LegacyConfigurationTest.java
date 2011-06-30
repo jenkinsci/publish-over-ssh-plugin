@@ -65,10 +65,10 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         final int expectedExecTimeout = 120000;
         final List<BapSshTransfer> transfers = Collections.singletonList(
                     new BapSshTransfer("**/*", null, "", "", false, false, "", expectedExecTimeout));
-        final BapSshPublisher publisher = new BapSshPublisher("default", new ArrayList<BapSshTransfer>(transfers), false, false);
+        final BapSshPublisher publisher = new BapSshPublisher("default", false, new ArrayList<BapSshTransfer>(transfers), false, false);
         final ArrayList<BapSshPublisher> publishers = new ArrayList<BapSshPublisher>();
         publishers.add(publisher);
-        final BapSshPublisherPlugin expectedPlugin = new BapSshPublisherPlugin(publishers, false, false, false, "", false);
+        final BapSshPublisherPlugin expectedPlugin = new BapSshPublisherPlugin(publishers, false, false, false, "");
         assertEquals(expectedPlugin, getConfiguredPublisherPlugin());
     }
 
@@ -89,27 +89,28 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         final List<BapSshTransfer> builderTransfers = Collections.singletonList(
                                         new BapSshTransfer("builderC/", null, "", "", false, false, "", DEFAULT_EXEC_TIMEOUT));
         final List<BapSshPublisher> builderPublishers = Collections.singletonList(
-                                        new BapSshPublisher(configName('c'), new ArrayList<BapSshTransfer>(builderTransfers),
+                                        new BapSshPublisher(configName('c'), false, new ArrayList<BapSshTransfer>(builderTransfers),
                                                 false, false));
         final BapSshBuilderPlugin expectedBuilderPlugin = new BapSshBuilderPlugin(new ArrayList<BapSshPublisher>(builderPublishers),
-                                          true, false, false, "", false);
+                                          true, false, false, "");
         assertEquals(expectedBuilderPlugin, getConfiguredBuilderPlugin());
 
         final List<BapSshTransfer> preTransfers = Collections.singletonList(
                                         new BapSshTransfer("beforeA/", null, "", "", false, false, "", DEFAULT_EXEC_TIMEOUT));
         final List<BapSshPublisher> prePublishers = Collections.singletonList(
-                                        new BapSshPublisher(configName('a'), new ArrayList<BapSshTransfer>(preTransfers), false, false));
+                                        new BapSshPublisher(configName('a'), false, new ArrayList<BapSshTransfer>(preTransfers),
+                                                false, false));
         final BapSshPreBuildWrapper expectedPreBuildPlugin = new BapSshPreBuildWrapper(new ArrayList<BapSshPublisher>(prePublishers),
-                                          false, true, false, "", false);
+                                          false, true, false, "");
         assertEquals(expectedPreBuildPlugin, getConfiguredBuildWrapper(BapSshPreBuildWrapper.class));
 
         final List<BapSshTransfer> postTransfers = Collections.singletonList(
                                         new BapSshTransfer("afterD/", null, "", "", false, false, "", DEFAULT_EXEC_TIMEOUT));
         final List<BapSshPublisher> postPublishers = Collections.singletonList(
-                                        new BapSshPublisher(configName('d'), new ArrayList<BapSshTransfer>(postTransfers),
+                                        new BapSshPublisher(configName('d'), false, new ArrayList<BapSshTransfer>(postTransfers),
                                                 false, false));
         final BapSshPostBuildWrapper expectedPostBuildPlugin = new BapSshPostBuildWrapper(new ArrayList<BapSshPublisher>(postPublishers),
-                                          false, false, true, "", false);
+                                          false, false, true, "");
         assertEquals(expectedPostBuildPlugin, getConfiguredBuildWrapper(BapSshPostBuildWrapper.class));
     }
 
@@ -140,17 +141,17 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         final ArrayList<BapSshTransfer> transfers1 = new ArrayList<BapSshTransfer>();
         transfers1.add(transfer11);
         transfers1.add(transfer12);
-        final BapSshPublisher publisher1 = new BapSshPublisher(configName('a'), transfers1, false, false);
+        final BapSshPublisher publisher1 = new BapSshPublisher(configName('a'), true, transfers1, false, false);
         final int transfer21Timeout = 10000;
         final BapSshTransfer transfer21 = new BapSshTransfer("out\\dist\\**\\*", null, "", "out\\dist", false, false, "",
                                                              transfer21Timeout);
         final ArrayList<BapSshTransfer> transfers2 = new ArrayList<BapSshTransfer>();
         transfers2.add(transfer21);
-        final BapSshPublisher publisher2 = new BapSshPublisher(configName('c'), transfers2, false, false);
+        final BapSshPublisher publisher2 = new BapSshPublisher(configName('c'), false, transfers2, false, false);
         final ArrayList<BapSshPublisher> publishers = new ArrayList<BapSshPublisher>();
         publishers.add(publisher1);
         publishers.add(publisher2);
-        final BapSshPublisherPlugin expectedPlugin = new BapSshPublisherPlugin(publishers, true, true, true, "essien", true);
+        final BapSshPublisherPlugin expectedPlugin = new BapSshPublisherPlugin(publishers, true, true, true, "essien");
         assertEquals(expectedPlugin, getConfiguredPublisherPlugin());
     }
 

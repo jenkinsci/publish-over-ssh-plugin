@@ -48,9 +48,8 @@ public class BapSshPreBuildWrapper extends BuildWrapper {
 
     @DataBoundConstructor
     public BapSshPreBuildWrapper(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
-                                 final boolean alwaysPublishFromMaster, final String masterNodeName, final boolean verbose) {
-        preBuild = new BapSshAlwaysRunPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName,
-                                                                                                                                verbose);
+                                 final boolean alwaysPublishFromMaster, final String masterNodeName) {
+        preBuild = new BapSshAlwaysRunPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
     }
 
     public BapSshPublisherPlugin getPreBuild() {
