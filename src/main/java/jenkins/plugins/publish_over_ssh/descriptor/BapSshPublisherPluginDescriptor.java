@@ -136,7 +136,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
             null
         );
     }
-    
+
     public Object readResolve() {
         // nuke the legacy config
         msg = null;
