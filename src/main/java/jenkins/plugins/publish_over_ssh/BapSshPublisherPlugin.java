@@ -77,20 +77,6 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
 
     /** prevent xstream noise */
     @Deprecated
-    public static class DescriptorMessages implements BPPluginDescriptor.BPDescriptorMessages {
-
-        public String displayName() {
-            return null;
-        }
-
-        public String connectionOK() {
-            return null;
-        }
-
-        public String connectionErr() {
-            return null;
-        }
-
-    }
+    public static class DescriptorMessages implements BPPluginDescriptor.BPDescriptorMessages { }
 
 }
