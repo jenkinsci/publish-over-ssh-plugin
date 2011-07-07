@@ -46,6 +46,8 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.aryEq;
@@ -66,14 +68,20 @@ public class BapHostConfigurationTest {
     private static final String TEST_REMOTE_ROOT = "/test/root";
     private static final String TEST_PASSPHRASE = "DEFAULT";
 
+    private static final Logger HOST_CONFIG_LOGGER = Logger.getLogger(BapSshHostConfiguration.class.getCanonicalName());
+    private static Level originalLogLevel;
+
     @BeforeClass
     public static void before() {
         SecretHelper.setSecretKey();
+        originalLogLevel = HOST_CONFIG_LOGGER.getLevel();
+        HOST_CONFIG_LOGGER.setLevel(Level.OFF);
     }
 
     @AfterClass
     public static void after() {
         SecretHelper.clearSecretKey();
+        HOST_CONFIG_LOGGER.setLevel(originalLogLevel);
     }
 
     @Rule
@@ -167,7 +175,7 @@ public class BapHostConfigurationTest {
         hostConfig.setCommonConfig(commonConfiguration);
         expect(mockJSch.getSession(hostConfig.getUsername(), hostConfig.getHostname(), hostConfig.getPort())).andReturn(mockSession);
         mockJSch.addIdentity(isA(String.class), aryEq(theKey.getContents()), (byte[]) isNull(),
-                    aryEq(BapSshUtil.toBytes(TEST_PASSPHRASE)));
+                aryEq(BapSshUtil.toBytes(TEST_PASSPHRASE)));
         mockSession.setConfig((Properties) anyObject());
         mockSession.connect(hostConfig.getTimeout());
         expect(mockSession.openChannel("sftp")).andReturn(mockSftp);
@@ -185,7 +193,7 @@ public class BapHostConfigurationTest {
         hostConfig.setPassword("Ignore me");
         expect(mockJSch.getSession(hostConfig.getUsername(), hostConfig.getHostname(), hostConfig.getPort())).andReturn(mockSession);
         mockJSch.addIdentity(isA(String.class), aryEq(BapSshUtil.toBytes(testKey)), (byte[]) isNull(),
-                    aryEq(BapSshUtil.toBytes(TEST_PASSPHRASE)));
+                aryEq(BapSshUtil.toBytes(TEST_PASSPHRASE)));
         mockSession.setConfig((Properties) anyObject());
         mockSession.connect(hostConfig.getTimeout());
         expect(mockSession.openChannel("sftp")).andReturn(mockSftp);
@@ -279,9 +287,11 @@ public class BapHostConfigurationTest {
     }
 
     private void assertCreateClientThrowsException(final String exceptionMessageShouldContain) throws Exception {
-        testHelper.assertBPE(exceptionMessageShouldContain, new Runnable() { public void run() {
-            hostConfig.createClient(buildInfo);
-        } });
+        testHelper.assertBPE(exceptionMessageShouldContain, new Runnable() {
+            public void run() {
+                hostConfig.createClient(buildInfo);
+            }
+        });
     }
 
     private BapSshClient assertCreateClient() {
