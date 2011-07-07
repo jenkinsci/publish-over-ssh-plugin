@@ -24,7 +24,7 @@
   ~ THE SOFTWARE.
   -->
 
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:poj="/pojelly">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:f="/lib/form" xmlns:poj="/pojelly">
 
     <j:set var="instance" value="${instance.delegate}"/>
     
@@ -53,14 +53,14 @@
         </j:scope>
 
         <f:advanced>
-            <f:entry title="${%continueOnError.title}" field="continueOnError">
-                <f:checkbox/>
+            <f:entry field="continueOnError">
+                <poj:checkbox title="${%continueOnError.title}"/>
             </f:entry>
-            <f:entry title="${%failOnError.title}" field="failOnError">
-                <f:checkbox/>
+            <f:entry field="failOnError">
+                <poj:checkbox title="${%failOnError.title}"/>
             </f:entry>
-            <f:entry title="${%alwaysPublishFromMaster.title}" field="alwaysPublishFromMaster">
-                <f:checkbox/>
+            <f:entry field="alwaysPublishFromMaster">
+                <poj:checkbox title="${%alwaysPublishFromMaster.title}"/>
             </f:entry>
             <j:if test="${descriptor.canSetMasterNodeName()}">
                 <f:entry title="${%masterNodeName.title}" field="masterNodeName">

@@ -24,45 +24,35 @@
 
 package jenkins.plugins.publish_over_ssh;
 
+import hudson.Extension;
 import hudson.model.Describable;
+import hudson.model.Descriptor;
 import hudson.model.Hudson;
-import jenkins.plugins.publish_over.BapPublisher;
-import jenkins.plugins.publish_over_ssh.descriptor.BapSshPublisherDescriptor;
+import hudson.util.FormValidation;
+import jenkins.plugins.publish_over.Retry;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.QueryParameter;
 
-import java.util.ArrayList;
-
-/**
- * Class required to enable stapler/DBC to bind to correct BPTransfer - BapSshTransfer
- */
-@SuppressWarnings("PMD.LooseCoupling") // serializable
-public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Describable<BapSshPublisher> {
-
-    private static final long serialVersionUID = 1L;
+public class BapSshRetry extends Retry implements Describable<BapSshRetry> {
 
     @DataBoundConstructor
-    public BapSshPublisher(final String configName, final boolean verbose, final ArrayList<BapSshTransfer> transfers,
-                           final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp, final BapSshRetry retry) {
-        super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp, retry);
+    public BapSshRetry(final int retries, final long retryDelay) {
+        super(retries, retryDelay);
     }
-
-    public BapSshRetry getRetry() {
-        return (BapSshRetry) super.getRetry();
-    }
-
-    public BapSshPublisherDescriptor getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(BapSshPublisherDescriptor.class);
+    
+    public BapSshRetryDescriptor getDescriptor() {
+        return Hudson.getInstance().getDescriptorByType(BapSshRetryDescriptor.class);
     }
 
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
 
-        return addToEquals(new EqualsBuilder(), (BapSshPublisher) that).isEquals();
+        return addToEquals(new EqualsBuilder(), (BapSshRetry) that).isEquals();
     }
 
     public int hashCode() {
@@ -71,6 +61,32 @@ public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Des
 
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+    }
+
+    @Extension
+    public static class BapSshRetryDescriptor extends Descriptor<BapSshRetry> {
+
+        @Override
+        public String getDisplayName() {
+            return Messages.retry_descriptor_displayName();
+        }
+
+        public int getDefaultRetries() {
+            return Retry.DEFAULT_RETRIES;
+        }
+
+        public long getDefaultRetryDelay() {
+            return Retry.DEFAULT_RETRY_DELAY;
+        }
+
+        public FormValidation doCheckRetries(@QueryParameter final String value) {
+            return FormValidation.validateNonNegativeInteger(value);
+        }
+
+        public FormValidation doCheckRetryDelay(@QueryParameter final String value) {
+            return FormValidation.validatePositiveInteger(value);
+        }
+
     }
 
 }

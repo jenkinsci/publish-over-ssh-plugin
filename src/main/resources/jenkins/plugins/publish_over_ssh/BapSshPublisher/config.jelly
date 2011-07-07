@@ -24,7 +24,7 @@
   ~ THE SOFTWARE.
   -->
 
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:poj="/pojelly">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:f="/lib/form" xmlns:poj="/pojelly">
 
     <f:entry title="${%hostconfig.title}" field="configName">
         <select class="setting-input ssh-config-name" name="configName">
@@ -34,31 +34,29 @@
         </select>
     </f:entry>
 
-    <f:entry title="${%verbose.title}" field="verbose">
-        <f:checkbox />
-    </f:entry>
-
     <j:if test="${inPromotion}">
         <j:choose>
             <j:when test="${it.getClass().canonicalName == 'hudson.matrix.MatrixProject'}">
                 <j:set var="matrixPromotion" value="true"/>
-                <f:entry title="${%useWorkspaceInPromotion.title}" help="${descriptor.getHelpFile('useWorkspaceInPromotionForMatrix')}">
-                    <input type="checkbox" checked="true" disabled="true"/>
-                </f:entry>
-                <f:invisibleEntry>
-                    <f:checkbox name="useWorkspaceInPromotion" checked="true"/>
-                </f:invisibleEntry>
+                <poj:disabled-checkbox field="useWorkspaceInPromotion" title="${%useWorkspaceInPromotion.title}" checked="true" helpField="useWorkspaceInPromotionForMatrix"/>
             </j:when>
             <j:otherwise>
-                <f:entry title="${%useWorkspaceInPromotion.title}" field="useWorkspaceInPromotion">
-                    <f:checkbox/>
+                <f:entry field="useWorkspaceInPromotion">
+                    <poj:checkbox title="${%useWorkspaceInPromotion.title}"/>
                 </f:entry>
             </j:otherwise>
         </j:choose>
-        <f:entry title="${%usePromotionTimestamp.title}" field="usePromotionTimestamp">
-            <f:checkbox/>
+        <f:entry field="usePromotionTimestamp">
+            <poj:checkbox title="${%usePromotionTimestamp.title}"/>
         </f:entry>
     </j:if>
+
+    <f:advanced>
+        <f:entry field="verbose">
+            <poj:checkbox title="${%verbose.title}"/>
+        </f:entry>
+        <f:optionalProperty title="${%retry.title}" field="retry"/>
+    </f:advanced>
 
     <f:entry title="${%transfers.section}">
         <j:scope>
