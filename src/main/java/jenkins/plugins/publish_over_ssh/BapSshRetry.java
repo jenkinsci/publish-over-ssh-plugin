@@ -43,7 +43,7 @@ public class BapSshRetry extends Retry implements Describable<BapSshRetry> {
     public BapSshRetry(final int retries, final long retryDelay) {
         super(retries, retryDelay);
     }
-    
+
     public BapSshRetryDescriptor getDescriptor() {
         return Hudson.getInstance().getDescriptorByType(BapSshRetryDescriptor.class);
     }
