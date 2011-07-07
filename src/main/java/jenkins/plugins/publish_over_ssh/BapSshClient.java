@@ -233,7 +233,7 @@ public class BapSshClient extends BPDefaultClient<BapTransfer> {
         if (waiter.isAlive()) {
             waiter.interrupt();
         }
-        if (!exec.isClosed())
+        if (!(exec.isClosed() || exec.isEOF() || exec.getExitStatus() >= 0) )
             throw new BapPublisherException(Messages.exception_exec_timeout(duration));
         buildInfo.println(Messages.console_exec_completed(duration));
     }

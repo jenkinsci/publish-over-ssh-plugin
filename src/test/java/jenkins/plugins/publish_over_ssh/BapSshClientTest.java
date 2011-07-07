@@ -318,6 +318,8 @@ public class BapSshClientTest {
             assertEquals(expectedTimeout, timeout);
         }
         public int getExitStatus() {
+            if(!isClosed())
+                return -1;
             return exitStatus;
         }
         public void assertMethodsCalled() {
