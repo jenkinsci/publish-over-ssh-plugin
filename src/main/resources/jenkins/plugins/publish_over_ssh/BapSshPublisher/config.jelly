@@ -55,8 +55,8 @@
         <f:entry field="verbose">
             <poj:checkbox title="${%verbose.title}"/>
         </f:entry>
-        <f:optionalProperty title="${%retry.title}" field="retry"/>
-        <f:optionalProperty title="${%label.title}" field="label"/>
+        <f:optionalProperty title="${%retry.title}" field="sshRetry"/>
+        <f:optionalProperty title="${%label.title}" field="sshLabel"/>
     </f:advanced>
 
     <f:entry title="${%transfers.section}">

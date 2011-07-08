@@ -46,16 +46,16 @@ public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Des
 
     @DataBoundConstructor
     public BapSshPublisher(final String configName, final boolean verbose, final ArrayList<BapSshTransfer> transfers,
-                           final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp, final BapSshRetry retry,
-                           final BapSshPublisherLabel label) {
-        super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp, retry, label);
+                           final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp, final BapSshRetry sshRetry,
+                           final BapSshPublisherLabel sshLabel) {
+        super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp, sshRetry, sshLabel);
     }
 
-    public BapSshRetry getRetry() {
+    public BapSshRetry getSshRetry() {
         return (BapSshRetry) super.getRetry();
     }
 
-    public BapSshPublisherLabel getLabel() {
+    public BapSshPublisherLabel getSshLabel() {
         return (BapSshPublisherLabel) super.getLabel();
     }
 
