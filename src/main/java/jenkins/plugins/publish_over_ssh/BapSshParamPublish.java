@@ -37,6 +37,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class BapSshParamPublish extends ParamPublish implements Describable<BapSshParamPublish> {
 
+    private static final long serialVersionUID = 1L;
+
     @DataBoundConstructor
     public BapSshParamPublish(final String parameterName) {
         super(parameterName);

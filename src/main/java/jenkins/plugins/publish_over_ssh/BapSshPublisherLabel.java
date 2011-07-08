@@ -37,6 +37,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class BapSshPublisherLabel extends PublisherLabel implements Describable<BapSshPublisherLabel> {
 
+    private static final long serialVersionUID = 1L;
+
     @DataBoundConstructor
     public BapSshPublisherLabel(final String label) {
         super(label);
