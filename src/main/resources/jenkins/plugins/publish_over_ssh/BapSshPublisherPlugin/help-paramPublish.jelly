@@ -1,0 +1,56 @@
+<!--
+  ~ The MIT License
+  ~
+  ~ Copyright (C) 2010-2011 by Anthony Robinson
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in
+  ~ all copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  ~ THE SOFTWARE.
+  -->
+
+<j:jelly xmlns:j="jelly:core">
+<div>
+    <p>Publish to servers by matching labels against a regular expression provided by a parameter or an environment variable.</p>
+    <br />
+    <p>For each server instance the label will be matched against the expression, and if matched, the publish will continue, otherwise that server will be skipped.<br />
+        <br />
+    If a label is not set for a server instance it will default to the empty string. Configured labels have whitespace removed from the start and end of them, which means that an all whitespace label will be evaluated as an empty string.<br />
+        <br />
+    The same label can be used multiple times, e.g. UAT for a database server and again for the web server.<br />
+        <br />
+    The regular expression syntax is the <a href="http://download.oracle.com/javase/1.5.0/docs/api/index.html?java/util/regex/Pattern.html" target="_blank">java syntax</a>.<br />
+        <br />
+    The labels can use the standard <a href="${rootURL}/env-vars.html" target="_blank">Jenkins environment variables</a> e.g. $NODE_NAME, or build variables such as a matrix axis.
+</p>
+    <br />
+    <p>
+Some simple examples follow:<br />
+        <br />
+<strong>[AC]</strong> will match <strong>A</strong> and <strong>C</strong>, but not <strong>B</strong> or <strong>D</strong><br />
+        <em>There appears to be an issue with strings which begin and end with brackets which will cause the string <strong>[AC]</strong> to turn into <strong>&quot;[AC]&quot;</strong><br />
+        To counter this add an anchor to the start or end of the expression i.e. <strong>^[AC]</strong> or <strong>[AC]$</strong></em><br />
+        <br />
+<strong>PERF|TEST</strong> will match <strong>PERF</strong> and <strong>TEST</strong>, but not <strong>LATEST</strong>, <strong>UAT</strong> or <strong>PROD</strong><br />
+        <br />
+<strong>.*</strong> will match all servers including those with no labels<br />
+        <br />
+<strong>.+</strong> will match any server that has a label - a publisher with no label configured will be tested with an empty (zero length) string<br />
+        <br />
+An empty string will only match servers that do not have labels<br />
+    </p>
+</div>
+</j:jelly>

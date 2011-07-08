@@ -44,8 +44,14 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
 
     @DataBoundConstructor
     public BapSshPublisherPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
-                                 final boolean alwaysPublishFromMaster, final String masterNodeName) {
-        super(Messages.console_message_prefix(), publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName);
+                                 final boolean alwaysPublishFromMaster, final String masterNodeName,
+                                 final BapSshParamPublish paramPublish) {
+        super(Messages.console_message_prefix(), publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName,
+                paramPublish);
+    }
+
+    public BapSshParamPublish getParamPublish() {
+        return (BapSshParamPublish) getDelegate().getParamPublish();
     }
 
     public boolean equals(final Object that) {

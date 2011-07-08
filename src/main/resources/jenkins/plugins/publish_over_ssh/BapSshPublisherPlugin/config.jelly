@@ -26,6 +26,7 @@
 
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:f="/lib/form" xmlns:poj="/pojelly">
 
+    <j:set var="plugin" value="${instance}"/>
     <j:set var="instance" value="${instance.delegate}"/>
     
     <st:once>
@@ -67,6 +68,10 @@
                     <f:textbox default="${descriptor.defaultMasterNodeName}"/>
                 </f:entry>
             </j:if>
+            <j:scope>
+                <j:set var="instance" value="${plugin}"/>
+                <f:optionalProperty title="${%paramPublish.title}" field="paramPublish"/>
+            </j:scope>
         </f:advanced>
 
     </f:entry>

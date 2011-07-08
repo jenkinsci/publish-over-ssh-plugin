@@ -24,42 +24,33 @@
 
 package jenkins.plugins.publish_over_ssh;
 
-import hudson.model.AbstractBuild;
-import hudson.model.BuildListener;
+import hudson.Extension;
+import hudson.model.Describable;
+import hudson.model.Descriptor;
+import hudson.model.Hudson;
+import jenkins.plugins.publish_over.ParamPublish;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.kohsuke.stapler.DataBoundConstructor;
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
+public class BapSshParamPublish extends ParamPublish implements Describable<BapSshParamPublish> {
 
-@SuppressWarnings("PMD.LooseCoupling") // serializable
-public class BapSshAlwaysRunPublisherPlugin extends BapSshPublisherPlugin {
-
-    private static final long serialVersionUID = 1L;
-
-    public BapSshAlwaysRunPublisherPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError,
-                                          final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName,
-                                          final BapSshParamPublish paramPublish) {
-        super(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName, paramPublish);
+    @DataBoundConstructor
+    public BapSshParamPublish(final String parameterName) {
+        super(parameterName);
     }
 
-    @Override
-    protected boolean isBuildGoodEnoughToRun(final AbstractBuild<?, ?> build, final PrintStream console) {
-        return true;
-    }
-
-    public boolean perform(final AbstractBuild<?, ?> build, final BuildListener listener) throws InterruptedException, IOException {
-        return perform(build, null, listener);
+    public BapSshParamPublishDescriptor getDescriptor() {
+        return Hudson.getInstance().getDescriptorByType(BapSshParamPublishDescriptor.class);
     }
 
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
 
-        return addToEquals(new EqualsBuilder(), (BapSshAlwaysRunPublisherPlugin) that).isEquals();
+        return addToEquals(new EqualsBuilder(), (BapSshParamPublish) that).isEquals();
     }
 
     public int hashCode() {
@@ -68,6 +59,16 @@ public class BapSshAlwaysRunPublisherPlugin extends BapSshPublisherPlugin {
 
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+    }
+
+    @Extension
+    public static class BapSshParamPublishDescriptor extends Descriptor<BapSshParamPublish> {
+
+        @Override
+        public String getDisplayName() {
+            return Messages.paramPublish_descriptor_displayName();
+        }
+
     }
 
 }
