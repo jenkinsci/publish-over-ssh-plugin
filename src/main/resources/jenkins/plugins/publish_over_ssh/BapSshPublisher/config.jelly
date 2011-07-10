@@ -26,7 +26,9 @@
 
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:f="/lib/form" xmlns:poj="/pojelly">
 
-    <f:entry title="${%hostconfig.title}" field="configName">
+    <poj:defaultMessages/>
+
+    <f:entry title="${m.hostconfig()}" field="configName">
         <select class="setting-input ssh-config-name" name="configName">
             <j:forEach var="s" items="${descriptor.publisherPluginDescriptor.hostConfigurations}">
                 <f:option value="${s.name}" selected="${s.name==instance.configName}">${s.name}<j:if test="${s.effectiveDisableExec}">${%hostconfig.noexec.suffix}</j:if></f:option>
@@ -38,36 +40,36 @@
         <j:choose>
             <j:when test="${it.getClass().canonicalName == 'hudson.matrix.MatrixProject'}">
                 <j:set var="matrixPromotion" value="true"/>
-                <poj:disabled-checkbox field="useWorkspaceInPromotion" title="${%useWorkspaceInPromotion.title}" checked="true" helpField="useWorkspaceInPromotionForMatrix"/>
+                <poj:disabled-checkbox field="useWorkspaceInPromotion" title="${m.useWorkspaceInPromotion()}" checked="true" helpField="useWorkspaceInPromotionForMatrix"/>
             </j:when>
             <j:otherwise>
                 <f:entry field="useWorkspaceInPromotion">
-                    <poj:checkbox title="${%useWorkspaceInPromotion.title}"/>
+                    <poj:checkbox title="${m.useWorkspaceInPromotion()}"/>
                 </f:entry>
             </j:otherwise>
         </j:choose>
         <f:entry field="usePromotionTimestamp">
-            <poj:checkbox title="${%usePromotionTimestamp.title}"/>
+            <poj:checkbox title="${m.usePromotionTimestamp()}"/>
         </f:entry>
     </j:if>
 
     <f:advanced>
         <f:entry field="verbose">
-            <poj:checkbox title="${%verbose.title}"/>
+            <poj:checkbox title="${m.verbose()}"/>
         </f:entry>
-        <f:optionalProperty title="${%retry.title}" field="sshRetry"/>
-        <f:optionalProperty title="${%label.title}" field="sshLabel"/>
+        <f:optionalProperty title="${m.retry()}" field="sshRetry"/>
+        <f:optionalProperty title="${m.label()}" field="sshLabel"/>
     </f:advanced>
 
-    <f:entry title="${%transfers.section}">
+    <f:entry title="${m.transfers_section()}">
         <j:scope>
             <j:set var="descriptor" value="${descriptor.transferDescriptor}"/>
-            <f:repeatable items="${instance.transfers}" var="instance" name="transfers" minimum="1" header="${%transfers.dragAndDropLabel}" add="${%addTransfer.value}">
+            <f:repeatable items="${instance.transfers}" var="instance" name="transfers" minimum="1" header="${m.transfers_dragAndDropLabel}" add="${m.addTransfer()}">
                 <table width="100%" padding="0" class="ssh-transfer">
                     <st:include page="config.jelly" class="${descriptor.clazz}"/>
                     <f:entry title="">
                         <div align="right" class="show-if-not-only">
-                            <f:repeatableDeleteButton value="${%deleteTransfer.value}"/>
+                            <f:repeatableDeleteButton value="${m.deleteTransfer()}"/>
                         </div>
                     </f:entry>
                 </table>

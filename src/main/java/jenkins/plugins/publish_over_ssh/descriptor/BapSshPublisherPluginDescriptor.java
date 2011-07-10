@@ -112,6 +112,10 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
         return Hudson.getInstance().getDescriptorByType(BapSshHostConfigurationDescriptor.class);
     }
 
+    public jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages getCommonFieldNames() {
+        return new jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages();
+    }
+
     public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
         final BapSshHostConfiguration hostConfig = request.bindParameters(BapSshHostConfiguration.class, "");
         hostConfig.setCommonConfig(request.bindParameters(BapSshCommonConfiguration.class, "common."));

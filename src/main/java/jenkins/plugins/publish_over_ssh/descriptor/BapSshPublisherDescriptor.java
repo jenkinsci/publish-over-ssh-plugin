@@ -51,4 +51,8 @@ public class BapSshPublisherDescriptor extends Descriptor<BapSshPublisher> {
         return Hudson.getInstance().getDescriptorByType(BapSshTransferDescriptor.class);
     }
 
+    public jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages getCommonFieldNames() {
+        return new jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages();
+    }
+
 }

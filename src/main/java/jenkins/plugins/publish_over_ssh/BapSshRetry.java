@@ -89,6 +89,10 @@ public class BapSshRetry extends Retry implements Describable<BapSshRetry> {
             return FormValidation.validatePositiveInteger(value);
         }
 
+        public jenkins.plugins.publish_over.view_defaults.Retry.Messages getCommonFieldNames() {
+            return new jenkins.plugins.publish_over.view_defaults.Retry.Messages();
+        }
+
     }
 
 }

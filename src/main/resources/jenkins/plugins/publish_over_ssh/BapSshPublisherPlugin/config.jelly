@@ -26,6 +26,8 @@
 
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:f="/lib/form" xmlns:poj="/pojelly">
 
+    <poj:defaultMessages/>
+    
     <j:set var="plugin" value="${instance}"/>
     <j:set var="instance" value="${instance.delegate}"/>
     
@@ -41,12 +43,12 @@
     <f:entry title='${inPromotion ? "" : "%publishers.section"}'>
         <j:scope>
             <j:set var="descriptor" value="${descriptor.publisherDescriptor}"/>
-            <f:repeatable items="${instance.publishers}" var="instance" name="publishers" minimum="1" header="${%publisher.dragAndDropLabel}" add="${%addPublisher.value}">
+            <f:repeatable items="${instance.publishers}" var="instance" name="publishers" minimum="1" header="${%publisher.dragAndDropLabel}" add="${m.addPublisher()}">
                 <table width="100%" padding="0">
                     <st:include page="config.jelly" class="${descriptor.clazz}"/>
                     <f:entry title="">
                         <div align="right" class="show-if-not-only">
-                            <f:repeatableDeleteButton value="${%deletePublisher.value}"/>
+                            <f:repeatableDeleteButton value="${m.deletePublisher()}"/>
                         </div>
                     </f:entry>
                 </table>
@@ -55,22 +57,22 @@
 
         <f:advanced>
             <f:entry field="continueOnError">
-                <poj:checkbox title="${%continueOnError.title}"/>
+                <poj:checkbox title="${%continueOnError}"/>
             </f:entry>
             <f:entry field="failOnError">
-                <poj:checkbox title="${%failOnError.title}"/>
+                <poj:checkbox title="${m.failOnError()}"/>
             </f:entry>
             <f:entry field="alwaysPublishFromMaster">
-                <poj:checkbox title="${%alwaysPublishFromMaster.title}"/>
+                <poj:checkbox title="${%alwaysPublishFromMaster}"/>
             </f:entry>
             <j:if test="${descriptor.canSetMasterNodeName()}">
-                <f:entry title="${%masterNodeName.title}" field="masterNodeName">
+                <f:entry title="${m.masterNodeName()}" field="masterNodeName">
                     <f:textbox default="${descriptor.defaultMasterNodeName}"/>
                 </f:entry>
             </j:if>
             <j:scope>
                 <j:set var="instance" value="${plugin}"/>
-                <f:optionalProperty title="${%paramPublish.title}" field="paramPublish"/>
+                <f:optionalProperty title="${m.paramPublish()}" field="paramPublish"/>
             </j:scope>
         </f:advanced>
 

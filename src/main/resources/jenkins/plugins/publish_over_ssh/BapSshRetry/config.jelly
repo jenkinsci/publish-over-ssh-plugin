@@ -24,12 +24,14 @@
   ~ THE SOFTWARE.
   -->
 
-<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:poj="/pojelly">
 
-    <f:entry title="${%retries.title}" field="retries">
+    <poj:defaultMessages/>
+    
+    <f:entry title="${m.retries()}" field="retries">
         <f:textbox default="${descriptor.defaultRetries}"/>
     </f:entry>
-    <f:entry title="${%retryDelay.title}" field="retryDelay">
+    <f:entry title="${m.retryDelay()}" field="retryDelay">
         <f:textbox default="${descriptor.defaultRetryDelay}"/>
     </f:entry>
 

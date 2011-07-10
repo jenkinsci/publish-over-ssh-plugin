@@ -24,9 +24,11 @@
   ~ THE SOFTWARE.
   -->
 
-<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:poj="/pojelly">
 
-    <f:entry title="${%label.title}" field="label">
+    <poj:defaultMessages/>
+    
+    <f:entry title="${m.label()}" field="label">
         <f:textbox/>
     </f:entry>
 

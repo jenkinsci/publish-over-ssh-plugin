@@ -24,48 +24,50 @@
   ~ THE SOFTWARE.
   -->
 
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:poj="/pojelly">
 
-    <f:entry title="${%name.title}" field="name">
+    <poj:defaultMessages/>
+    
+    <f:entry title="${m.name()}" field="name">
         <f:textbox/>
     </f:entry>
-    <f:entry title="${%hostname.title}" field="hostname">
+    <f:entry title="${m.hostname()}" field="hostname">
         <f:textbox/>
     </f:entry>
-    <f:entry title="${%username.title}" field="username">
+    <f:entry title="${m.username()}" field="username">
         <f:textbox/>
     </f:entry>
-    <f:entry title="${%remotePath.title}" field="remoteRootDir">
+    <f:entry title="${m.remotePath()}" field="remoteRootDir">
         <f:textbox/>
     </f:entry>
 
     <f:advanced>
         
-        <f:optionalBlock inline="true" title="${%override.default.key.title}" field="overrideKey">
-            <f:entry title="${%password.title}" field="encryptedPassword">
+        <f:optionalBlock inline="true" title="${%override.default.key}" field="overrideKey">
+            <f:entry title="${%password}" field="encryptedPassword">
                 <f:password/>
             </f:entry>
-            <f:entry title="${%keyPath.title}" field="keyPath">
+            <f:entry title="${%keyPath}" field="keyPath">
                 <f:textbox/>
             </f:entry>
-            <f:entry title="${%key.title}" field="key">
+            <f:entry title="${%key}" field="key">
                 <f:textarea/>
             </f:entry>
         </f:optionalBlock>
         
-        <f:entry title="${%port.title}" field="port">
+        <f:entry title="${m.port()}" field="port">
             <f:textbox default="${descriptor.defaultPort}"/>
         </f:entry>
-        <f:entry title="${%timeout.title}" field="timeout">
+        <f:entry title="${m.timeout()}" field="timeout">
             <f:textbox default="${descriptor.defaultTimeout}"/>
         </f:entry>
-        <f:entry title="${%disableExec.title}" field="disableExec">
+        <f:entry title="${%disableExec}" field="disableExec">
             <f:checkbox/>
         </f:entry>
         
     </f:advanced>
     
-    <f:validateButton title="${%test.title}" progress="${%test.progress}" method="testConnection"
+    <f:validateButton title="${m.test_title()}" progress="${m.test_progress()}" method="testConnection"
                       with="name,hostname,username,encryptedPassword,remoteRootDir,port,timeout,keyPath,key,overrideKey,common.encryptedPassphrase,common.key,common.keyPath"/>                        
             
 </j:jelly>

@@ -24,21 +24,23 @@
   ~ THE SOFTWARE.
   -->
 
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:poj="/pojelly">
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:poj="/pojelly">
 
-    <f:entry title="${%sourceFiles.title}" field="sourceFiles" help="${descriptor.getHelpFile((inPromotion and !matrixPromotion) ? 'sourceFilesForPromotion' : 'sourceFiles')}">
+    <poj:defaultMessages/>
+    
+    <f:entry title="${m.sourceFiles()}" field="sourceFiles" help="${descriptor.getHelpFile((inPromotion and !matrixPromotion) ? 'sourceFilesForPromotion' : 'sourceFiles')}">
         <f:textbox checkUrl="'${rootURL}/descriptorByName/jenkins.plugins.publish_over_ssh.BapSshTransfer/checkSourceFiles'+qs(this).nearBy('sourceFiles').nearBy('execCommand').toString()+bap_get_configName_qs(this)"/>
     </f:entry>
 
-    <f:entry title="${%removePrefix.title}" field="removePrefix">
+    <f:entry title="${m.removePrefix()}" field="removePrefix">
         <f:textbox/>
     </f:entry>
 
-    <f:entry title="${%remoteDirectory.title}" field="remoteDirectory">
+    <f:entry title="${m.remoteDirectory()}" field="remoteDirectory">
         <f:textbox/>
     </f:entry>
 
-    <f:entry title="${%execCommand.title}" field="execCommand">
+    <f:entry title="${%execCommand}" field="execCommand">
         <poj:textarea minRows="1" class="ssh-exec-control"/>
     </f:entry>
 
@@ -49,20 +51,20 @@
     <f:advanced>
 
         <j:if test="${descriptor.canUseExcludes()}">
-            <f:entry title="${%excludes.title}" field="excludes">
+            <f:entry title="${m.excludes()}" field="excludes">
                 <f:textbox/>
             </f:entry>
         </j:if>
 
-        <f:entry title="${%flatten.title}" field="flatten">
+        <f:entry title="${m.flatten()}" field="flatten">
             <f:checkbox/>
         </f:entry>
 
-        <f:entry title="${%remoteDirectorySDF.title}" field="remoteDirectorySDF">
+        <f:entry title="${m.remoteDirectorySDF()}" field="remoteDirectorySDF">
             <f:checkbox/>
         </f:entry>
 
-        <f:entry title="${%execTimeout.title}" field="execTimeout">
+        <f:entry title="${%execTimeout}" field="execTimeout">
             <f:textbox default="${descriptor.defaultExecTimeout}" clazz="ssh-exec-control"/>
         </f:entry>
 
