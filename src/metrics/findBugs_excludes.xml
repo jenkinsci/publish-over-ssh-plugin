@@ -34,4 +34,8 @@
         <Class name="~.*\.BapSshUtil"/>
         <Bug pattern="PZLA_PREFER_ZERO_LENGTH_ARRAYS"/>
     </Match>
+    <Match> <!-- this method is called from jelly so return an object instance to operate on -->
+        <Method name="getCommonFieldNames"/>
+        <Bug pattern="ISC_INSTANTIATE_STATIC_CLASS"/>
+    </Match>
 </FindBugsFilter>
