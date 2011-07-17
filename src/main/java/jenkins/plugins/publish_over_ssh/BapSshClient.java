@@ -71,6 +71,10 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         this.sftp = sftp;
     }
 
+    public Session getSession() {
+        return session;
+    }
+
     public void beginTransfers(final BapSshTransfer transfer) {
         if (disableExec) {
             if (!transfer.hasConfiguredSourceFiles())

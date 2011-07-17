@@ -34,6 +34,7 @@ import hudson.model.Describable;
 import hudson.model.Hudson;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPHostConfiguration;
+import jenkins.plugins.publish_over.BapPublisher;
 import jenkins.plugins.publish_over.BapPublisherException;
 import jenkins.plugins.publish_over_ssh.descriptor.BapSshHostConfigurationDescriptor;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -104,7 +105,16 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     }
 
     @Override
+    public BapSshClient createClient(final BPBuildInfo buildInfo, final BapPublisher publisher) {
+        return createClient(buildInfo, ((BapSshPublisher) publisher).isSftpRequired());
+    }
+
+    @Override
     public BapSshClient createClient(final BPBuildInfo buildInfo) {
+        return createClient(buildInfo, true);
+    }
+
+    public BapSshClient createClient(final BPBuildInfo buildInfo, final boolean connectSftp) {
         final JSch ssh = createJSch();
         final Session session = createSession(buildInfo, ssh);
         final BapSshClient bapClient = new BapSshClient(buildInfo, session, isEffectiveDisableExec());
@@ -119,11 +129,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             }
             session.setConfig(sessionProperties);
             connect(buildInfo, session);
-            final ChannelSftp sftp = openSftpChannel(buildInfo, session);
-            bapClient.setSftp(sftp);
-            connectSftpChannel(buildInfo, sftp);
-            changeToRootDirectory(bapClient);
-            setRootDirectoryInClient(bapClient, sftp);
+            if (connectSftp) setupSftp(buildInfo, bapClient);
             return bapClient;
         } catch (IOException ioe) {
             bapClient.disconnectQuietly();
@@ -132,6 +138,14 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             bapClient.disconnectQuietly();
             throw re;
         }
+    }
+
+    private void setupSftp(final BPBuildInfo buildInfo, final BapSshClient bapClient) throws IOException {
+        final ChannelSftp sftp = openSftpChannel(buildInfo, bapClient.getSession());
+        bapClient.setSftp(sftp);
+        connectSftpChannel(buildInfo, sftp);
+        changeToRootDirectory(bapClient);
+        setRootDirectoryInClient(bapClient, sftp);
     }
 
     private void setKey(final BPBuildInfo buildInfo, final JSch ssh, final BapSshKeyInfo keyInfo) {
@@ -172,7 +186,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         } catch (JSchException jse) {
             final String message = Messages.exception_sftp_connect(jse.getLocalizedMessage());
             LOG.warn(message, jse);
-            throw new BapPublisherException(message); // NOPMD - it's in the log!
+            throw new BapSshSftpSetupException(message); // NOPMD - it's in the log!
         }
         buildInfo.printIfVerbose(Messages.console_sftp_connected());
     }
@@ -185,7 +199,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         } catch (JSchException jse) {
             final String message = Messages.exception_sftp_open(jse.getLocalizedMessage());
             LOG.warn(message, jse);
-            throw new BapPublisherException(message); // NOPMD - it's in the log!
+            throw new BapSshSftpSetupException(message); // NOPMD - it's in the log!
         }
         buildInfo.printIfVerbose(Messages.console_sftp_opened());
         return sftp;

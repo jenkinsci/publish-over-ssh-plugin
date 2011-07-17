@@ -51,6 +51,13 @@ public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Des
         super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp, sshRetry, sshLabel);
     }
 
+    public final boolean isSftpRequired() {
+        for (BapSshTransfer transfer : getTransfers()) {
+            if (transfer.hasConfiguredSourceFiles()) return true;
+        }
+        return false;
+    }
+
     public BapSshRetry getSshRetry() {
         return (BapSshRetry) super.getRetry();
     }

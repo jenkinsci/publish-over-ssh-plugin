@@ -40,6 +40,7 @@ import jenkins.plugins.publish_over.BPPluginDescriptor;
 import jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
+import jenkins.plugins.publish_over_ssh.BapSshSftpSetupException;
 import jenkins.plugins.publish_over_ssh.Messages;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.StaplerRequest;
@@ -123,12 +124,18 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
         try {
             hostConfig.createClient(buildInfo).disconnect();
             return FormValidation.ok(Messages.descriptor_testConnection_ok());
+        } catch (BapSshSftpSetupException sse) {
+            return connectionError(Messages.descriptor_testConnection_sftpError(), sse);
         } catch (Exception e) {
-            return FormValidation.errorWithMarkup("<p>"
-                    + Messages.descriptor_testConnection_error() + "</p><p><pre>"
-                    + Util.escape(e.getClass().getCanonicalName() + ": " + e.getLocalizedMessage())
-                    + "</pre></p>");
+            return connectionError(Messages.descriptor_testConnection_error(), e);
         }
+    }
+
+    private FormValidation connectionError(final String description, final Exception exception) {
+        return FormValidation.errorWithMarkup("<p>"
+                + description + "</p><p><pre>"
+                + Util.escape(exception.getClass().getCanonicalName() + ": " + exception.getLocalizedMessage())
+                + "</pre></p>");
     }
 
     private BPBuildInfo createDummyBuildInfo() {

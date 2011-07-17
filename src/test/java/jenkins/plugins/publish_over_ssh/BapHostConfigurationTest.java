@@ -45,6 +45,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -281,6 +283,23 @@ public class BapHostConfigurationTest {
         final BapSshClient client = assertCreateWithDefaultInfo(null);
         assertTrue(client.isDisableExec());
     }
+
+    @Test public void testDontConnectSftpIfNoSourceFilesInAnyTransfers() throws Exception {
+        final BapSshCommonConfiguration defaultKeyInfo = new BapSshCommonConfiguration(TEST_PASSPHRASE, null, null, false);
+        hostConfig = createWithDefaultKeyInfo(mockJSch, defaultKeyInfo);
+        final BapSshTransfer transfer1 = new BapSshTransfer("", "", "", "", false, false, "ls -la", 10000);
+        final BapSshTransfer transfer2 = new BapSshTransfer("", "", "", "", false, false, "pwd", 10000);
+        final ArrayList<BapSshTransfer> transfers = new ArrayList<BapSshTransfer>();
+        transfers.addAll(Arrays.asList(transfer1, transfer2));
+        final BapSshPublisher publisher = new BapSshPublisher(hostConfig.getName(), false, transfers, false, false, null, null);
+        expect(mockJSch.getSession(hostConfig.getUsername(), hostConfig.getHostname(), hostConfig.getPort())).andReturn(mockSession);
+        mockSession.setPassword(defaultKeyInfo.getPassphrase());
+        mockSession.setConfig((Properties) anyObject());
+        mockSession.connect(hostConfig.getTimeout());
+        mockControl.replay();
+        hostConfig.createClient(buildInfo, publisher);
+        mockControl.verify();
+    }    
 
     private void assertCreateClientThrowsException(final Exception messageToInclude) throws Exception {
         assertCreateClientThrowsException(messageToInclude.getLocalizedMessage());
