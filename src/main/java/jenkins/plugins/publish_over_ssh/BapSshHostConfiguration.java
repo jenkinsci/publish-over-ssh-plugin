@@ -225,11 +225,11 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
     private Session createSession(final BPBuildInfo buildInfo, final JSch ssh) {
         try {
-            buildInfo.printIfVerbose(Messages.console_session_creating(getUsername(), getHostname(), getPort()));
-            return ssh.getSession(getUsername(), getHostname(), getPort());
+            buildInfo.printIfVerbose(Messages.console_session_creating(getUsername(), getHostnameTrimmed(), getPort()));
+            return ssh.getSession(getUsername(), getHostnameTrimmed(), getPort());
         } catch (JSchException jse) {
             throw new BapPublisherException(Messages.exception_session_create(
-                    getUsername(), getHostname(), getPort(), jse.getLocalizedMessage()), jse);
+                    getUsername(), getHostnameTrimmed(), getPort(), jse.getLocalizedMessage()), jse);
         }
     }
 
