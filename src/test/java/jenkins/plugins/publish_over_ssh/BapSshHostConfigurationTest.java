@@ -62,7 +62,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @SuppressWarnings({ "PMD.SignatureDeclareThrowsException", "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
-public class BapHostConfigurationTest {
+public class BapSshHostConfigurationTest {
 
     private static final String TEST_NAME = "test config";
     private static final String TEST_HOSTNAME = "test.host.name";
