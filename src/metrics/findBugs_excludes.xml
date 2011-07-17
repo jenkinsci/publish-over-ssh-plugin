@@ -38,4 +38,10 @@
         <Method name="getCommonFieldNames"/>
         <Bug pattern="ISC_INSTANTIATE_STATIC_CLASS"/>
     </Match>
+    <Match>
+        <Class name="jenkins.plugins.publish_over_ssh.BapSshHostConfiguration"/>
+        <Method name="createClient" params="jenkins.plugins.publish_over.BPBuildInfo,jenkins.plugins.publish_over.BapPublisher"
+                returns="jenkins.plugins.publish_over_ssh.BapSshClient"/>
+        <Bug pattern="BC_UNCONFIRMED_CAST"/>
+    </Match>
 </FindBugsFilter>

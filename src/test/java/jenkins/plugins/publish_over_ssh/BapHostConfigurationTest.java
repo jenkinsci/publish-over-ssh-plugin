@@ -299,7 +299,7 @@ public class BapHostConfigurationTest {
         mockControl.replay();
         hostConfig.createClient(buildInfo, publisher);
         mockControl.verify();
-    }    
+    }
 
     private void assertCreateClientThrowsException(final Exception messageToInclude) throws Exception {
         assertCreateClientThrowsException(messageToInclude.getLocalizedMessage());
