@@ -22,55 +22,47 @@
  * THE SOFTWARE.
  */
 
-package jenkins.plugins.publish_over_ssh;
+package jenkins.plugins.publish_over_ssh.options;
 
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.model.Hudson;
 import hudson.util.FormValidation;
-import jenkins.plugins.publish_over.Retry;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+import jenkins.plugins.publish_over.options.RetryOptions;
+import jenkins.plugins.publish_over_ssh.BapSshRetry;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
-public class BapSshRetry extends Retry implements Describable<BapSshRetry> {
+public class SshOverrideRetryDefaults implements RetryOptions, Describable<SshOverrideRetryDefaults> {
 
-    private static final long serialVersionUID = 1L;
+    final private int retries;
+    final private long retryDelay;
 
     @DataBoundConstructor
-    public BapSshRetry(final int retries, final long retryDelay) {
-        super(retries, retryDelay);
+    public SshOverrideRetryDefaults(final int retries, final long retryDelay) {
+        this.retries = retries;
+        this.retryDelay = retryDelay;
     }
 
-    public BapSshRetryDescriptor getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(BapSshRetryDescriptor.class);
+    public int getRetries() {
+        return retries;
     }
 
-    public boolean equals(final Object that) {
-        if (this == that) return true;
-        if (that == null || getClass() != that.getClass()) return false;
-
-        return addToEquals(new EqualsBuilder(), (BapSshRetry) that).isEquals();
+    public long getRetryDelay() {
+        return retryDelay;
     }
 
-    public int hashCode() {
-        return addToHashCode(new HashCodeBuilder()).toHashCode();
-    }
-
-    public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+    public SshOverrideRetryDefaultsDescriptor getDescriptor() {
+        return Hudson.getInstance().getDescriptorByType(SshOverrideRetryDefaultsDescriptor.class);
     }
 
     @Extension
-    public static class BapSshRetryDescriptor extends Descriptor<BapSshRetry> {
+    public static class SshOverrideRetryDefaultsDescriptor extends Descriptor<SshOverrideRetryDefaults> {
 
         @Override
         public String getDisplayName() {
-            return Messages.retry_descriptor_displayName();
+            return "SshOverrideRetryDefaultsDescriptor - not visible ...";
         }
 
         public FormValidation doCheckRetries(@QueryParameter final String value) {
@@ -83,6 +75,10 @@ public class BapSshRetry extends Retry implements Describable<BapSshRetry> {
 
         public jenkins.plugins.publish_over.view_defaults.Retry.Messages getCommonFieldNames() {
             return new jenkins.plugins.publish_over.view_defaults.Retry.Messages();
+        }
+
+        public String getConfigPage() {
+            return getViewPage(BapSshRetry.class, "config.jelly");
         }
 
     }

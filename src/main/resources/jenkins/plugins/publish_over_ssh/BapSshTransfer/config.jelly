@@ -29,19 +29,19 @@
     <poj:defaultMessages/>
     
     <f:entry title="${m.sourceFiles()}" field="sourceFiles" help="${descriptor.getHelpFile((inPromotion and !matrixPromotion) ? 'sourceFilesForPromotion' : 'sourceFiles')}">
-        <f:textbox checkUrl="'${rootURL}/descriptorByName/jenkins.plugins.publish_over_ssh.BapSshTransfer/checkSourceFiles'+qs(this).nearBy('sourceFiles').nearBy('execCommand').toString()+bap_get_configName_qs(this)"/>
+        <f:textbox checkUrl="'${rootURL}/descriptorByName/jenkins.plugins.publish_over_ssh.BapSshTransfer/checkSourceFiles'+qs(this).nearBy('sourceFiles').nearBy('execCommand').toString()+bap_get_configName_qs(this)" default="${defaults.transfer.sourceFiles}"/>
     </f:entry>
 
     <f:entry title="${m.removePrefix()}" field="removePrefix">
-        <f:textbox/>
+        <f:textbox default="${defaults.transfer.removePrefix}"/>
     </f:entry>
 
     <f:entry title="${m.remoteDirectory()}" field="remoteDirectory">
-        <f:textbox/>
+        <f:textbox default="${defaults.transfer.remoteDirectory}"/>
     </f:entry>
 
     <f:entry title="${%execCommand}" field="execCommand">
-        <poj:textarea minRows="1" class="ssh-exec-control"/>
+        <poj:textarea minRows="1" class="ssh-exec-control" default="${defaults.transfer.execCommand}"/>
     </f:entry>
 
     <f:description>
@@ -52,20 +52,20 @@
 
         <j:if test="${descriptor.canUseExcludes()}">
             <f:entry title="${m.excludes()}" field="excludes">
-                <f:textbox/>
+                <f:textbox default="${defaults.transfer.excludes}"/>
             </f:entry>
         </j:if>
 
         <f:entry title="${m.flatten()}" field="flatten">
-            <f:checkbox/>
+            <f:checkbox default="${defaults.transfer.flatten}"/>
         </f:entry>
 
         <f:entry title="${m.remoteDirectorySDF()}" field="remoteDirectorySDF">
-            <f:checkbox/>
+            <f:checkbox default="${defaults.transfer.remoteDirectorySDF}"/>
         </f:entry>
 
         <f:entry title="${%execTimeout}" field="execTimeout">
-            <f:textbox default="${descriptor.defaultExecTimeout}" clazz="ssh-exec-control"/>
+            <f:textbox default="${defaults.transfer.execTimeout}" clazz="ssh-exec-control"/>
         </f:entry>
 
     </f:advanced>

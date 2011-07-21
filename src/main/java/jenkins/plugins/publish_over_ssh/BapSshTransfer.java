@@ -38,7 +38,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
 public class BapSshTransfer extends BPTransfer implements Describable<BapSshTransfer> {
 
     private static final long serialVersionUID = 1L;
-    public static final int DEFAULT_EXEC_TIMEOUT = 120000;
 
     private String execCommand;
     private int execTimeout;

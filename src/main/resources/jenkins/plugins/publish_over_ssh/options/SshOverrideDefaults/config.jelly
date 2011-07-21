@@ -26,13 +26,13 @@
 
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:poj="/pojelly">
 
-    <poj:defaultMessages/>
-    
-    <f:entry title="${m.retries()}" field="retries">
-        <f:textbox default="${defaults.retry.retries}"/>
-    </f:entry>
-    <f:entry title="${m.retryDelay()}" field="retryDelay">
-        <f:textbox default="${defaults.retry.retryDelay}"/>
-    </f:entry>
+    <j:set var="defaults" value="${descriptor.pluginDefaults}"/>
+
+    <f:property field="overridePublisher"/>
+    <f:property field="overrideRetry"/>
+    <f:property field="overridePublisherLabel"/>
+    <f:property field="overrideTransfer"/>
+    <f:property field="overrideInstanceConfig"/>
+    <f:property field="overrideParamPublish"/>
 
 </j:jelly>

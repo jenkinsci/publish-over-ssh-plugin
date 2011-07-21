@@ -32,16 +32,18 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
 import hudson.util.CopyOnWriteList;
 import hudson.util.FormValidation;
-import hudson.util.VersionNumber;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPInstanceConfig;
 import jenkins.plugins.publish_over.BPPlugin;
 import jenkins.plugins.publish_over.BPPluginDescriptor;
+import jenkins.plugins.publish_over.JenkinsCapabilities;
 import jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import jenkins.plugins.publish_over_ssh.BapSshSftpSetupException;
 import jenkins.plugins.publish_over_ssh.Messages;
+import jenkins.plugins.publish_over_ssh.options.SshDefaults;
+import jenkins.plugins.publish_over_ssh.options.SshPluginDefaults;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -59,14 +61,21 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
     private Class hostConfigClass;
     private final CopyOnWriteList<BapSshHostConfiguration> hostConfigurations = new CopyOnWriteList<BapSshHostConfiguration>();
     private BapSshCommonConfiguration commonConfig;
+    private SshDefaults defaults;
 
     public BapSshPublisherPluginDescriptor() {
         super(BapSshPublisherPlugin.class);
         load();
+        if (defaults == null)
+            defaults = new SshPluginDefaults();
     }
 
     public BapSshCommonConfiguration getCommonConfig() { return commonConfig; }
     public void setCommonConfig(final BapSshCommonConfiguration commonConfig) { this.commonConfig = commonConfig; }
+
+    public SshDefaults getDefaults() {
+        return defaults;
+    }
 
     public String getDisplayName() {
         return Messages.descriptor_displayName();
@@ -97,12 +106,22 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
             hostConfig.setCommonConfig(commonConfig);
         }
         hostConfigurations.replaceBy(newConfigurations);
+        if (isEnableOverrideDefaults())
+            defaults = request.bindJSON(SshDefaults.class, formData.getJSONObject("defaults"));
         save();
         return true;
     }
 
     public boolean canSetMasterNodeName() {
-        return Hudson.getVersion().isOlderThan(new VersionNumber(BPInstanceConfig.MASTER_GETS_NODE_NAME_IN_VERSION));
+        return JenkinsCapabilities.missing(JenkinsCapabilities.MASTER_HAS_NODE_NAME);
+    }
+
+    public String getDefaultMasterNodeName() {
+        return BPInstanceConfig.DEFAULT_MASTER_NODE_NAME;
+    }
+
+    public boolean isEnableOverrideDefaults() {
+        return JenkinsCapabilities.available(JenkinsCapabilities.SIMPLE_DESCRIPTOR_SELECTOR);
     }
 
     public BapSshPublisherDescriptor getPublisherDescriptor() {
@@ -113,8 +132,16 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
         return Hudson.getInstance().getDescriptorByType(BapSshHostConfigurationDescriptor.class);
     }
 
+    public SshPluginDefaults.SshPluginDefaultsDescriptor getPluginDefaultsDescriptor() {
+        return Hudson.getInstance().getDescriptorByType(SshPluginDefaults.SshPluginDefaultsDescriptor.class);
+    }
+
     public jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages getCommonFieldNames() {
         return new jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages();
+    }
+
+    public jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages getCommonManageMessages() {
+        return new jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages();
     }
 
     public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
@@ -153,6 +180,8 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
         msg = null;
         commonConfigClass = null;
         hostConfigClass = null;
+        if (defaults == null)
+            defaults = new SshPluginDefaults();
         return this;
     }
 

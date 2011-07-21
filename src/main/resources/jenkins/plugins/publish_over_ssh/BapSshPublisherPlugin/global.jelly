@@ -26,6 +26,8 @@
 
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
+    <j:set var="m" value="${descriptor.commonManageMessages}"/>
+
     <f:section title="${%section.title}" description="${%section.description}">
         <f:entry title="${%common.entry}" help="${descriptor.getHelpFile('defaultKeySummary')}"/>
         <f:property field="commonConfig"/>
@@ -44,6 +46,11 @@
                 </f:repeatable>
             </j:scope>
         </f:entry>
+        <j:if test="${descriptor.enableOverrideDefaults}">
+            <f:entry>
+                <f:dropdownDescriptorSelector title="${m.defaults()}" field="defaults" default="${descriptor.pluginDefaultsDescriptor}"/>
+            </f:entry>
+        </j:if>
     </f:section>
 
 </j:jelly>

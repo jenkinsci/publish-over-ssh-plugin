@@ -29,7 +29,7 @@
     <poj:defaultMessages/>
 
     <f:entry title="${m.parameterName()}" field="parameterName">
-        <f:textbox/>
+        <f:textbox default="${defaults.paramPublish.parameterName}"/>
     </f:entry>
 
 </j:jelly>

@@ -31,7 +31,7 @@
     <f:entry title="${m.hostconfig()}" field="configName">
         <select class="setting-input ssh-config-name" name="configName">
             <j:forEach var="s" items="${descriptor.publisherPluginDescriptor.hostConfigurations}">
-                <f:option value="${s.name}" selected="${s.name==instance.configName}">${s.name}<j:if test="${s.effectiveDisableExec}">${%hostconfig.noexec.suffix}</j:if></f:option>
+                <f:option value="${s.name}" selected="${s.name==instance.configName or ( instance==null and s.name==defaults.publisher.configName ) }">${s.name}<j:if test="${s.effectiveDisableExec}">${%hostconfig.noexec.suffix}</j:if></f:option>
             </j:forEach>
         </select>
     </f:entry>
@@ -44,18 +44,18 @@
             </j:when>
             <j:otherwise>
                 <f:entry field="useWorkspaceInPromotion">
-                    <poj:checkbox title="${m.useWorkspaceInPromotion()}"/>
+                    <poj:checkbox title="${m.useWorkspaceInPromotion()}" default="${defaults.publisher.useWorkspaceInPromotion}"/>
                 </f:entry>
             </j:otherwise>
         </j:choose>
         <f:entry field="usePromotionTimestamp">
-            <poj:checkbox title="${m.usePromotionTimestamp()}"/>
+            <poj:checkbox title="${m.usePromotionTimestamp()}" default="${defaults.publisher.usePromotionTimestamp}"/>
         </f:entry>
     </j:if>
 
     <f:advanced>
         <f:entry field="verbose">
-            <poj:checkbox title="${m.verbose()}"/>
+            <poj:checkbox title="${m.verbose()}" default="${defaults.publisher.verbose}"/>
         </f:entry>
         <f:optionalProperty title="${m.retry()}" field="sshRetry"/>
         <f:optionalProperty title="${m.label()}" field="sshLabel"/>

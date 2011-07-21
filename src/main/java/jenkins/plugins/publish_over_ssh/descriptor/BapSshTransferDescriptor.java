@@ -39,10 +39,6 @@ import org.kohsuke.stapler.QueryParameter;
 @Extension
 public class BapSshTransferDescriptor extends Descriptor<BapSshTransfer> {
 
-    public static int getDefaultExecTimeout() {
-        return BapSshTransfer.DEFAULT_EXEC_TIMEOUT;
-    }
-
     public BapSshTransferDescriptor() {
         super(BapSshTransfer.class);
     }

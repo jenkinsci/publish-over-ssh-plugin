@@ -29,7 +29,7 @@
     <poj:defaultMessages/>
     
     <f:entry title="${m.label()}" field="label">
-        <f:textbox/>
+        <f:textbox default="${defaults.publisherLabel.label}"/>
     </f:entry>
 
 </j:jelly>

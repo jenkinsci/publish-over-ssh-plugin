@@ -24,15 +24,18 @@
   ~ THE SOFTWARE.
   -->
 
-<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:poj="/pojelly">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:f="/lib/form" xmlns:poj="/pojelly">
 
     <poj:defaultMessages/>
-    
-    <f:entry title="${m.retries()}" field="retries">
-        <f:textbox default="${defaults.retry.retries}"/>
+
+    <f:entry field="continueOnError">
+        <poj:checkbox title="${m.continueOnError()}" default="${defaults.instanceConfig.continueOnError}"/>
     </f:entry>
-    <f:entry title="${m.retryDelay()}" field="retryDelay">
-        <f:textbox default="${defaults.retry.retryDelay}"/>
+    <f:entry field="failOnError">
+        <poj:checkbox title="${m.failOnError()}" default="${defaults.instanceConfig.failOnError}"/>
+    </f:entry>
+    <f:entry field="alwaysPublishFromMaster">
+        <poj:checkbox title="${m.alwaysPublishFromMaster()}" default="${defaults.instanceConfig.failOnError}"/>
     </f:entry>
 
 </j:jelly>

@@ -26,6 +26,8 @@
 
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:f="/lib/form" xmlns:poj="/pojelly">
 
+    <j:set var="defaults" value="${descriptor.defaults}"/>
+
     <poj:defaultMessages/>
     
     <j:set var="plugin" value="${instance}"/>
@@ -57,13 +59,13 @@
 
         <f:advanced>
             <f:entry field="continueOnError">
-                <poj:checkbox title="${%continueOnError}"/>
+                <poj:checkbox title="${%continueOnError}" default="${defaults.instanceConfig.continueOnError}"/>
             </f:entry>
             <f:entry field="failOnError">
-                <poj:checkbox title="${m.failOnError()}"/>
+                <poj:checkbox title="${m.failOnError()}" default="${defaults.instanceConfig.continueOnError}"/>
             </f:entry>
             <f:entry field="alwaysPublishFromMaster">
-                <poj:checkbox title="${%alwaysPublishFromMaster}"/>
+                <poj:checkbox title="${%alwaysPublishFromMaster}" default="${defaults.instanceConfig.continueOnError}"/>
             </f:entry>
             <j:if test="${descriptor.canSetMasterNodeName()}">
                 <f:entry title="${m.masterNodeName()}" field="masterNodeName">

@@ -28,11 +28,31 @@
 
     <poj:defaultMessages/>
     
-    <f:entry title="${m.retries()}" field="retries">
-        <f:textbox default="${defaults.retry.retries}"/>
+    <f:entry title="${m.sourceFiles()}" field="sourceFiles">
+        <f:textbox default="${defaults.transfer.sourceFiles}"/>
     </f:entry>
-    <f:entry title="${m.retryDelay()}" field="retryDelay">
-        <f:textbox default="${defaults.retry.retryDelay}"/>
+    <f:entry title="${m.removePrefix()}" field="removePrefix">
+        <f:textbox default="${defaults.transfer.removePrefix}"/>
+    </f:entry>
+    <f:entry title="${m.remoteDirectory()}" field="remoteDirectory">
+        <f:textbox default="${defaults.transfer.remoteDirectory}"/>
+    </f:entry>
+    <f:entry title="${%execCommand}" field="execCommand">
+        <poj:textarea minRows="1" default="${defaults.transfer.execCommand}"/>
+    </f:entry>
+    <j:if test="${descriptor.canUseExcludes()}">
+        <f:entry title="${m.excludes()}" field="excludes">
+            <f:textbox default="${defaults.transfer.excludes}"/>
+        </f:entry>
+    </j:if>
+    <f:entry title="${m.flatten()}" field="flatten">
+        <f:checkbox default="${defaults.transfer.flatten}"/>
+    </f:entry>
+    <f:entry title="${m.remoteDirectorySDF()}" field="remoteDirectorySDF">
+        <f:checkbox default="${defaults.transfer.remoteDirectorySDF}"/>
+    </f:entry>
+    <f:entry title="${%execTimeout}" field="execTimeout">
+        <f:textbox default="${defaults.transfer.execTimeout}"/>
     </f:entry>
 
 </j:jelly>

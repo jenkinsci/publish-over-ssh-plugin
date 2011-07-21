@@ -24,15 +24,27 @@
   ~ THE SOFTWARE.
   -->
 
-<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:poj="/pojelly">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:f="/lib/form" xmlns:poj="/pojelly">
 
     <poj:defaultMessages/>
-    
-    <f:entry title="${m.retries()}" field="retries">
-        <f:textbox default="${defaults.retry.retries}"/>
+
+    <f:entry title="${%configName}" field="configName">
+        <select class="setting-input" name="configName">
+            <f:option value="" selected="${instance.configName == null}"></f:option>
+            <j:forEach var="s" items="${descriptor.publisherPluginDescriptor.hostConfigurations}">
+                <f:option value="${s.name}" selected="${s.name==instance.configName}">${s.name}</f:option>
+            </j:forEach>
+        </select>
     </f:entry>
-    <f:entry title="${m.retryDelay()}" field="retryDelay">
-        <f:textbox default="${defaults.retry.retryDelay}"/>
+
+    <f:entry field="useWorkspaceInPromotion">
+        <poj:checkbox title="${m.useWorkspaceInPromotion()}" default="${defaults.publisher.useWorkspaceInPromotion}"/>
+    </f:entry>
+    <f:entry field="usePromotionTimestamp">
+        <poj:checkbox title="${m.usePromotionTimestamp()}" default="${defaults.publisher.usePromotionTimestamp}"/>
+    </f:entry>
+    <f:entry field="verbose">
+        <poj:checkbox title="${m.verbose()}" default="${defaults.publisher.verbose}"/>
     </f:entry>
 
 </j:jelly>
