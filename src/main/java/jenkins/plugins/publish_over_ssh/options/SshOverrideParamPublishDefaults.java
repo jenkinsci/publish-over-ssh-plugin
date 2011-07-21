@@ -34,7 +34,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class SshOverrideParamPublishDefaults implements ParamPublishOptions, Describable<SshOverrideParamPublishDefaults> {
 
-    final private String parameterName;
+    private final String parameterName;
 
     @DataBoundConstructor
     public SshOverrideParamPublishDefaults(final String parameterName) {

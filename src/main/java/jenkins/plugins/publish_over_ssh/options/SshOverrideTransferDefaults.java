@@ -35,19 +35,19 @@ import org.kohsuke.stapler.QueryParameter;
 
 public class SshOverrideTransferDefaults implements SshTransferOptions, Describable<SshOverrideTransferDefaults> {
 
-    final private String execCommand;
-    final private int execTimeout;
-    final private String sourceFiles;
-    final private String removePrefix;
-    final private String remoteDirectory;
-    final private String excludes;
-    final private boolean remoteDirectorySDF;
-    final private boolean flatten;
-    final private boolean cleanRemote;
+    private final String execCommand;
+    private final int execTimeout;
+    private final String sourceFiles;
+    private final String removePrefix;
+    private final String remoteDirectory;
+    private final String excludes;
+    private final boolean remoteDirectorySDF;
+    private final boolean flatten;
+    private final boolean cleanRemote;
 
     @DataBoundConstructor
     public SshOverrideTransferDefaults(final String sourceFiles, final String excludes, final String removePrefix,
-                                       final String remoteDirectory, final boolean flatten, boolean remoteDirectorySDF,
+                                       final String remoteDirectory, final boolean flatten, final boolean remoteDirectorySDF,
                                        final boolean cleanRemote, final String execCommand, final int execTimeout) {
         this.cleanRemote = cleanRemote;
         this.excludes = excludes;

@@ -34,10 +34,10 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class SshOverridePublisherDefaults implements PublisherOptions, Describable<SshOverridePublisherDefaults> {
 
-    final private String configName;
-    final private boolean useWorkspaceInPromotion;
-    final private boolean usePromotionTimestamp;
-    final private boolean verbose;
+    private final String configName;
+    private final boolean useWorkspaceInPromotion;
+    private final boolean usePromotionTimestamp;
+    private final boolean verbose;
 
     @DataBoundConstructor
     public SshOverridePublisherDefaults(final String configName, final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp,

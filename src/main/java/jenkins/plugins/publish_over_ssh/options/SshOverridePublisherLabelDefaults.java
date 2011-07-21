@@ -34,7 +34,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class SshOverridePublisherLabelDefaults implements PublisherLabelOptions, Describable<SshOverridePublisherLabelDefaults> {
 
-    final private String label;
+    private final String label;
 
     @DataBoundConstructor
     public SshOverridePublisherLabelDefaults(final String label) {

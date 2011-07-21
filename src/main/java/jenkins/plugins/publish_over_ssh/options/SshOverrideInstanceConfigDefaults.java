@@ -33,9 +33,9 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class SshOverrideInstanceConfigDefaults implements InstanceConfigOptions, Describable<SshOverrideInstanceConfigDefaults> {
 
-    final private boolean continueOnError;
-    final private boolean failOnError;
-    final private boolean alwaysPublishFromMaster;
+    private final boolean continueOnError;
+    private final boolean failOnError;
+    private final boolean alwaysPublishFromMaster;
 
     @DataBoundConstructor
     public SshOverrideInstanceConfigDefaults(final boolean alwaysPublishFromMaster, final boolean continueOnError,

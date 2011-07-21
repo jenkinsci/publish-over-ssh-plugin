@@ -36,8 +36,8 @@ import org.kohsuke.stapler.QueryParameter;
 
 public class SshOverrideRetryDefaults implements RetryOptions, Describable<SshOverrideRetryDefaults> {
 
-    final private int retries;
-    final private long retryDelay;
+    private final int retries;
+    private final long retryDelay;
 
     @DataBoundConstructor
     public SshOverrideRetryDefaults(final int retries, final long retryDelay) {

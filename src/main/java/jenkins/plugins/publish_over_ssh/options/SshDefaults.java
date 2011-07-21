@@ -40,13 +40,9 @@ public abstract class SshDefaults implements Describable<SshDefaults>, Extension
         return (SshDefaultsDescriptor) Hudson.getInstance().getDescriptor(getClass());
     }
 
-    public static abstract class SshDefaultsDescriptor extends Descriptor<SshDefaults> {
+    public abstract static class SshDefaultsDescriptor extends Descriptor<SshDefaults> {
 
         protected SshDefaultsDescriptor() { }
-
-        protected SshDefaultsDescriptor(Class<? extends SshDefaults> clazz) {
-            super(clazz);
-        }
 
     }
 
