@@ -27,3 +27,4 @@ target/
 *.iml
 out/
 *~
+work/
