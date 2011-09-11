@@ -48,6 +48,7 @@ import java.util.logging.Logger;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -244,6 +245,7 @@ public class BapSshClientTest {
             bapSshClient.endTransfers(new BapSshTransfer("", "", "", false, false, command, execCommandTimeout));
         } });
         exec.assertMethodsCalled();
+        assertFalse(exec.isUsePty());
     }
 
     @Test public void testEndTransfersThrowsExceptionIfCommandTimesOut() throws Exception {
@@ -284,12 +286,25 @@ public class BapSshClientTest {
         mockControl.verify();
     }
 
+    @Test public void testCanExecInPty() throws Exception {
+        final String command = "n/a";
+        final int timeout = 20000;
+        final int pollsBeforeClosed = 1;
+        final TestExec exec = new TestExec(command, timeout, 0, pollsBeforeClosed);
+        expect(mockSession.openChannel("exec")).andReturn(exec);
+        expect(mockSession.getTimeout()).andReturn(timeout);
+        mockControl.replay();
+        bapSshClient.endTransfers(new BapSshTransfer("", "", "", "", false, false, command, timeout, true));
+        assertTrue(exec.isUsePty());
+    }
+
     public static class TestExec extends ChannelExec {
         private final String expectedCommand;
         private final int expectedTimeout;
         private final int exitStatus;
         private int pollsBeforeClosed;
         private boolean setCommandCalled, connectCalled;
+        private boolean usePty;
         public TestExec(final String expectedCommand, final int expectedConnectTimeout, final int exitStatus, final int pollsBeforeClosed) {
             this.expectedCommand = expectedCommand;
             this.expectedTimeout = expectedConnectTimeout;
@@ -322,6 +337,12 @@ public class BapSshClientTest {
         }
         public void assertMethodsCalled() {
             if (!setCommandCalled || !connectCalled) fail();
+        }
+        public void setPty(final boolean usePty) {
+            this.usePty = usePty;
+        }
+        public boolean isUsePty() {
+            return usePty;
         }
     }
 

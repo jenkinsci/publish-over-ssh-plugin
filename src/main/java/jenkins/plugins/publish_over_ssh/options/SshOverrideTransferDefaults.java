@@ -44,11 +44,12 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
     private final boolean remoteDirectorySDF;
     private final boolean flatten;
     private final boolean cleanRemote;
+    private final boolean usePty;
 
     @DataBoundConstructor
     public SshOverrideTransferDefaults(final String sourceFiles, final String excludes, final String removePrefix,
                                        final String remoteDirectory, final boolean flatten, final boolean remoteDirectorySDF,
-                                       final boolean cleanRemote, final String execCommand, final int execTimeout) {
+                                       final boolean cleanRemote, final String execCommand, final int execTimeout, final boolean usePty) {
         this.cleanRemote = cleanRemote;
         this.excludes = excludes;
         this.execCommand = execCommand;
@@ -58,6 +59,7 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
         this.remoteDirectorySDF = remoteDirectorySDF;
         this.removePrefix = removePrefix;
         this.sourceFiles = sourceFiles;
+        this.usePty = usePty;
     }
 
     public String getExecCommand() {
@@ -100,7 +102,11 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
         return Hudson.getInstance().getDescriptorByType(SshOverrideTransferDefaultsDescriptor.class);
     }
 
-    @Extension
+    public boolean isUsePty() {
+		return usePty;
+	}
+
+	@Extension
     public static class SshOverrideTransferDefaultsDescriptor extends Descriptor<SshOverrideTransferDefaults> {
 
         @Override

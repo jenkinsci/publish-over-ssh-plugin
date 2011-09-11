@@ -55,6 +55,11 @@ function bap_set_exec_control_visibility(container, show_or_hide_row) {
         var row = sshControl.ancestors()[1];
         show_or_hide_row(row);
     });
+    // hack for pty as can't get class onto a checkbox
+    $(container).getElementsBySelector('input[name="_.usePty"]').each(function(sshControl) {
+        var row = sshControl.ancestors()[1];
+        show_or_hide_row(row);
+    });
 }
 
 function bap_show_exec_controls(container) {

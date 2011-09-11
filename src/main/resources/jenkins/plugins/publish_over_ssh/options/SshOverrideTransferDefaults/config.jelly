@@ -54,5 +54,10 @@
     <f:entry title="${%execTimeout}" field="execTimeout">
         <f:textbox default="${defaults.transfer.execTimeout}"/>
     </f:entry>
+    
+    <f:entry title="${%usePty}" field="usePty">
+        <f:checkbox default="${defaults.transfer.usePty}"/>
+    </f:entry>
+    
 
 </j:jelly>

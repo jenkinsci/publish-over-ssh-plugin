@@ -41,18 +41,21 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
 
     private String execCommand;
     private int execTimeout;
+    private boolean usePty;
 
     BapSshTransfer(final String sourceFiles, final String remoteDirectory, final String removePrefix,
                    final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout) {
-        this(sourceFiles, null, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, execCommand, execTimeout);
+        this(sourceFiles, null, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, execCommand, execTimeout, false);
     }
 
     @DataBoundConstructor
     public BapSshTransfer(final String sourceFiles, final String excludes, final String remoteDirectory, final String removePrefix,
-                          final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout) {
+                          final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout,
+                          final boolean usePty) {
         super(sourceFiles, excludes, remoteDirectory, removePrefix, remoteDirectorySDF, flatten);
         this.execCommand = execCommand;
         this.execTimeout = execTimeout;
+        this.usePty = usePty;
     }
 
     public String getExecCommand() { return execCommand; }
@@ -63,24 +66,30 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
         return Util.fixEmptyAndTrim(getExecCommand()) != null;
     }
 
+    public boolean isUsePty() {
+    	return usePty;
+    }
+
     public BapSshTransferDescriptor getDescriptor() {
         return Hudson.getInstance().getDescriptorByType(BapSshTransferDescriptor.class);
     }
 
     protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
-        return super.addToHashCode(builder).append(execCommand).append(execTimeout);
+        return super.addToHashCode(builder).append(execCommand).append(execTimeout).append(usePty);
     }
 
     protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshTransfer that) {
         return super.addToEquals(builder, that)
                 .append(execCommand, that.execCommand)
-                .append(execTimeout, that.execTimeout);
+                .append(execTimeout, that.execTimeout)
+                .append(usePty, that.usePty);
     }
 
     protected ToStringBuilder addToToString(final ToStringBuilder builder) {
         return super.addToToString(builder)
                 .append("execCommand", execCommand)
-                .append("execTimeout", execTimeout);
+                .append("execTimeout", execTimeout)
+                .append("pseudoTty", usePty);
     }
 
     public boolean equals(final Object that) {
