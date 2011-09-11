@@ -67,7 +67,7 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
     }
 
     public boolean isUsePty() {
-    	return usePty;
+        return usePty;
     }
 
     public BapSshTransferDescriptor getDescriptor() {
