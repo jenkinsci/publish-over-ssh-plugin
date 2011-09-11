@@ -42,7 +42,10 @@
 
     <!-- additional checks -->
     <rule ref="rulesets/clone.xml"/>
-    <rule ref="rulesets/codesize.xml"/>
+    <rule ref="rulesets/codesize.xml">
+        <!-- DBC!! -->
+        <exclude name="ExcessiveParameterList"/>
+    </rule>
     <rule ref="rulesets/controversial.xml/UnusedModifier"/>
     <rule ref="rulesets/controversial.xml/DontImportSun"/>
     <rule ref="rulesets/controversial.xml/SuspiciousOctalEscape"/>

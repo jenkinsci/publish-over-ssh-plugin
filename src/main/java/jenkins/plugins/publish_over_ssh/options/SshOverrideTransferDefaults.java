@@ -103,10 +103,10 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
     }
 
     public boolean isUsePty() {
-		return usePty;
-	}
+        return usePty;
+    }
 
-	@Extension
+    @Extension
     public static class SshOverrideTransferDefaultsDescriptor extends Descriptor<SshOverrideTransferDefaults> {
 
         @Override
