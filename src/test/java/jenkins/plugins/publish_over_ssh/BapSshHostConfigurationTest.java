@@ -291,7 +291,7 @@ public class BapSshHostConfigurationTest {
         final BapSshTransfer transfer2 = new BapSshTransfer("", "", "", "", false, false, "pwd", 10000, false);
         final ArrayList<BapSshTransfer> transfers = new ArrayList<BapSshTransfer>();
         transfers.addAll(Arrays.asList(transfer1, transfer2));
-        final BapSshPublisher publisher = new BapSshPublisher(hostConfig.getName(), false, transfers, false, false, null, null);
+        final BapSshPublisher publisher = new BapSshPublisher(hostConfig.getName(), false, transfers, false, false, null, null, null);
         expect(mockJSch.getSession(hostConfig.getUsername(), hostConfig.getHostname(), hostConfig.getPort())).andReturn(mockSession);
         mockSession.setPassword(defaultKeyInfo.getPassphrase());
         mockSession.setConfig((Properties) anyObject());

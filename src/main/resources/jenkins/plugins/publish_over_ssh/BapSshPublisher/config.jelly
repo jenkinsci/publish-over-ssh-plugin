@@ -57,6 +57,7 @@
         <f:entry field="verbose">
             <poj:checkbox title="${m.verbose()}" default="${defaults.publisher.verbose}"/>
         </f:entry>
+        <f:optionalProperty title="${m.credentials()}" field="sshCredentials"/>
         <f:optionalProperty title="${m.retry()}" field="sshRetry"/>
         <f:optionalProperty title="${m.label()}" field="sshLabel"/>
     </f:advanced>

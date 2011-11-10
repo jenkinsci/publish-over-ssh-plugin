@@ -24,61 +24,55 @@
 
 package jenkins.plugins.publish_over_ssh;
 
-import hudson.model.Describable;
 import hudson.model.Hudson;
-import jenkins.plugins.publish_over.BapPublisher;
-import jenkins.plugins.publish_over_ssh.descriptor.BapSshPublisherDescriptor;
+import jenkins.plugins.publish_over.Credentials;
+import jenkins.plugins.publish_over_ssh.descriptor.BapSshCredentialsDescriptor;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import java.util.ArrayList;
-
-/**
- * Class required to enable stapler/DBC to bind to correct BPTransfer - BapSshTransfer
- */
-@SuppressWarnings("PMD.LooseCoupling") // serializable
-public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Describable<BapSshPublisher> {
+public class BapSshCredentials extends BapSshKeyInfo implements Credentials<BapSshCredentials> {
 
     private static final long serialVersionUID = 1L;
 
+    private final String username;
+
     @DataBoundConstructor
-    public BapSshPublisher(final String configName, final boolean verbose, final ArrayList<BapSshTransfer> transfers,
-                           final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp, final BapSshRetry sshRetry,
-                           final BapSshPublisherLabel sshLabel, final BapSshCredentials sshCredentials) {
-        super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp, sshRetry, sshLabel, sshCredentials);
+    public BapSshCredentials(final String username, final String encryptedPassphrase, final String key, final String keyPath) {
+        super(encryptedPassphrase, key, keyPath);
+        this.username = username;
     }
 
-    public final boolean isSftpRequired() {
-        for (BapSshTransfer transfer : getTransfers()) {
-            if (transfer.hasConfiguredSourceFiles()) return true;
-        }
-        return false;
+    public String getUsername() {
+        return username;
     }
 
-    public BapSshRetry getSshRetry() {
-        return (BapSshRetry) super.getRetry();
+    public BapSshCredentialsDescriptor getDescriptor() {
+        return Hudson.getInstance().getDescriptorByType(BapSshCredentialsDescriptor.class);
     }
 
-    public BapSshPublisherLabel getSshLabel() {
-        return (BapSshPublisherLabel) super.getLabel();
+    protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshCredentials that) {
+        return super.addToEquals(builder, that)
+            .append(username, that.username);
     }
 
-    public BapSshCredentials getSshCredentials() {
-        return (BapSshCredentials) getCredentials();
+    protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
+        return super.addToHashCode(builder)
+            .append(username);
     }
 
-    public BapSshPublisherDescriptor getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(BapSshPublisherDescriptor.class);
+    protected ToStringBuilder addToToString(final ToStringBuilder builder) {
+        return super.addToToString(builder)
+            .append("username", username);
     }
 
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
 
-        return addToEquals(new EqualsBuilder(), (BapSshPublisher) that).isEquals();
+        return addToEquals(new EqualsBuilder(), (BapSshCredentials) that).isEquals();
     }
 
     public int hashCode() {

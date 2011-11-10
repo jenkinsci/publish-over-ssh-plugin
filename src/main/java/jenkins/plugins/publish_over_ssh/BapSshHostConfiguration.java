@@ -100,7 +100,9 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         return getCommonConfig().isDisableAllExec() || disableExec;
     }
 
-    private BapSshKeyInfo getEffectiveKeyInfo() {
+    private BapSshKeyInfo getEffectiveKeyInfo(final BPBuildInfo buildInfo) {
+        final BapSshCredentials publisherCredentials = getPublisherOverrideCredentials(buildInfo);
+        if (publisherCredentials != null) return publisherCredentials;
         return overrideKey ? keyInfo : getCommonConfig();
     }
 
@@ -119,7 +121,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         final Session session = createSession(buildInfo, ssh);
         final BapSshClient bapClient = new BapSshClient(buildInfo, session, isEffectiveDisableExec());
         try {
-            final BapSshKeyInfo keyInfo = getEffectiveKeyInfo();
+            final BapSshKeyInfo keyInfo = getEffectiveKeyInfo(buildInfo);
             final Properties sessionProperties = getSessionProperties();
             if (keyInfo.useKey()) {
                 setKey(buildInfo, ssh, keyInfo);
@@ -224,13 +226,19 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     }
 
     private Session createSession(final BPBuildInfo buildInfo, final JSch ssh) {
+        final BapSshCredentials overrideCreds = getPublisherOverrideCredentials(buildInfo);
+        final String username = overrideCreds == null ? getUsername() : overrideCreds.getUsername();
         try {
-            buildInfo.printIfVerbose(Messages.console_session_creating(getUsername(), getHostnameTrimmed(), getPort()));
-            return ssh.getSession(getUsername(), getHostnameTrimmed(), getPort());
+            buildInfo.printIfVerbose(Messages.console_session_creating(username, getHostnameTrimmed(), getPort()));
+            return ssh.getSession(username, getHostnameTrimmed(), getPort());
         } catch (JSchException jse) {
             throw new BapPublisherException(Messages.exception_session_create(
-                    getUsername(), getHostnameTrimmed(), getPort(), jse.getLocalizedMessage()), jse);
+                    username, getHostnameTrimmed(), getPort(), jse.getLocalizedMessage()), jse);
         }
+    }
+
+    private static BapSshCredentials getPublisherOverrideCredentials(final BPBuildInfo buildInfo) {
+        return (BapSshCredentials) buildInfo.get(BPBuildInfo.OVERRIDE_CREDENTIALS_CONTEXT_KEY);
     }
 
     protected JSch createJSch() {

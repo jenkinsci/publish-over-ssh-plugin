@@ -147,7 +147,10 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
     public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
         final BapSshHostConfiguration hostConfig = request.bindParameters(BapSshHostConfiguration.class, "");
         hostConfig.setCommonConfig(request.bindParameters(BapSshCommonConfiguration.class, "common."));
-        final BPBuildInfo buildInfo = createDummyBuildInfo();
+        return validateConnection(hostConfig, createDummyBuildInfo());
+    }
+
+    public static FormValidation validateConnection(BapSshHostConfiguration hostConfig, BPBuildInfo buildInfo) {
         try {
             hostConfig.createClient(buildInfo).disconnect();
             return FormValidation.ok(Messages.descriptor_testConnection_ok());
@@ -158,14 +161,14 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
         }
     }
 
-    private FormValidation connectionError(final String description, final Exception exception) {
+    private static FormValidation connectionError(final String description, final Exception exception) {
         return FormValidation.errorWithMarkup("<p>"
                 + description + "</p><p><pre>"
                 + Util.escape(exception.getClass().getCanonicalName() + ": " + exception.getLocalizedMessage())
                 + "</pre></p>");
     }
 
-    private BPBuildInfo createDummyBuildInfo() {
+    public static BPBuildInfo createDummyBuildInfo() {
         return new BPBuildInfo(
             TaskListener.NULL,
             "",
