@@ -55,6 +55,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     private static final long serialVersionUID = 1L;
     public static final int DEFAULT_PORT = 22;
     public static final int DEFAULT_TIMEOUT = 300000;
+    public static final String CONFIG_KEY_PREFERRED_AUTHENTICATIONS = "PreferredAuthentications";
     private static final Log LOG = LogFactory.getLog(BapSshHostConfiguration.class);
 
     private int timeout;
@@ -125,9 +126,10 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             final Properties sessionProperties = getSessionProperties();
             if (keyInfo.useKey()) {
                 setKey(buildInfo, ssh, keyInfo);
-                sessionProperties.put("PreferredAuthentications", "publickey");
+                sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "publickey");
             } else {
                 session.setPassword(Util.fixNull(keyInfo.getPassphrase()));
+                sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "keyboard-interactive,password");
             }
             session.setConfig(sessionProperties);
             connect(buildInfo, session);
