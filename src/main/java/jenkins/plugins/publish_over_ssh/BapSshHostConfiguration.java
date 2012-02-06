@@ -232,7 +232,10 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         final String username = overrideCreds == null ? getUsername() : overrideCreds.getUsername();
         try {
             buildInfo.printIfVerbose(Messages.console_session_creating(username, getHostnameTrimmed(), getPort()));
-            return ssh.getSession(username, getHostnameTrimmed(), getPort());
+            Session session = ssh.getSession(username, getHostnameTrimmed(), getPort());
+            // disable gssapi-with-mic and keyboard-interactive that would require user interaction
+            session.setConfig("PreferredAuthentications", "publickey,password");
+            return session;
         } catch (JSchException jse) {
             throw new BapPublisherException(Messages.exception_session_create(
                     username, getHostnameTrimmed(), getPort(), jse.getLocalizedMessage()), jse);
