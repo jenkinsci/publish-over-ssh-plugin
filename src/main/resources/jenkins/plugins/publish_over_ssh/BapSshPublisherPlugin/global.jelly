@@ -47,9 +47,11 @@
             </j:scope>
         </f:entry>
         <j:if test="${descriptor.enableOverrideDefaults}">
-            <f:entry>
-                <f:dropdownDescriptorSelector title="${m.defaults()}" field="defaults" default="${descriptor.pluginDefaultsDescriptor}"/>
-            </f:entry>
+            <f:advanced>
+                <f:entry>
+                    <f:dropdownDescriptorSelector title="${m.defaults()}" field="defaults" default="${descriptor.pluginDefaultsDescriptor}"/>
+                </f:entry>
+            </f:advanced>
         </j:if>
     </f:section>
 
