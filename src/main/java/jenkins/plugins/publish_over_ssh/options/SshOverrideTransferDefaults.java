@@ -45,11 +45,13 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
     private final boolean flatten;
     private final boolean cleanRemote;
     private final boolean usePty;
+    private final boolean noDefaultExcludes;
 
     @DataBoundConstructor
     public SshOverrideTransferDefaults(final String sourceFiles, final String excludes, final String removePrefix,
                                        final String remoteDirectory, final boolean flatten, final boolean remoteDirectorySDF,
-                                       final boolean cleanRemote, final String execCommand, final int execTimeout, final boolean usePty) {
+                                       final boolean cleanRemote, final String execCommand, final int execTimeout, final boolean usePty,
+                                       final boolean noDefaultExcludes) {
         this.cleanRemote = cleanRemote;
         this.excludes = excludes;
         this.execCommand = execCommand;
@@ -60,6 +62,7 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
         this.removePrefix = removePrefix;
         this.sourceFiles = sourceFiles;
         this.usePty = usePty;
+        this.noDefaultExcludes = noDefaultExcludes;
     }
 
     public String getExecCommand() {
@@ -106,6 +109,10 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
         return usePty;
     }
 
+    public boolean isNoDefaultExcludes() {
+        return noDefaultExcludes;
+    }
+
     @Extension
     public static class SshOverrideTransferDefaultsDescriptor extends Descriptor<SshOverrideTransferDefaults> {
 
@@ -116,6 +123,10 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
 
         public boolean canUseExcludes() {
             return BPTransfer.canUseExcludes();
+        }
+
+        public boolean canUseNoDefaultExcludes() {
+            return BPTransfer.canUseNoDefaultExcludes();
         }
 
         public FormValidation doCheckExecTimeout(@QueryParameter final String value) {

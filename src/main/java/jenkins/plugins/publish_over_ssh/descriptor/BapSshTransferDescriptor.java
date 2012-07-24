@@ -52,6 +52,10 @@ public class BapSshTransferDescriptor extends Descriptor<BapSshTransfer> {
         return BPTransfer.canUseExcludes();
     }
 
+    public boolean canUseNoDefaultExcludes() {
+        return BPTransfer.canUseNoDefaultExcludes();
+    }
+
     public FormValidation doCheckExecTimeout(@QueryParameter final String value) {
         return FormValidation.validateNonNegativeInteger(value);
     }

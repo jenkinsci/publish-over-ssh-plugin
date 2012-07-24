@@ -56,6 +56,12 @@
             </f:entry>
         </j:if>
 
+        <j:if test="${descriptor.canUseNoDefaultExcludes()}">
+            <f:entry title="${m.noDefaultExcludes()}" field="noDefaultExcludes">
+                <f:checkbox default="${defaults.transfer.noDefaultExcludes}"/>
+            </f:entry>
+        </j:if>
+
         <f:entry title="${m.flatten()}" field="flatten">
             <f:checkbox default="${defaults.transfer.flatten}"/>
         </f:entry>
