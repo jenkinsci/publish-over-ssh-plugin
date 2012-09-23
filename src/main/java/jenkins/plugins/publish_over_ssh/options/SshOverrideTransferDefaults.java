@@ -46,12 +46,13 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
     private final boolean cleanRemote;
     private final boolean usePty;
     private final boolean noDefaultExcludes;
+    private final boolean makeEmptyDirs;
 
     @DataBoundConstructor
     public SshOverrideTransferDefaults(final String sourceFiles, final String excludes, final String removePrefix,
                                        final String remoteDirectory, final boolean flatten, final boolean remoteDirectorySDF,
                                        final boolean cleanRemote, final String execCommand, final int execTimeout, final boolean usePty,
-                                       final boolean noDefaultExcludes) {
+                                       final boolean noDefaultExcludes, final boolean makeEmptyDirs) {
         this.cleanRemote = cleanRemote;
         this.excludes = excludes;
         this.execCommand = execCommand;
@@ -63,6 +64,7 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
         this.sourceFiles = sourceFiles;
         this.usePty = usePty;
         this.noDefaultExcludes = noDefaultExcludes;
+        this.makeEmptyDirs = makeEmptyDirs;
     }
 
     public String getExecCommand() {
@@ -113,20 +115,16 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
         return noDefaultExcludes;
     }
 
+    public boolean isMakeEmptyDirs() {
+        return makeEmptyDirs;
+    }
+
     @Extension
     public static class SshOverrideTransferDefaultsDescriptor extends Descriptor<SshOverrideTransferDefaults> {
 
         @Override
         public String getDisplayName() {
             return "SshOverrideTransferDefaultsDescriptor - not visible ...";
-        }
-
-        public boolean canUseExcludes() {
-            return BPTransfer.canUseExcludes();
-        }
-
-        public boolean canUseNoDefaultExcludes() {
-            return BPTransfer.canUseNoDefaultExcludes();
         }
 
         public FormValidation doCheckExecTimeout(@QueryParameter final String value) {

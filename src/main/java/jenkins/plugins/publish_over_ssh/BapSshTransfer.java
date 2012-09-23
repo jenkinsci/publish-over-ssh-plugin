@@ -45,14 +45,14 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
 
     BapSshTransfer(final String sourceFiles, final String remoteDirectory, final String removePrefix,
                    final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout) {
-        this(sourceFiles, null, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, execCommand, execTimeout, false, false);
+        this(sourceFiles, null, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, execCommand, execTimeout, false, false, false);
     }
 
     @DataBoundConstructor
     public BapSshTransfer(final String sourceFiles, final String excludes, final String remoteDirectory, final String removePrefix,
                           final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout,
-                          final boolean usePty, final boolean noDefaultExcludes) {
-        super(sourceFiles, excludes, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, false, noDefaultExcludes);
+                          final boolean usePty, final boolean noDefaultExcludes, final boolean makeEmptyDirs) {
+        super(sourceFiles, excludes, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, false, noDefaultExcludes, makeEmptyDirs);
         this.execCommand = execCommand;
         this.execTimeout = execTimeout;
         this.usePty = usePty;

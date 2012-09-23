@@ -48,14 +48,6 @@ public class BapSshTransferDescriptor extends Descriptor<BapSshTransfer> {
         return Messages.transfer_descriptor_displayName();
     }
 
-    public boolean canUseExcludes() {
-        return BPTransfer.canUseExcludes();
-    }
-
-    public boolean canUseNoDefaultExcludes() {
-        return BPTransfer.canUseNoDefaultExcludes();
-    }
-
     public FormValidation doCheckExecTimeout(@QueryParameter final String value) {
         return FormValidation.validateNonNegativeInteger(value);
     }
