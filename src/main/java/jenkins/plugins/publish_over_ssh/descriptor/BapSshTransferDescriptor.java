@@ -30,6 +30,7 @@ import hudson.model.Descriptor;
 import hudson.model.Hudson;
 import hudson.util.FormValidation;
 import jenkins.plugins.publish_over.BPTransfer;
+import jenkins.plugins.publish_over.BPValidators;
 import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import jenkins.plugins.publish_over_ssh.BapSshTransfer;
@@ -64,6 +65,10 @@ public class BapSshTransferDescriptor extends Descriptor<BapSshTransfer> {
                 return FormValidation.validateRequired(sourceFiles);
         }
         return checkTransferSet(sourceFiles, execCommand);
+    }
+
+    public FormValidation doCheckPatternSeparator(@QueryParameter final String value) {
+        return BPValidators.validateRegularExpression(value);
     }
 
     public FormValidation doCheckExecCommand(@QueryParameter final String sourceFiles, @QueryParameter final String execCommand) {

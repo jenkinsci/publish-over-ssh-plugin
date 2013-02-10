@@ -43,6 +43,9 @@
     <f:entry title="${m.excludes()}" field="excludes">
         <f:textbox default="${defaults.transfer.excludes}"/>
     </f:entry>
+    <f:entry title="${m.patternSeparator()}" field="patternSeparator">
+        <f:textbox default="${defaults.transfer.patternSeparator}"/>
+    </f:entry>
     <f:entry title="${m.noDefaultExcludes()}" field="noDefaultExcludes">
         <f:checkbox default="${defaults.transfer.noDefaultExcludes}"/>
     </f:entry>

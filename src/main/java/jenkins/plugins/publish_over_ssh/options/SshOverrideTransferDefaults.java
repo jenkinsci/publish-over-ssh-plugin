@@ -47,12 +47,13 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
     private final boolean usePty;
     private final boolean noDefaultExcludes;
     private final boolean makeEmptyDirs;
+    private final String patternSeparator;
 
     @DataBoundConstructor
     public SshOverrideTransferDefaults(final String sourceFiles, final String excludes, final String removePrefix,
                                        final String remoteDirectory, final boolean flatten, final boolean remoteDirectorySDF,
                                        final boolean cleanRemote, final String execCommand, final int execTimeout, final boolean usePty,
-                                       final boolean noDefaultExcludes, final boolean makeEmptyDirs) {
+                                       final boolean noDefaultExcludes, final boolean makeEmptyDirs, final String patternSeparator) {
         this.cleanRemote = cleanRemote;
         this.excludes = excludes;
         this.execCommand = execCommand;
@@ -65,6 +66,7 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
         this.usePty = usePty;
         this.noDefaultExcludes = noDefaultExcludes;
         this.makeEmptyDirs = makeEmptyDirs;
+        this.patternSeparator = patternSeparator;
     }
 
     public String getExecCommand() {
@@ -117,6 +119,10 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
 
     public boolean isMakeEmptyDirs() {
         return makeEmptyDirs;
+    }
+
+    public String getPatternSeparator() {
+        return patternSeparator;
     }
 
     @Extension
