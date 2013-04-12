@@ -78,7 +78,13 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
     }
 
     @Extension
-    public static class Descriptor extends BapSshPublisherPluginDescriptor { }
+    public static class Descriptor extends BapSshPublisherPluginDescriptor {
+        @Override
+        public Object readResolve()
+        {
+            return super.readResolve();
+        }
+    }
 
     /** prevent xstream noise */
     @Deprecated

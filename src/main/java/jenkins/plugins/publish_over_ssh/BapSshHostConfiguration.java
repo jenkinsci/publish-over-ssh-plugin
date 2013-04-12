@@ -291,4 +291,9 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
 
+    public Object readResolve()
+    {
+        return super.readResolve();
+    }
+
 }
