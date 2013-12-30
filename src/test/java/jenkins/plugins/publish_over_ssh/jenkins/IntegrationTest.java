@@ -24,16 +24,23 @@
 
 package jenkins.plugins.publish_over_ssh.jenkins;
 
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpATTRS;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
-import hudson.model.FreeStyleProject;
 import hudson.model.Result;
+import hudson.model.AbstractBuild;
+import hudson.model.FreeStyleProject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshPublisher;
@@ -44,17 +51,10 @@ import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 import org.jvnet.hudson.test.TestBuilder;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpATTRS;
 
 @SuppressWarnings("PMD.SignatureDeclareThrowsException")
 public class IntegrationTest extends HudsonTestCase {
@@ -73,6 +73,10 @@ public class IntegrationTest extends HudsonTestCase {
             @Override
             public JSch createJSch() {
                 return mockJsch;
+            }
+            @Override
+            public Object readResolve() {
+                return super.readResolve();
             }
         };
         final BapSshCommonConfiguration commonConfig = new BapSshCommonConfiguration("passphrase", "key", "", false);

@@ -24,14 +24,11 @@
 
 package jenkins.plugins.publish_over_ssh;
 
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
 import hudson.Util;
 import hudson.model.Describable;
 import hudson.model.Hudson;
+import java.io.IOException;
+import java.util.Properties;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPHostConfiguration;
 import jenkins.plugins.publish_over.BapPublisher;
@@ -45,8 +42,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import java.io.IOException;
-import java.util.Properties;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 
 @SuppressWarnings("PMD.TooManyMethods")
 public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, BapSshCommonConfiguration>
@@ -80,9 +80,12 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     public int getTimeout() { return timeout; }
     public void setTimeout(final int timeout) { this.timeout = timeout; }
 
+    @Override
     protected final String getPassword() { return keyInfo.getPassphrase(); }
+    @Override
     public final void setPassword(final String password) { keyInfo.setPassphrase(password); }
 
+    @Override
     public final String getEncryptedPassword() { return keyInfo.getEncryptedPassphrase(); }
 
     public String getKeyPath() { return keyInfo.getKeyPath(); }
@@ -259,6 +262,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             .append(disableExec, that.disableExec);
     }
 
+    @Override
     protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
         return super.addToHashCode(builder)
             .append(keyInfo)
@@ -267,6 +271,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             .append(disableExec);
     }
 
+    @Override
     protected ToStringBuilder addToToString(final ToStringBuilder builder) {
         return super.addToToString(builder)
             .append("keyInfo", keyInfo)
@@ -275,6 +280,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             .append("disableExec", disableExec);
     }
 
+    @Override
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
@@ -283,16 +289,18 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         return addToEquals(new EqualsBuilder(), thatHostConfiguration).isEquals();
     }
 
+    @Override
     public int hashCode() {
         return addToHashCode(new HashCodeBuilder()).toHashCode();
     }
 
+    @Override
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
 
-    public Object readResolve()
-    {
+    @Override
+    public Object readResolve() {
         return super.readResolve();
     }
 
