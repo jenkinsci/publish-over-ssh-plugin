@@ -98,6 +98,28 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
         return null;
     }
 
+    /**
+     * Add a Host Configuration to the list of configurations.
+     * 
+     * @param configuration Host Configuration to add. The common configuration will be automatically set.
+     */
+    public void addHostConfiguration(final BapSshHostConfiguration configuration) {
+        configuration.setCommonConfig(commonConfig);
+        hostConfigurations.add(configuration);
+    }
+
+    /**
+     * Removes the given named Host Configuration from the list of configurations.
+     * 
+     * @param name The Name of the Host Configuration to remove.
+     */
+    public void removeHostConfiguration(final String name) {
+        BapSshHostConfiguration configuration = getConfiguration(name);
+        if (configuration != null) {
+            hostConfigurations.remove(configuration);
+        }
+    }
+
     public boolean configure(final StaplerRequest request, final JSONObject formData) {
         final List<BapSshHostConfiguration> newConfigurations = request.bindJSONToList(BapSshHostConfiguration.class,
                                                                                                                 formData.get("instance"));
