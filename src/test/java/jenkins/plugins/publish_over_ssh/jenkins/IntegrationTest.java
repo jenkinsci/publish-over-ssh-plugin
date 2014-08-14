@@ -36,7 +36,6 @@ import hudson.model.BuildListener;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.model.FreeStyleProject;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -47,6 +46,7 @@ import jenkins.plugins.publish_over_ssh.BapSshPublisher;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import jenkins.plugins.publish_over_ssh.BapSshTransfer;
 import jenkins.plugins.publish_over_ssh.BapSshUtil;
+
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 import org.jvnet.hudson.test.TestBuilder;
@@ -59,7 +59,7 @@ import com.jcraft.jsch.SftpATTRS;
 @SuppressWarnings("PMD.SignatureDeclareThrowsException")
 public class IntegrationTest extends HudsonTestCase {
 
-//    @TODO test that we get the expected result when in a promotion
+// @TODO test that we get the expected result when in a promotion
 
     @Test
     public void testIntegration() throws Exception {
@@ -69,7 +69,7 @@ public class IntegrationTest extends HudsonTestCase {
         final int port = 28;
         final int timeout = 3000;
         final BapSshHostConfiguration testHostConfig = new BapSshHostConfiguration("testConfig", "testHostname", "testUsername", "",
-                                                                             "/testRemoteRoot", port, timeout, false, "", "", false) {
+                                                                            "/testRemoteRoot", "", port, timeout, false, "", "", false) {
             @Override
             public JSch createJSch() {
                 return mockJsch;
@@ -84,7 +84,7 @@ public class IntegrationTest extends HudsonTestCase {
         final String dirToIgnore = "target";
         final int execTimeout = 10000;
         final BapSshTransfer transfer = new BapSshTransfer("**/*", null, "sub-home", dirToIgnore, false, false, "", execTimeout, false, false, false, null);
-        final BapSshPublisher publisher = new BapSshPublisher(testHostConfig.getName(), false,
+        final BapSshPublisher publisher = new BapSshPublisher(testHostConfig.getName(), false, 
                         new ArrayList<BapSshTransfer>(Collections.singletonList(transfer)), false, false, null, null, null);
         final BapSshPublisherPlugin plugin = new BapSshPublisherPlugin(
                         new ArrayList<BapSshPublisher>(Collections.singletonList(publisher)), false, false, false, "master", null);
