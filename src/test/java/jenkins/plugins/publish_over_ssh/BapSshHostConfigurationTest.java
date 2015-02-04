@@ -24,19 +24,13 @@
 
 package jenkins.plugins.publish_over_ssh;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.aryEq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.isA;
-import static org.easymock.EasyMock.isNull;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
 import hudson.FilePath;
 import hudson.model.TaskListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BapPublisherException;
 import jenkins.plugins.publish_over_ssh.helper.BapSshTestHelper;
@@ -52,11 +46,19 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.jvnet.hudson.test.HudsonTestCase;
 
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Properties;
+import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.aryEq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.isNull;
 
 @SuppressWarnings({ "PMD.SignatureDeclareThrowsException", "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
 public class BapSshHostConfigurationTest extends HudsonTestCase {
@@ -109,6 +111,27 @@ public class BapSshHostConfigurationTest extends HudsonTestCase {
     @Test
     public void testCreateClientWithOverridePassword() throws Exception {
         assertCreateWithDefaultInfo(null);
+    }
+
+    @Test
+    public void testCreateClientWithInjectedCredentials() throws Exception {
+        BapSshCredentials overrideCredentials = new BapSshCredentials("USER_ENV","PASSWORD_ENV",null,null,true);
+        buildInfo.put(BPBuildInfo.OVERRIDE_CREDENTIALS_CONTEXT_KEY, overrideCredentials);
+        TreeMap<String,String> envVars = new TreeMap<String,String>();
+        envVars.put("USER_ENV","testUser");
+        envVars.put("PASSWORD_ENV","testPassword");
+        buildInfo.setEnvVars(envVars);
+        final BapSshCommonConfiguration commonConfiguration = new BapSshCommonConfiguration("Ignore me", null, null, false);
+        getHostConfig().setCommonConfig(commonConfiguration);
+        expect(mockJSch.getSession("testUser", getHostConfig().getHostname(), getHostConfig().getPort())).andReturn(mockSession);
+        mockSession.setPassword("testPassword");
+        mockSession.setConfig((Properties) anyObject());
+        mockSession.connect(getHostConfig().getTimeout());
+        expect(mockSession.openChannel("sftp")).andReturn(mockSftp);
+        mockSftp.connect(getHostConfig().getTimeout());
+        testHelper.expectDirectoryCheck(getHostConfig().getRemoteRootDir(), true);
+        mockSftp.cd(getHostConfig().getRemoteRootDir());
+        assertCreateClient();
     }
 
     private BapSshClient assertCreateWithDefaultInfo(final String responseFromPwd) throws JSchException, SftpException {
