@@ -64,10 +64,31 @@
         <f:entry title="${%disableExec}" field="disableExec">
             <f:checkbox/>
         </f:entry>
+
+        <f:entry name="proxyType" title="${%proxyType}" field="proxyType">
+            <select name="proxyType">
+                <f:option value=""></f:option>
+                <f:option selected="${instance.proxyType == 'http'}" value="http">${%proxyHTTP}</f:option>
+                <f:option selected="${instance.proxyType == 'socks4'}" value="socks4">${%proxySocks4}</f:option>
+                <f:option selected="${instance.proxyType == 'socks5'}" value="socks5">${%proxySocks5}</f:option>
+            </select>
+        </f:entry>
+        <f:entry title="${%proxyHost}" field="proxyHost">
+            <f:textbox/>
+        </f:entry>
+        <f:entry title="${%proxyPort}" field="proxyPort">
+            <f:textbox clazz="number" />
+        </f:entry>
+        <f:entry title="${%proxyUser}" field="proxyUser">
+            <f:textbox/>
+        </f:entry>
+        <f:entry title="${%proxyPassword}" field="proxyPassword">
+            <f:password/>
+        </f:entry>
         
     </f:advanced>
     
     <f:validateButton title="${m.test_title()}" progress="${m.test_progress()}" method="testConnection"
-                      with="name,hostname,username,encryptedPassword,remoteRootDir,port,timeout,keyPath,key,overrideKey,common.encryptedPassphrase,common.key,common.keyPath"/>                        
+                      with="name,hostname,username,encryptedPassword,remoteRootDir,port,timeout,keyPath,key,overrideKey,common.encryptedPassphrase,common.key,common.keyPath,proxyType,proxyHost,proxyPort,proxyUser,proxyPassword"/>
             
 </j:jelly>
