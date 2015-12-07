@@ -74,8 +74,8 @@ public class BapSshCredentialsDescriptor extends Descriptor<BapSshCredentials> {
 
     public FormValidation doTestConnection(@QueryParameter final String configName, @QueryParameter final String username,
                                            @QueryParameter final String encryptedPassphrase, @QueryParameter final String key,
-                                           @QueryParameter final String keyPath) {
-        final BapSshCredentials credentials = new BapSshCredentials(username, encryptedPassphrase, key, keyPath);
+                                           @QueryParameter final String keyPath, @QueryParameter final Boolean injectCredentials) {
+        final BapSshCredentials credentials = new BapSshCredentials(username, encryptedPassphrase, key, keyPath, injectCredentials);
         final BPBuildInfo buildInfo = BapSshPublisherPluginDescriptor.createDummyBuildInfo();
         buildInfo.put(BPBuildInfo.OVERRIDE_CREDENTIALS_CONTEXT_KEY, credentials);
         final BapSshPublisherPlugin.Descriptor pluginDescriptor = Hudson.getInstance().getDescriptorByType(

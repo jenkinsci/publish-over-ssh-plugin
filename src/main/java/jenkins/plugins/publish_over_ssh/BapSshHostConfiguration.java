@@ -131,7 +131,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
                 setKey(buildInfo, ssh, keyInfo);
                 sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "publickey");
             } else {
-                session.setPassword(Util.fixNull(keyInfo.getPassphrase()));
+                session.setPassword(getPassphrase(keyInfo,buildInfo));
                 sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "keyboard-interactive,password");
             }
             session.setConfig(sessionProperties);
@@ -145,6 +145,14 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             bapClient.disconnectQuietly();
             throw re;
         }
+    }
+
+    private static String getPassphrase(final BapSshKeyInfo keyInfo, final BPBuildInfo buildInfo) {
+        String passphrase = Util.fixNull(keyInfo.getPassphrase());
+        if ( keyInfo instanceof BapSshCredentials && ((BapSshCredentials)keyInfo).getInjectCredentials() ) {
+            passphrase = getEnvironmentVariable(passphrase,buildInfo);
+        }
+        return passphrase;
     }
 
     private void setupSftp(final BPBuildInfo buildInfo, final BapSshClient bapClient) throws IOException {
@@ -232,7 +240,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
     private Session createSession(final BPBuildInfo buildInfo, final JSch ssh) {
         final BapSshCredentials overrideCreds = getPublisherOverrideCredentials(buildInfo);
-        final String username = overrideCreds == null ? getUsername() : overrideCreds.getUsername();
+        final String username = overrideCreds == null ? getUsername() : getOverrideCredsUsername(overrideCreds, buildInfo);
         try {
             buildInfo.printIfVerbose(Messages.console_session_creating(username, getHostnameTrimmed(), getPort()));
             return ssh.getSession(username, getHostnameTrimmed(), getPort());
@@ -240,6 +248,17 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             throw new BapPublisherException(Messages.exception_session_create(
                     username, getHostnameTrimmed(), getPort(), jse.getLocalizedMessage()), jse);
         }
+    }
+
+    private static String getOverrideCredsUsername(final BapSshCredentials overrideCreds, final BPBuildInfo buildInfo) {
+        if ( overrideCreds.getInjectCredentials() ) {
+            return getEnvironmentVariable(overrideCreds.getUsername(), buildInfo);
+        }
+        return overrideCreds.getUsername();
+    }
+
+    private static String getEnvironmentVariable(String var, final BPBuildInfo buildInfo) {
+        return buildInfo.getEnvVars().get(var);
     }
 
     private static BapSshCredentials getPublisherOverrideCredentials(final BPBuildInfo buildInfo) {

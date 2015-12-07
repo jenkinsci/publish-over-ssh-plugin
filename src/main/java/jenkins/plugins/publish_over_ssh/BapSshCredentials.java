@@ -39,10 +39,17 @@ public class BapSshCredentials extends BapSshKeyInfo implements Credentials<BapS
 
     private final String username;
 
+    private final boolean injectCredentials;
+
     @DataBoundConstructor
-    public BapSshCredentials(final String username, final String encryptedPassphrase, final String key, final String keyPath) {
+    public BapSshCredentials(final String username, final String encryptedPassphrase, final String key, final String keyPath, boolean injectCredentials) {
         super(encryptedPassphrase, key, keyPath);
         this.username = username;
+        this.injectCredentials = injectCredentials;
+    }
+
+    public Boolean getInjectCredentials() {
+        return injectCredentials;
     }
 
     public String getUsername() {
@@ -55,17 +62,20 @@ public class BapSshCredentials extends BapSshKeyInfo implements Credentials<BapS
 
     protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshCredentials that) {
         return super.addToEquals(builder, that)
-            .append(username, that.username);
+            .append(username, that.username)
+            .append(injectCredentials, that.injectCredentials);
     }
 
     protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
         return super.addToHashCode(builder)
-            .append(username);
+            .append(username)
+            .append(injectCredentials);
     }
 
     protected ToStringBuilder addToToString(final ToStringBuilder builder) {
         return super.addToToString(builder)
-            .append("username", username);
+            .append("username", username)
+            .append("injectCredentials", injectCredentials);
     }
 
     public boolean equals(final Object that) {
