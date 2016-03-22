@@ -30,7 +30,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>1.554.3</version>
+        <version>2.3</version>
     </parent>
 
     <groupId>org.jenkins-ci.plugins</groupId>
@@ -42,7 +42,8 @@
     <url>http://wiki.jenkins-ci.org/display/JENKINS/Publish+Over+SSH+Plugin</url>
 
     <properties>
-        <java.net.id>bap</java.net.id>                
+        <java.net.id>bap</java.net.id>
+	<jenkins.version>1.554.3</jenkins.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     
@@ -94,6 +95,13 @@
             <groupId>org.easymock</groupId>
             <artifactId>easymockclassextension</artifactId>
             <version>2.4</version>
+            <scope>test</scope>
+        </dependency>
+	<dependency>
+            <groupId>org.jenkins-ci.main</groupId>
+            <artifactId>jenkins-war</artifactId>
+            <type>war</type>
+            <version>${jenkins.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

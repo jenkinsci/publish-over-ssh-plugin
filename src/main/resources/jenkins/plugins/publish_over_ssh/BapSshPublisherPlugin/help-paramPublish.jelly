@@ -21,7 +21,7 @@
   ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   ~ THE SOFTWARE.
   -->
-
+<?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core">
 <div>
     <p>Publish to servers by matching labels against a regular expression provided by a parameter or an environment variable.</p>
