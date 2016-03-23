@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_ssh.descriptor;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Util;
 import hudson.model.AbstractProject;
 import hudson.model.Hudson;
@@ -54,13 +55,13 @@ import java.util.List;
 public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publisher> {
 
     /** null - prevent complaints from xstream */
-    @SuppressWarnings("URF_UNREAD_FIELD")
+    @SuppressFBWarnings(value = "URF_UNREAD_FIELD")
     private transient BPPluginDescriptor.BPDescriptorMessages msg;
     /** null - prevent complaints from xstream */
-    @SuppressWarnings("URF_UNREAD_FIELD")
+    @SuppressFBWarnings(value = "URF_UNREAD_FIELD")
     private transient Class commonConfigClass;
     /** null - prevent complaints from xstream */
-    @SuppressWarnings("URF_UNREAD_FIELD")
+    @SuppressFBWarnings(value = "URF_UNREAD_FIELD")
     private transient Class hostConfigClass;
     private final CopyOnWriteList<BapSshHostConfiguration> hostConfigurations = new CopyOnWriteList<BapSshHostConfiguration>();
     private BapSshCommonConfiguration commonConfig;
