@@ -206,7 +206,10 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
     @Override
     public BapSshClient createClient(final BPBuildInfo buildInfo, final BapPublisher publisher) {
-        return createClient(buildInfo, ((BapSshPublisher) publisher).isSftpRequired());
+        if(publisher instanceof BapSshPublisher) {
+            return createClient(buildInfo, ((BapSshPublisher) publisher).isSftpRequired());
+        }
+        throw new IllegalArgumentException("Invalid type passed to createClient");
     }
 
     @Override

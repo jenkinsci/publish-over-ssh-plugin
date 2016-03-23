@@ -54,11 +54,14 @@ import java.util.List;
 public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publisher> {
 
     /** null - prevent complaints from xstream */
-    private BPPluginDescriptor.BPDescriptorMessages msg;
+    @SuppressWarnings("URF_UNREAD_FIELD")
+    private transient BPPluginDescriptor.BPDescriptorMessages msg;
     /** null - prevent complaints from xstream */
-    private Class commonConfigClass;
+    @SuppressWarnings("URF_UNREAD_FIELD")
+    private transient Class commonConfigClass;
     /** null - prevent complaints from xstream */
-    private Class hostConfigClass;
+    @SuppressWarnings("URF_UNREAD_FIELD")
+    private transient Class hostConfigClass;
     private final CopyOnWriteList<BapSshHostConfiguration> hostConfigurations = new CopyOnWriteList<BapSshHostConfiguration>();
     private BapSshCommonConfiguration commonConfig;
     private SshDefaults defaults;
