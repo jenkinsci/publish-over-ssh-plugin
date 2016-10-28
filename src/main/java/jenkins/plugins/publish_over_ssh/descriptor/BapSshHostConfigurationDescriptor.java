@@ -32,6 +32,10 @@ import jenkins.plugins.publish_over.BPValidators;
 import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import jenkins.plugins.publish_over_ssh.Messages;
+
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -79,7 +83,16 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
     public FormValidation doCheckKeyPath(@QueryParameter final String value) {
         return BPValidators.validateFileOnMaster(value);
     }
-
+    
+	public FormValidation doCheckFolder(@QueryParameter final String folder){
+		try{
+			Pattern.compile(folder);
+		} catch (PatternSyntaxException e){
+			return FormValidation.error("A valid regular expression is needed");
+		}
+		return FormValidation.ok();
+	}
+	
     public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
         final BapSshPublisherPlugin.Descriptor pluginDescriptor = Hudson.getInstance().getDescriptorByType(
                 BapSshPublisherPlugin.Descriptor.class);

@@ -40,6 +40,12 @@
     <f:entry title="${m.remotePath()}" field="remoteRootDir">
         <f:textbox/>
     </f:entry>
+	
+	<f:optionalBlock inline="true" title="${%usefolder}" field="useFolder">
+		<f:entry title="${%folder}" field="folder">
+			<f:textbox/>
+		</f:entry>
+	</f:optionalBlock>
 
     <f:advanced>
         
@@ -54,7 +60,7 @@
                 <f:textarea/>
             </f:entry>
         </f:optionalBlock>
-        
+
         <f:entry title="${m.port()}" field="port">
             <f:textbox default="${descriptor.defaultPort}"/>
         </f:entry>
