@@ -84,9 +84,9 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
         return BPValidators.validateFileOnMaster(value);
     }
     
-	public FormValidation doCheckFolder(@QueryParameter final String folder){
+	public FormValidation doCheckRegex(@QueryParameter final String regex){
 		try{
-			Pattern.compile(folder);
+			Pattern.compile(regex);
 		} catch (PatternSyntaxException e){
 			return FormValidation.error("A valid regular expression is needed");
 		}

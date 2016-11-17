@@ -31,6 +31,7 @@ import hudson.model.Hudson;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import jenkins.plugins.publish_over.*;
 import jenkins.plugins.publish_over_ssh.descriptor.BapSshHostConfigurationDescriptor;
@@ -57,7 +58,8 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     public static final String SOCKS_4_PROXY_TYPE = "socks4";
     public static final String SOCKS_5_PROXY_TYPE = "socks5";
     
-    private String folder;
+    private boolean useRegex;
+    private Pattern regex;
     private int timeout;
     private boolean overrideKey;
     private boolean disableExec;
@@ -81,10 +83,10 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     @DataBoundConstructor
     public BapSshHostConfiguration(final String name, final String hostname, final String username, final String encryptedPassword,
                                    final String remoteRootDir, final int port, final int timeout, final boolean overrideKey,
-                                   final String keyPath, final String key, final boolean disableExec, final String folder) {
+                                   final String keyPath, final String key, final boolean disableExec, final String regex) {
         // CSON: ParameterNumberCheck
-        super(name, hostname, username, null, remoteRootDir, port);
-        this.folder= folder;
+        super(name, hostname, username, null, remoteRootDir, port);	
+        this.regex= Pattern.compile(regex);
         this.timeout = timeout;
         this.overrideKey = overrideKey;
         this.keyInfo = new BapSshKeyInfo(encryptedPassword, key, keyPath);
@@ -145,14 +147,18 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         this.keyInfo.setPassphrase(encryptedPassword);
     }
     
-    public String getFolder() {
-		return folder;
+    public Pattern getRegex() {
+		return regex;
 	}
     
     @DataBoundSetter
-	public void setFolder(String folder) {
-		this.folder = folder;
+	public void setRegex(Pattern regex) {
+		this.regex = regex;
 	}
+    
+    public boolean isUseRegex(){
+    	return useRegex;
+    }
 
 	public String getKeyPath() { return keyInfo.getKeyPath(); }
     public void setKeyPath(final String keyPath) { keyInfo.setKeyPath(keyPath); }
@@ -402,7 +408,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
                 .append(proxyPort, that.proxyPort)
                 .append(proxyUser, that.proxyUser)
                 .append(proxyPassword, that.proxyPassword)
-                .append(folder, that.folder);
+                .append(regex, that.regex);
     }
 
     @Override
@@ -417,7 +423,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
                 .append(proxyPort)
                 .append(proxyUser)
                 .append(proxyPassword)
-                .append(folder);
+                .append(regex);
     }
 
     @Override
@@ -432,7 +438,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
                 .append("proxyPort", proxyPort)
                 .append("proxyUser", proxyUser)
                 .append("proxyPassword", proxyPassword)
-                .append("folder",folder);
+                .append("regex",regex);
 
     }
 

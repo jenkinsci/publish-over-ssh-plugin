@@ -41,8 +41,8 @@
         <f:textbox/>
     </f:entry>
 	
-	<f:optionalBlock inline="true" title="${%usefolder}" field="useFolder">
-		<f:entry title="${%folder}" field="folder">
+	<f:optionalBlock inline="true" title="${%useRegex}" field="useRegex">
+		<f:entry title="${%regex}" field="regex">
 			<f:textbox/>
 		</f:entry>
 	</f:optionalBlock>
