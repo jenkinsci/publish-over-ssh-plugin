@@ -37,7 +37,9 @@ import jenkins.plugins.publish_over.BapPublisherException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 
 @SuppressWarnings("PMD.TooManyMethods")
 public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
@@ -227,7 +229,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
 
     private void waitForExec(final ChannelExec exec, final long timeout) {
         final long start = System.currentTimeMillis();
-        final Thread waiter = new ExecCheckThread(exec);
+        final Thread waiter = new ExecCheckThread(exec, buildInfo.getListener().getLogger());
         waiter.start();
         try {
             waiter.join(timeout);
@@ -236,7 +238,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         if (waiter.isAlive()) {
             waiter.interrupt();
         }
-        if (!exec.isClosed())
+        if (!(exec.isClosed() || exec.isEOF() || exec.getExitStatus() >= 0) )
             throw new BapPublisherException(Messages.exception_exec_timeout(duration));
         buildInfo.println(Messages.console_exec_completed(duration));
     }
@@ -244,18 +246,36 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     private static final class ExecCheckThread extends Thread {
         private static final int POLL_TIME = 200;
         private final ChannelExec exec;
+        private final PrintStream printStream;
 
-        ExecCheckThread(final ChannelExec exec) {
+        ExecCheckThread(final ChannelExec exec, PrintStream printStream) {
             this.exec = exec;
+            this.printStream = printStream;
         }
+
         @Override
         public void run() {
             try {
-                while (!exec.isClosed()) {
+                InputStream in = exec.getInputStream();
+                byte[] tmp = new byte[1024];
+                while (true) {
+                    while (in.available() > 0) {
+                        int i = in.read(tmp, 0, 1024);
+                        if (i < 0)
+                            break;
+                        printStream.print(new String(tmp, 0, i));
+                    }
+                    if (exec.isClosed() || exec.isEOF()
+                            || exec.getExitStatus() >= 0) {
+                        break;
+                    }
                     Thread.sleep(POLL_TIME);
                 }
-            } catch (InterruptedException ie) { }
+            } catch (InterruptedException ie) {
+                // nothing to do just return
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
-
 }
