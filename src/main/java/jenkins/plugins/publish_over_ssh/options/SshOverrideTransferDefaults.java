@@ -45,6 +45,7 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
     private final boolean flatten;
     private final boolean cleanRemote;
     private final boolean usePty;
+    private boolean useAgentForwarding;
     private final boolean noDefaultExcludes;
     private final boolean makeEmptyDirs;
     private final String patternSeparator;
@@ -64,6 +65,7 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
         this.removePrefix = removePrefix;
         this.sourceFiles = sourceFiles;
         this.usePty = usePty;
+        this.useAgentForwarding = false;
         this.noDefaultExcludes = noDefaultExcludes;
         this.makeEmptyDirs = makeEmptyDirs;
         this.patternSeparator = patternSeparator;
@@ -111,6 +113,14 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
 
     public boolean isUsePty() {
         return usePty;
+    }
+
+    public boolean isUseAgentForwarding() {
+        return useAgentForwarding;
+    }
+
+    public void setUseAgentForwarding(boolean value) {
+        useAgentForwarding = value;
     }
 
     public boolean isNoDefaultExcludes() {

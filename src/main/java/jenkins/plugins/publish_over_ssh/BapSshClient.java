@@ -153,6 +153,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         try {
             exec = openExecChannel();
             exec.setPty(transfer.isUsePty());
+            exec.setAgentForwarding(transfer.isUseAgentForwarding());
             exec.setInputStream(null);
             exec.setOutputStream(buildInfo.getListener().getLogger(), true);
             exec.setErrStream(buildInfo.getListener().getLogger(), true);
