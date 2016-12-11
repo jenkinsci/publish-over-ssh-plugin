@@ -501,13 +501,14 @@ public class BapSshHostConfigurationTest extends HudsonTestCase {
         }
 
         protected BapSshHostConfigurationWithMockJSch(final JSch ssh, final String proxyType, final String proxyHost, final int proxyPort, final String proxyUser, final String proxyPassword) {
-            this(ssh, TEST_NAME, TEST_HOSTNAME, TEST_USERNAME, TEST_PASSPHRASE, TEST_REMOTE_ROOT, DEFAULT_PORT, DEFAULT_TIMEOUT, "", "");
+            this(ssh, TEST_NAME, TEST_HOSTNAME, TEST_USERNAME, TEST_PASSPHRASE, TEST_REMOTE_ROOT, TEST_JUMPHOST, DEFAULT_PORT, DEFAULT_TIMEOUT, "", "");
             JenkinsTestHelper.fillProxySettings(this, proxyType, proxyHost, proxyPort, proxyUser, proxyPassword);
         }
 
         @SuppressWarnings("PMD.ExcessiveParameterList")
         protected BapSshHostConfigurationWithMockJSch(final JSch ssh, final String name, final String hostname, final String username,
-                                                      final String overridePassword, final String remoteRootDir, final String jumpHost, final int port, final int timeout, final String overrideKeyPath, final String overrideKey) {
+                                                      final String overridePassword, final String remoteRootDir, final String jumpHost, 
+                                                      final int port, final int timeout, final String overrideKeyPath, final String overrideKey) {
             super();
             JenkinsTestHelper.fill(this, name, hostname, username, overridePassword, remoteRootDir, jumpHost, port, timeout, true, overrideKeyPath, overrideKey, false);
 
