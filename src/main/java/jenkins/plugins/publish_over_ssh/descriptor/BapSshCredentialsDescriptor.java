@@ -25,14 +25,19 @@
 package jenkins.plugins.publish_over_ssh.descriptor;
 
 import hudson.Extension;
+import hudson.model.AbstractProject;
 import hudson.model.Descriptor;
 import hudson.model.Hudson;
+import hudson.model.Item;
+import hudson.security.AccessControlled;
 import hudson.util.FormValidation;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over_ssh.BapSshCredentials;
 import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.Stapler;
 
 import java.io.IOException;
 
@@ -53,10 +58,19 @@ public class BapSshCredentialsDescriptor extends Descriptor<BapSshCredentials> {
     }
 
     public FormValidation doCheckKeyPath(@QueryParameter final String value) {
+        AccessControlled subject = Stapler.getCurrentRequest().findAncestorObject(AbstractProject.class);
+        if (subject == null) {
+            subject = Jenkins.getInstance();
+        }
+        if (!subject.hasPermission(Item.CONFIGURE)&&subject.hasPermission(Item.EXTENDED_READ)) {
+            return FormValidation.ok();
+        }
         try {
-            return Hudson.getInstance().getRootPath().validateRelativePath(value, true, true);
+            return Jenkins.getInstance().getRootPath().validateRelativePath(value, true, true);
         } catch (final IOException ioe) {
             return FormValidation.error(ioe, "");
+        } catch (final NullPointerException npe) {
+            return FormValidation.error(npe, "");
         }
     }
 
