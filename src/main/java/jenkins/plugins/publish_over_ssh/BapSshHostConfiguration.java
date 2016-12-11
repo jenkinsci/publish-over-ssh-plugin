@@ -99,6 +99,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         return jumpHost;
     }
 
+    @DataBoundSetter
     public void setJumpHost(final String jumpHost) {
         this.jumpHost = jumpHost;
     }
@@ -120,7 +121,6 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     }
 
     @DataBoundSetter
-
     @Override
     public void setPort(int port) {
         super.setPort(port);

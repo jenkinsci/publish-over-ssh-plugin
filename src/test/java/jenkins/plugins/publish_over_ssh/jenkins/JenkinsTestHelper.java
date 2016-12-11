@@ -38,14 +38,15 @@ import java.security.PrivilegedExceptionAction;
 
 public class JenkinsTestHelper {
 
-    public static BapSshHostConfiguration fill(final BapSshHostConfiguration toFill, final String name, final String hostname, final String username, final String encryptedPassword,
-                                               final String remoteRootDir, final String jumpHost, final int port, final int timeout, final boolean overrideKey,
-                                               final String keyPath, final String key, final boolean disableExec) {
+    public static BapSshHostConfiguration fill(final BapSshHostConfiguration toFill, final String name, final String hostname, final String username, 
+                                               final String encryptedPassword, final String remoteRootDir, final String jumpHost, final int port, 
+                                               final int timeout, final boolean overrideKey, final String keyPath, final String key, final boolean disableExec) {
         toFill.setName(name);
         toFill.setHostname(hostname);
         toFill.setUsername(username);
         toFill.setEncryptedPassword(encryptedPassword);
         toFill.setRemoteRootDir(remoteRootDir);
+        // Null is expected from the tests?
         toFill.setJumpHost(jumpHost);
         toFill.setPort(port);
         toFill.setTimeout(timeout);
