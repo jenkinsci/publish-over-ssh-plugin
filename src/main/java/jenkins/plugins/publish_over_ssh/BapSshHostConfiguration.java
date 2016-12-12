@@ -387,17 +387,17 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     }
 
     /** create a session with stored hostname and port */
-    private Session createSession(final BPBuildInfo buildInfo, final JSch ssh) {
-        return createSession(buildInfo, ssh, getHostnameTrimmed(), getPort());
-    }
+//     private Session createSession(final BPBuildInfo buildInfo, final JSch ssh) {
+//         return createSession(buildInfo, ssh, getHostnameTrimmed(), getPort());
+//     }
 
     private Session createSession(final BPBuildInfo buildInfo, final JSch ssh, String hostname, int port) {
         final BapSshCredentials overrideCreds = getPublisherOverrideCredentials(buildInfo);
         final String username = overrideCreds == null ? getUsername() : overrideCreds.getUsername();
         try {
-            buildInfo.printIfVerbose(Messages.console_session_creating(username, getHostnameTrimmed(), getPort()));
+            buildInfo.printIfVerbose(Messages.console_session_creating(username, hostname, port));
 
-            Session session = ssh.getSession(username, getHostnameTrimmed(), getPort());
+            Session session = ssh.getSession(username, hostname, port);
 
             if (StringUtils.isNotEmpty(proxyType) && StringUtils.isNotEmpty(proxyHost)) {
                 if (StringUtils.equals(HTTP_PROXY_TYPE, proxyType)) {
@@ -428,7 +428,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             }
             return session;
         } catch (JSchException jse) {
-            throw new BapPublisherException(Messages.exception_session_create(username, getHostnameTrimmed(), getPort(), jse.getLocalizedMessage()),
+            throw new BapPublisherException(Messages.exception_session_create(username, hostname, getPort(), jse.getLocalizedMessage()),
                     jse);
         }
     }
