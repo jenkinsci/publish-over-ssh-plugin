@@ -46,8 +46,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 @SuppressWarnings("PMD.TooManyMethods")
-public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, BapSshCommonConfiguration> 
-                                                                                        implements Describable<BapSshHostConfiguration> {
+public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, BapSshCommonConfiguration> implements Describable<BapSshHostConfiguration> {
+    
     static final String LOCALHOST = "127.0.0.1";
     private static final long serialVersionUID = 1L;
     public static final int DEFAULT_PORT = 22;
@@ -99,6 +99,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         this.jumpHost = jumpHost;
     }
 
+    @DataBoundSetter
     public String getJumpHost() {
         return jumpHost;
     }
@@ -117,8 +118,6 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
     @DataBoundSetter
     @Override
-    protected final String getPassword() { return keyInfo.getPassphrase(); }
-
     public void setRemoteRootDir(String remoteRootDir) {
         super.setRemoteRootDir(remoteRootDir);
     }
@@ -385,11 +384,6 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             throw new BapPublisherException(message); // NOPMD - it's in the log!
         }
         buildInfo.printIfVerbose(Messages.console_session_connected());
-    }
-
-    /** create a session with stored hostname and port */
-    private Session createSession(final BPBuildInfo buildInfo, final JSch ssh) {
-        return createSession(buildInfo, ssh, getHostnameTrimmed(), getPort());
     }
 
     private Session createSession(final BPBuildInfo buildInfo, final JSch ssh, String hostname, int port) {
