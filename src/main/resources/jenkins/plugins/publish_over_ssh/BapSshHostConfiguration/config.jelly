@@ -88,7 +88,8 @@
         </f:entry>
         <f:entry title="${%proxyPassword}" field="proxyPassword">
             <f:password/>
-        </f:entry>        
+        </f:entry>
+        
     </f:advanced>
 
     <f:validateButton title="${m.test_title()}" progress="${m.test_progress()}" method="testConnection"
