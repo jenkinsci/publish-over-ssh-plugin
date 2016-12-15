@@ -471,10 +471,8 @@ public class BapSshHostConfigurationTest extends HudsonTestCase {
         return new BapSshHostConfigurationWithMockJSch(ssh);
     }
 
-
     private BapSshHostConfiguration createWithOverrideUsernameAndPassword(final JSch ssh, final String overridePassword, final String overrideKeyPath,
                                                                           final String overrideKey) {
-
         return new BapSshHostConfigurationWithMockJSch(ssh, overridePassword, overrideKeyPath, overrideKey);
     }
 
@@ -511,7 +509,6 @@ public class BapSshHostConfigurationTest extends HudsonTestCase {
                                                       final int port, final int timeout, final String overrideKeyPath, final String overrideKey) {
             super();
             JenkinsTestHelper.fill(this, name, hostname, username, overridePassword, remoteRootDir, jumpHost, port, timeout, true, overrideKeyPath, overrideKey, false);
-
             this.ssh = ssh;
         }
 

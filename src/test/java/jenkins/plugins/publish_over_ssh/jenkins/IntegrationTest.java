@@ -68,8 +68,8 @@ public class IntegrationTest extends HudsonTestCase {
         final ChannelSftp mockSftp = mock(ChannelSftp.class);
         final int port = 28;
         final int timeout = 3000;
-
-        final BapSshHostConfiguration testHostConfig = new BapSshHostConfiguration() {
+        final BapSshHostConfiguration testHostConfig = new BapSshHostConfiguration("testConfig", "testHostname", "testUsername", "",
+                                                                            "/testRemoteRoot", "", port, timeout, false, "", "", false) {
             @Override
             public JSch createJSch() {
                 return mockJsch;

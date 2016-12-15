@@ -60,8 +60,8 @@ public class LegacyConfigurationTest extends HudsonTestCase {
     public void testLoadR0x1Minimal() throws Exception {
         final List<BapSshHostConfiguration> configurations = getPublisherPluginDescriptor().getHostConfigurations();
         assertEquals(1, configurations.size());
-        final BapSshHostConfiguration expected = prepare("default", "hostname", "username", "password", "", null,
-                                                                       DEFAULT_PORT, DEFAULT_TIMEOUT, true, "", "", false);
+        final BapSshHostConfiguration expected = new BapSshHostConfiguration("default", "hostname", "username", "password", "", DEFAULT_JUMPHOST,
+                                                                        DEFAULT_PORT, DEFAULT_TIMEOUT, true, "", "", false);
         expected.setCommonConfig(new BapSshCommonConfiguration("", "", "", false));
         assertEquals(expected, configurations.get(0));
 
@@ -118,15 +118,14 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         final int configDPort = 8022;
         final int configDTimeout = 10000;
         final BapSshHostConfiguration[] expectedConfig = new BapSshHostConfiguration[] {
-                prepare(configName('a'), hostname('a'), "username.a", "password.a", "remoteDirectory.a",
+                new BapSshHostConfiguration(configName('a'), hostname('a'), "username.a", "password.a", "remoteDirectory.a", 
                         DEFAULT_JUMPHOST, DEFAULT_PORT, DEFAULT_TIMEOUT, false, "", "", false),
-                prepare(configName('b'), hostname('b'), "username.b", "", "",
+                new BapSshHostConfiguration(configName('b'), hostname('b'), "username.b", "", "", 
                         DEFAULT_JUMPHOST, DEFAULT_PORT, DEFAULT_TIMEOUT, true, "/an/unencrypted/key", "", false),
-                prepare(configName('c'), hostname('c'), "username.c", "", "",
+                new BapSshHostConfiguration(configName('c'), hostname('c'), "username.c", "", "", 
                         DEFAULT_JUMPHOST, DEFAULT_PORT, DEFAULT_TIMEOUT, true, "", KEY_2, false),
-                prepare(configName('d'), hostname('d'), "username.d", "passphrase", "remoteDirectory.d",
-                        DEFAULT_JUMPHOST, configDPort, configDTimeout, true, "path/to/key", KEY_2, false)
-        };
+                new BapSshHostConfiguration(configName('d'), hostname('d'), "username.d", "passphrase", "remoteDirectory.d", 
+                        DEFAULT_JUMPHOST, configDPort, configDTimeout, true, "path/to/key", KEY_2, false) };
         final BapSshCommonConfiguration common = new BapSshCommonConfiguration("hello", COMMON_KEY, "/this/will/be/ignored", false);
         for (BapSshHostConfiguration hostConfig : expectedConfig) {
             hostConfig.setCommonConfig(common);

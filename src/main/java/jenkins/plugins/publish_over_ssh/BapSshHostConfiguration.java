@@ -46,10 +46,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 @SuppressWarnings("PMD.TooManyMethods")
-
-public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, BapSshCommonConfiguration>
-        implements Describable<BapSshHostConfiguration> {
-
+public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, BapSshCommonConfiguration> 
+                                                                                        implements Describable<BapSshHostConfiguration> {
     static final String LOCALHOST = "127.0.0.1";
     private static final long serialVersionUID = 1L;
     public static final int DEFAULT_PORT = 22;
@@ -64,6 +62,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     private int timeout;
     private boolean overrideKey;
     private boolean disableExec;
+
     private final BapSshKeyInfo keyInfo;
     private String jumpHost;
 
@@ -95,13 +94,13 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         this.jumpHost = jumpHost;
     }
 
-    public String getJumpHost() {
-        return jumpHost;
-    }
-
     @DataBoundSetter
     public void setJumpHost(final String jumpHost) {
         this.jumpHost = jumpHost;
+    }
+
+    public String getJumpHost() {
+        return jumpHost;
     }
 
     @DataBoundSetter
@@ -115,6 +114,10 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     public void setHostname(String hostname) {
         super.setHostname(hostname);
     }
+
+    @DataBoundSetter
+    @Override
+    protected final String getPassword() { return keyInfo.getPassphrase(); }
 
     public void setRemoteRootDir(String remoteRootDir) {
         super.setRemoteRootDir(remoteRootDir);
@@ -166,12 +169,10 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
     public boolean isOverrideKey() { return overrideKey; }
 
-
     @DataBoundSetter
     public void setOverrideKey(final boolean overrideKey) { this.overrideKey = overrideKey; }
 
     public boolean isDisableExec() { return disableExec; }
-
 
     @DataBoundSetter
     public void setDisableExec(final boolean disableExec) { this.disableExec = disableExec; }
@@ -387,17 +388,16 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     }
 
     /** create a session with stored hostname and port */
-//     private Session createSession(final BPBuildInfo buildInfo, final JSch ssh) {
-//         return createSession(buildInfo, ssh, getHostnameTrimmed(), getPort());
-//     }
+    private Session createSession(final BPBuildInfo buildInfo, final JSch ssh) {
+        return createSession(buildInfo, ssh, getHostnameTrimmed(), getPort());
+    }
 
     private Session createSession(final BPBuildInfo buildInfo, final JSch ssh, String hostname, int port) {
         final BapSshCredentials overrideCreds = getPublisherOverrideCredentials(buildInfo);
         final String username = overrideCreds == null ? getUsername() : overrideCreds.getUsername();
         try {
             buildInfo.printIfVerbose(Messages.console_session_creating(username, hostname, port));
-
-            Session session = ssh.getSession(username, hostname, port);
+            Session session = ssh.getSession(username, getHostnameTrimmed(), getPort());
 
             if (StringUtils.isNotEmpty(proxyType) && StringUtils.isNotEmpty(proxyHost)) {
                 if (StringUtils.equals(HTTP_PROXY_TYPE, proxyType)) {
@@ -428,7 +428,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             }
             return session;
         } catch (JSchException jse) {
-            throw new BapPublisherException(Messages.exception_session_create(username, hostname, getPort(), jse.getLocalizedMessage()),
+            throw new BapPublisherException(Messages.exception_session_create(username, getHostnameTrimmed(), getPort(), jse.getLocalizedMessage()),
                     jse);
         }
     }
