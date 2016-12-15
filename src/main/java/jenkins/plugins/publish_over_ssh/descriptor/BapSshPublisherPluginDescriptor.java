@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_ssh.descriptor;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Util;
 import hudson.model.AbstractProject;
 import hudson.model.Hudson;
@@ -54,11 +55,14 @@ import java.util.List;
 public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publisher> {
 
     /** null - prevent complaints from xstream */
-    private BPPluginDescriptor.BPDescriptorMessages msg;
+    @SuppressFBWarnings(value = "URF_UNREAD_FIELD")
+    private transient BPPluginDescriptor.BPDescriptorMessages msg;
     /** null - prevent complaints from xstream */
-    private Class commonConfigClass;
+    @SuppressFBWarnings(value = "URF_UNREAD_FIELD")
+    private transient Class commonConfigClass;
     /** null - prevent complaints from xstream */
-    private Class hostConfigClass;
+    @SuppressFBWarnings(value = "URF_UNREAD_FIELD")
+    private transient Class hostConfigClass;
     private final CopyOnWriteList<BapSshHostConfiguration> hostConfigurations = new CopyOnWriteList<BapSshHostConfiguration>();
     private BapSshCommonConfiguration commonConfig;
     private SshDefaults defaults;
@@ -96,6 +100,28 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
             }
         }
         return null;
+    }
+
+    /**
+     * Add a Host Configuration to the list of configurations.
+     * 
+     * @param configuration Host Configuration to add. The common configuration will be automatically set.
+     */
+    public void addHostConfiguration(final BapSshHostConfiguration configuration) {
+        configuration.setCommonConfig(commonConfig);
+        hostConfigurations.add(configuration);
+    }
+
+    /**
+     * Removes the given named Host Configuration from the list of configurations.
+     * 
+     * @param name The Name of the Host Configuration to remove.
+     */
+    public void removeHostConfiguration(final String name) {
+        BapSshHostConfiguration configuration = getConfiguration(name);
+        if (configuration != null) {
+            hostConfigurations.remove(configuration);
+        }
     }
 
     public boolean configure(final StaplerRequest request, final JSONObject formData) {
