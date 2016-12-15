@@ -68,6 +68,7 @@
         <f:entry title="${%disableExec}" field="disableExec">
             <f:checkbox/>
         </f:entry>
+
         <f:entry name="proxyType" title="${%proxyType}" field="proxyType">
             <select name="proxyType">
                 <f:option value=""></f:option>

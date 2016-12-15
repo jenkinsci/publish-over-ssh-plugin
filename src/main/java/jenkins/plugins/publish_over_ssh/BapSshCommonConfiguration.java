@@ -40,8 +40,8 @@ public class BapSshCommonConfiguration extends BapSshKeyInfo implements Describa
     private final boolean disableAllExec;
 
     @DataBoundConstructor
-    public BapSshCommonConfiguration(final String encryptedPassphrase, final String key, final String keyPath,
-                                                                                                    final boolean disableAllExec) {
+    public BapSshCommonConfiguration(final String encryptedPassphrase, final String key, 
+                                     final String keyPath, final boolean disableAllExec) {
         super(encryptedPassphrase, key, keyPath);
         this.disableAllExec = disableAllExec;
     }

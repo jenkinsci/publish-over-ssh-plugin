@@ -62,7 +62,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     private int timeout;
     private boolean overrideKey;
     private boolean disableExec;
-    
+
     private final BapSshKeyInfo keyInfo;
     private String jumpHost;
 
@@ -94,12 +94,13 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         this.jumpHost = jumpHost;
     }
 
-    public String getJumpHost() {
-        return jumpHost;
-    }
-
+    @DataBoundSetter
     public void setJumpHost(final String jumpHost) {
         this.jumpHost = jumpHost;
+    }
+
+    public String getJumpHost() {
+        return jumpHost;
     }
 
     @DataBoundSetter
@@ -113,6 +114,10 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     public void setHostname(String hostname) {
         super.setHostname(hostname);
     }
+
+    @DataBoundSetter
+    @Override
+    protected final String getPassword() { return keyInfo.getPassphrase(); }
 
     public void setRemoteRootDir(String remoteRootDir) {
         super.setRemoteRootDir(remoteRootDir);
@@ -445,6 +450,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
                 .append(keyInfo, that.keyInfo)
                 .append(timeout, that.timeout)
                 .append(overrideKey, that.overrideKey)
+                .append(jumpHost, that.jumpHost)
                 .append(disableExec, that.disableExec)
                 .append(proxyType, that.proxyType)
                 .append(proxyHost, that.proxyHost)
@@ -459,6 +465,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
                 .append(keyInfo)
                 .append(timeout)
                 .append(overrideKey)
+                .append(jumpHost)
                 .append(disableExec)
                 .append(proxyType)
                 .append(proxyHost)
@@ -473,6 +480,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
                 .append("keyInfo", keyInfo)
                 .append("timeout", timeout)
                 .append("overrideKey", overrideKey)
+                .append("jumpHost", jumpHost)
                 .append("disableExec", disableExec)
                 .append("proxyType", proxyType)
                 .append("proxyHost", proxyHost)
