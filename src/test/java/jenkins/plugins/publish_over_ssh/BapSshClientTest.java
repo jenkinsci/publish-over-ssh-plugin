@@ -77,6 +77,7 @@ public class BapSshClientTest {
     private final IMocksControl mockControl = EasyMock.createStrictControl();
     private final BPBuildInfo buildInfo = BapSshTestHelper.createEmpty(true);
     private final Session mockSession = mockControl.createMock(Session.class);
+    private final Session mockSession2 = mockControl.createMock(Session.class);
     private final ChannelSftp mockSftp = mockControl.createMock(ChannelSftp.class);
     private final BapSshClient bapSshClient = new BapSshClient(buildInfo, mockSession);
     private final BapSshTransfer mockTransfer = mockControl.createMock(BapSshTransfer.class);
@@ -87,6 +88,15 @@ public class BapSshClientTest {
         bapSshClient.setSftp(mockSftp);
     }
 
+    @Test public void testGetSession() {
+        assertEquals(mockSession, bapSshClient.getSession());        
+    }
+    
+    @Test public void testAddSession() {
+        bapSshClient.addSession(mockSession2);
+        assertEquals(mockSession2, bapSshClient.getSession());
+    }
+    
     @Test public void testChangeDirectory() throws Exception {
         testHelper.expectDirectoryCheck(DIRECTORY_PATH, true);
         mockSftp.cd(DIRECTORY_PATH);
@@ -161,6 +171,18 @@ public class BapSshClientTest {
         assertDisconnect();
     }
 
+    @Test public void testDisconnectTwoSessions() throws Exception {
+        bapSshClient.addSession(mockSession2);
+        mockControl.checkOrder(false);
+        expect(mockSftp.isConnected()).andReturn(true);
+        mockSftp.disconnect();
+        expect(mockSession2.isConnected()).andReturn(true);
+        mockSession2.disconnect();
+        expect(mockSession.isConnected()).andReturn(true);
+        mockSession.disconnect();
+        assertDisconnect();
+    }
+    
     @Test public void testDisconnectNotConnected() throws Exception {
         mockControl.checkOrder(false);
         expect(mockSftp.isConnected()).andReturn(false);

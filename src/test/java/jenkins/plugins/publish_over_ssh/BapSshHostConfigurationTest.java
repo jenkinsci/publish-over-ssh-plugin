@@ -65,6 +65,7 @@ public class BapSshHostConfigurationTest extends HudsonTestCase {
     private static final String TEST_USERNAME = "testUser";
     private static final String TEST_REMOTE_ROOT = "/test/root";
     private static final String TEST_PASSPHRASE = "DEFAULT";
+    private static final String TEST_JUMPHOST = "";
 
     private static final Logger HOST_CONFIG_LOGGER = Logger.getLogger(BapSshHostConfiguration.class.getCanonicalName());
     private static Level originalLogLevel;
@@ -91,6 +92,7 @@ public class BapSshHostConfigurationTest extends HudsonTestCase {
     private final IMocksControl mockControl = EasyMock.createStrictControl();
     private final JSch mockJSch = mockControl.createMock(JSch.class);
     private final Session mockSession = mockControl.createMock(Session.class);
+    private final Session mockSession2 = mockControl.createMock(Session.class);
     private final ChannelSftp mockSftp = mockControl.createMock(ChannelSftp.class);
     private final BapSshTestHelper testHelper = new BapSshTestHelper(mockControl, mockSftp);
     private TemporaryFolder jenkinsHome;
@@ -223,6 +225,29 @@ public class BapSshHostConfigurationTest extends HudsonTestCase {
     }
 
     @Test
+    public void testCreateClientWillUseJumpHostIfPresent() throws Exception {
+        final String testKey = "MyVeryBigKey";
+        final BapSshCommonConfiguration defaultKeyInfo = new BapSshCommonConfiguration(TEST_PASSPHRASE, testKey, "/this/file/will/not/be/used", false);
+        hostConfig = createWithDefaultKeyInfo(mockJSch, defaultKeyInfo);
+        getHostConfig().setPassword("Ignore me");
+        getHostConfig().setJumpHost("jumphost");
+        expect(mockJSch.getSession(getHostConfig().getUsername(), "jumphost", getHostConfig().getPort())).andReturn(mockSession2);
+        mockJSch.addIdentity(isA(String.class), aryEq(BapSshUtil.toBytes(testKey)), (byte[]) isNull(), aryEq(BapSshUtil.toBytes(TEST_PASSPHRASE)));
+        mockSession2.setConfig((Properties) anyObject());
+        mockSession2.connect(getHostConfig().getTimeout());
+        expect(mockSession2.setPortForwardingL(0, "test.host.name", 22)).andReturn(23);
+        expect(mockJSch.getSession(getHostConfig().getUsername(), BapSshHostConfiguration.LOCALHOST, 23)).andReturn(mockSession);
+        mockJSch.addIdentity(isA(String.class), aryEq(BapSshUtil.toBytes(testKey)), (byte[]) isNull(), aryEq(BapSshUtil.toBytes(TEST_PASSPHRASE)));
+        mockSession.setConfig((Properties) anyObject());
+        mockSession.connect(getHostConfig().getTimeout());
+        expect(mockSession.openChannel("sftp")).andReturn(mockSftp);
+        mockSftp.connect(getHostConfig().getTimeout());
+        testHelper.expectDirectoryCheck(getHostConfig().getRemoteRootDir(), true);
+        mockSftp.cd(getHostConfig().getRemoteRootDir());
+        assertCreateClient();
+    }
+
+    @Test
     public void testCreateClientFailsIfPwdReturnsRelativePath() throws Exception {
         final String remoteRoot = "some/directory/in/my/home/dir";
         hostConfig = createWithOverrideUsernameAndPassword(mockJSch);
@@ -270,6 +295,29 @@ public class BapSshHostConfigurationTest extends HudsonTestCase {
         final JSchException exception = new JSchException("meh");
         expect(mockSession.openChannel("sftp")).andThrow(exception);
         expect(mockSession.isConnected()).andReturn(false);
+        assertCreateClientThrowsException(exception);
+    }
+
+    @Test
+    public void testFailToConnectJumphost() throws Exception {
+        hostConfig = createWithOverrideUsernameAndPassword(mockJSch);
+        getHostConfig().setCommonConfig(new BapSshCommonConfiguration("", "", "", false));
+        getHostConfig().setJumpHost("jumphost");
+        expect(mockJSch.getSession(getHostConfig().getUsername(), getHostConfig().getJumpHost(), getHostConfig().getPort())).andReturn(mockSession2);
+        mockSession2.setPassword(TEST_PASSPHRASE);
+        mockSession2.setConfig((Properties) anyObject());
+        mockSession2.connect(getHostConfig().getTimeout());
+        expect(mockSession2.setPortForwardingL(0, getHostConfig().getHostname(), getHostConfig().getPort())).andReturn(23);
+
+        expect(mockJSch.getSession(getHostConfig().getUsername(), BapSshHostConfiguration.LOCALHOST, 23)).andReturn(mockSession);
+        mockSession.setPassword(TEST_PASSPHRASE);
+        mockSession.setConfig((Properties) anyObject());
+
+        final JSchException exception = new JSchException("meh");
+        mockSession.connect(getHostConfig().getTimeout());
+        expectLastCall().andThrow(exception);
+        expect(mockSession.isConnected()).andReturn(false);
+        expect(mockSession2.isConnected()).andReturn(false);
         assertCreateClientThrowsException(exception);
     }
 
@@ -440,23 +488,26 @@ public class BapSshHostConfigurationTest extends HudsonTestCase {
         private final transient JSch ssh;
 
         protected BapSshHostConfigurationWithMockJSch(final JSch ssh) {
-            this(ssh, TEST_NAME, TEST_HOSTNAME, TEST_USERNAME, TEST_PASSPHRASE, TEST_REMOTE_ROOT, DEFAULT_PORT, DEFAULT_TIMEOUT, "", "");
+            this(ssh, TEST_NAME, TEST_HOSTNAME, TEST_USERNAME, TEST_PASSPHRASE, TEST_REMOTE_ROOT, TEST_JUMPHOST, DEFAULT_PORT, DEFAULT_TIMEOUT, "",
+                    "");
         }
 
-        protected BapSshHostConfigurationWithMockJSch(final JSch ssh, final String overridePassword, final String overrideKeyPath, final String overrideKey) {
-            this(ssh, TEST_NAME, TEST_HOSTNAME, TEST_USERNAME, overridePassword, TEST_REMOTE_ROOT, DEFAULT_PORT, DEFAULT_TIMEOUT, overrideKeyPath, overrideKey);
+        protected BapSshHostConfigurationWithMockJSch(final JSch ssh, final String overridePassword, final String overrideKeyPath,
+                final String overrideKey) {
+            this(ssh, TEST_NAME, TEST_HOSTNAME, TEST_USERNAME, overridePassword, TEST_REMOTE_ROOT, TEST_JUMPHOST, DEFAULT_PORT, DEFAULT_TIMEOUT,
+                    overrideKeyPath, overrideKey);
         }
 
         protected BapSshHostConfigurationWithMockJSch(final JSch ssh, final String proxyType, final String proxyHost, final int proxyPort, final String proxyUser, final String proxyPassword) {
-            this(ssh, TEST_NAME, TEST_HOSTNAME, TEST_USERNAME, TEST_PASSPHRASE, TEST_REMOTE_ROOT, DEFAULT_PORT, DEFAULT_TIMEOUT, "", "");
+            this(ssh, TEST_NAME, TEST_HOSTNAME, TEST_USERNAME, TEST_PASSPHRASE, TEST_REMOTE_ROOT, TEST_JUMPHOST, DEFAULT_PORT, DEFAULT_TIMEOUT, "", "");
             JenkinsTestHelper.fillProxySettings(this, proxyType, proxyHost, proxyPort, proxyUser, proxyPassword);
         }
 
         @SuppressWarnings("PMD.ExcessiveParameterList")
         protected BapSshHostConfigurationWithMockJSch(final JSch ssh, final String name, final String hostname, final String username,
-                                                      final String overridePassword, final String remoteRootDir, final int port, final int timeout, final String overrideKeyPath, final String overrideKey) {
-            super();
-            JenkinsTestHelper.fill(this, name, hostname, username, overridePassword, remoteRootDir, port, timeout, true, overrideKeyPath, overrideKey, false);
+                final String overridePassword, final String remoteRootDir, final String jumpHost, final int port, final int timeout,
+                final String overrideKeyPath, final String overrideKey) {
+            JenkinsTestHelper.fill(this, name, hostname, username, overridePassword, remoteRootDir, jumpHost, port, timeout, true, overrideKeyPath, overrideKey, false);
             this.ssh = ssh;
         }
 

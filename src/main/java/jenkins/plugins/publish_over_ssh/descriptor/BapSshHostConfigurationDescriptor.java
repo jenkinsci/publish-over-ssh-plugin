@@ -48,6 +48,10 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
         return Messages.global_common_descriptor();
     }
 
+    public String getDefaultJumpHost() {
+        return BapSshHostConfiguration.DEFAULT_JUMP_HOST;
+    }
+
     public int getDefaultPort() {
         return BapSshHostConfiguration.DEFAULT_PORT;
     }

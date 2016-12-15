@@ -36,7 +36,6 @@ import hudson.model.BuildListener;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.model.FreeStyleProject;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -47,6 +46,7 @@ import jenkins.plugins.publish_over_ssh.BapSshPublisher;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import jenkins.plugins.publish_over_ssh.BapSshTransfer;
 import jenkins.plugins.publish_over_ssh.BapSshUtil;
+
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 import org.jvnet.hudson.test.TestBuilder;
@@ -59,7 +59,7 @@ import com.jcraft.jsch.SftpATTRS;
 @SuppressWarnings("PMD.SignatureDeclareThrowsException")
 public class IntegrationTest extends HudsonTestCase {
 
-//    @TODO test that we get the expected result when in a promotion
+// @TODO test that we get the expected result when in a promotion
 
     @Test
     public void testIntegration() throws Exception {
@@ -79,7 +79,7 @@ public class IntegrationTest extends HudsonTestCase {
             }
         };
         JenkinsTestHelper.fill(testHostConfig, "testConfig", "testHostname", "testUsername", "",
-                "/testRemoteRoot", port, timeout, false, "", "", false);
+                "/testRemoteRoot", "", port, timeout, false, "", "", false);
         final BapSshCommonConfiguration commonConfig = new BapSshCommonConfiguration("passphrase", "key", "", false);
         new JenkinsTestHelper().setGlobalConfig(commonConfig, testHostConfig);
         final String dirToIgnore = "target";
