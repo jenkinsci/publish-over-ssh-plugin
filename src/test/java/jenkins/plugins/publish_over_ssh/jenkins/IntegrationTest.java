@@ -68,12 +68,7 @@ public class IntegrationTest extends HudsonTestCase {
         final ChannelSftp mockSftp = mock(ChannelSftp.class);
         final int port = 28;
         final int timeout = 3000;
-<<<<<<< HEAD
-        final BapSshHostConfiguration testHostConfig = new BapSshHostConfiguration("testConfig", "testHostname", "testUsername", "",
-                                                                            "/testRemoteRoot", "", port, timeout, false, "", "", false) {
-=======
         final BapSshHostConfiguration testHostConfig = new BapSshHostConfiguration() {
->>>>>>> jenkinsci/master
             @Override
             public JSch createJSch() {
                 return mockJsch;
@@ -84,13 +79,13 @@ public class IntegrationTest extends HudsonTestCase {
             }
         };
         JenkinsTestHelper.fill(testHostConfig, "testConfig", "testHostname", "testUsername", "",
-                "/testRemoteRoot", port, timeout, false, "", "", false);
+                "/testRemoteRoot", "", port, timeout, false, "", "", false);
         final BapSshCommonConfiguration commonConfig = new BapSshCommonConfiguration("passphrase", "key", "", false);
         new JenkinsTestHelper().setGlobalConfig(commonConfig, testHostConfig);
         final String dirToIgnore = "target";
         final int execTimeout = 10000;
         final BapSshTransfer transfer = new BapSshTransfer("**/*", null, "sub-home", dirToIgnore, false, false, "", execTimeout, false, false, false, null);
-        final BapSshPublisher publisher = new BapSshPublisher(testHostConfig.getName(), false, 
+        final BapSshPublisher publisher = new BapSshPublisher(testHostConfig.getName(), false,
                         new ArrayList<BapSshTransfer>(Collections.singletonList(transfer)), false, false, null, null, null);
         final BapSshPublisherPlugin plugin = new BapSshPublisherPlugin(
                         new ArrayList<BapSshPublisher>(Collections.singletonList(publisher)), false, false, false, "master", null);

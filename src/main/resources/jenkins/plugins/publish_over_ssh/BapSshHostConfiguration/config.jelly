@@ -68,9 +68,6 @@
         <f:entry title="${%disableExec}" field="disableExec">
             <f:checkbox/>
         </f:entry>
-
-<<<<<<< HEAD
-=======
         <f:entry name="proxyType" title="${%proxyType}" field="proxyType">
             <select name="proxyType">
                 <f:option value=""></f:option>
@@ -92,15 +89,8 @@
             <f:password/>
         </f:entry>
         
->>>>>>> jenkinsci/master
     </f:advanced>
 
     <f:validateButton title="${m.test_title()}" progress="${m.test_progress()}" method="testConnection"
-<<<<<<< HEAD
-                      with="name,hostname,username,encryptedPassword,remoteRootDir,jumpHost,port,timeout,keyPath,key,overrideKey,common.encryptedPassphrase,common.key,common.keyPath"/>
-
-=======
-                      with="name,hostname,username,encryptedPassword,remoteRootDir,port,timeout,keyPath,key,overrideKey,common.encryptedPassphrase,common.key,common.keyPath,proxyType,proxyHost,proxyPort,proxyUser,proxyPassword"/>
-            
->>>>>>> jenkinsci/master
+                      with="name,hostname,username,encryptedPassword,remoteRootDir,jumpHost,port,timeout,keyPath,key,overrideKey,common.encryptedPassphrase,common.key,common.keyPath,proxyType,proxyHost,proxyPort,proxyUser,proxyPassword"/>
 </j:jelly>

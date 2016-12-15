@@ -46,36 +46,25 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 @SuppressWarnings("PMD.TooManyMethods")
-<<<<<<< HEAD
 public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, BapSshCommonConfiguration> 
                                                                                         implements Describable<BapSshHostConfiguration> {
-=======
-public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, BapSshCommonConfiguration>
-        implements Describable<BapSshHostConfiguration> {
->>>>>>> jenkinsci/master
-
     static final String LOCALHOST = "127.0.0.1";
     private static final long serialVersionUID = 1L;
     public static final int DEFAULT_PORT = 22;
     public static final int DEFAULT_TIMEOUT = 300000;
     public static final String CONFIG_KEY_PREFERRED_AUTHENTICATIONS = "PreferredAuthentications";
     private static final Log LOG = LogFactory.getLog(BapSshHostConfiguration.class);
-<<<<<<< HEAD
     public static final String DEFAULT_JUMP_HOST = "";
-=======
     public static final String HTTP_PROXY_TYPE = "http";
     public static final String SOCKS_4_PROXY_TYPE = "socks4";
     public static final String SOCKS_5_PROXY_TYPE = "socks5";
->>>>>>> jenkinsci/master
 
     private int timeout;
     private boolean overrideKey;
     private boolean disableExec;
-<<<<<<< HEAD
+    
     private final BapSshKeyInfo keyInfo;
     private String jumpHost;
-=======
-    private BapSshKeyInfo keyInfo;
 
     private String proxyType;
     private String proxyHost;
@@ -89,7 +78,6 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         super(null, null, null, null, null, 0);
         this.keyInfo = new BapSshKeyInfo(null, null, null);
     }
->>>>>>> jenkinsci/master
 
     // CSOFF: ParameterNumberCheck
     @SuppressWarnings("PMD.ExcessiveParameterList") // DBC for you!
@@ -114,11 +102,6 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         this.jumpHost = jumpHost;
     }
 
-<<<<<<< HEAD
-    public int getTimeout() { return timeout; }
-
-    public void setTimeout(final int timeout) { this.timeout = timeout; }
-=======
     @DataBoundSetter
     @Override
     public void setName(String name) {
@@ -130,20 +113,12 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     public void setHostname(String hostname) {
         super.setHostname(hostname);
     }
->>>>>>> jenkinsci/master
 
-    @DataBoundSetter
-    @Override
-<<<<<<< HEAD
-    protected final String getPassword() { return keyInfo.getPassphrase(); }
-
-=======
     public void setRemoteRootDir(String remoteRootDir) {
         super.setRemoteRootDir(remoteRootDir);
     }
 
     @DataBoundSetter
->>>>>>> jenkinsci/master
     @Override
     public void setPort(int port) {
         super.setPort(port);
@@ -189,18 +164,12 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
     public boolean isOverrideKey() { return overrideKey; }
 
-<<<<<<< HEAD
-=======
     @DataBoundSetter
->>>>>>> jenkinsci/master
     public void setOverrideKey(final boolean overrideKey) { this.overrideKey = overrideKey; }
 
     public boolean isDisableExec() { return disableExec; }
 
-<<<<<<< HEAD
-=======
     @DataBoundSetter
->>>>>>> jenkinsci/master
     public void setDisableExec(final boolean disableExec) { this.disableExec = disableExec; }
 
     public String getProxyType() { return proxyType; }
@@ -422,11 +391,8 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         final BapSshCredentials overrideCreds = getPublisherOverrideCredentials(buildInfo);
         final String username = overrideCreds == null ? getUsername() : overrideCreds.getUsername();
         try {
-            buildInfo.printIfVerbose(Messages.console_session_creating(username, getHostnameTrimmed(), getPort()));
-<<<<<<< HEAD
-            return ssh.getSession(username, hostname, port);
-=======
-            Session session = ssh.getSession(username, getHostnameTrimmed(), getPort());
+            buildInfo.printIfVerbose(Messages.console_session_creating(username, hostname, port));
+            Session session = ssh.getSession(username, hostname, port);
 
             if (StringUtils.isNotEmpty(proxyType) && StringUtils.isNotEmpty(proxyHost)) {
                 if (StringUtils.equals(HTTP_PROXY_TYPE, proxyType)) {
@@ -456,7 +422,6 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
                 }
             }
             return session;
->>>>>>> jenkinsci/master
         } catch (JSchException jse) {
             throw new BapPublisherException(Messages.exception_session_create(username, getHostnameTrimmed(), getPort(), jse.getLocalizedMessage()),
                     jse);
@@ -480,16 +445,12 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
                 .append(keyInfo, that.keyInfo)
                 .append(timeout, that.timeout)
                 .append(overrideKey, that.overrideKey)
-<<<<<<< HEAD
-                .append(disableExec, that.disableExec);
-=======
                 .append(disableExec, that.disableExec)
                 .append(proxyType, that.proxyType)
                 .append(proxyHost, that.proxyHost)
                 .append(proxyPort, that.proxyPort)
                 .append(proxyUser, that.proxyUser)
                 .append(proxyPassword, that.proxyPassword);
->>>>>>> jenkinsci/master
     }
 
     @Override
@@ -498,16 +459,12 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
                 .append(keyInfo)
                 .append(timeout)
                 .append(overrideKey)
-<<<<<<< HEAD
-                .append(disableExec);
-=======
                 .append(disableExec)
                 .append(proxyType)
                 .append(proxyHost)
                 .append(proxyPort)
                 .append(proxyUser)
                 .append(proxyPassword);
->>>>>>> jenkinsci/master
     }
 
     @Override
@@ -516,17 +473,12 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
                 .append("keyInfo", keyInfo)
                 .append("timeout", timeout)
                 .append("overrideKey", overrideKey)
-<<<<<<< HEAD
-                .append("disableExec", disableExec);
-=======
                 .append("disableExec", disableExec)
                 .append("proxyType", proxyType)
                 .append("proxyHost", proxyHost)
                 .append("proxyPort", proxyPort)
                 .append("proxyUser", proxyUser)
                 .append("proxyPassword", proxyPassword);
-
->>>>>>> jenkinsci/master
     }
 
     @Override
