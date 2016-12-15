@@ -83,7 +83,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     @SuppressWarnings("PMD.ExcessiveParameterList") // DBC for you!
     @DataBoundConstructor
     public BapSshHostConfiguration(final String name, final String hostname, final String username, final String encryptedPassword,
-                                   final String remoteRootDir, final String jumpHost, final int port, final int timeout, final boolean overrideKey, final String keyPath,
+                                   final String remoteRootDir, final int port, final int timeout, final boolean overrideKey, final String keyPath,
                                    final String key, final boolean disableExec) {
         // CSON: ParameterNumberCheck
         super(name, hostname, username, null, remoteRootDir, port);
@@ -91,7 +91,6 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         this.overrideKey = overrideKey;
         this.keyInfo = new BapSshKeyInfo(encryptedPassword, key, keyPath);
         this.disableExec = disableExec;
-        this.jumpHost = jumpHost;
     }
 
     @DataBoundSetter
@@ -114,10 +113,6 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     public void setHostname(String hostname) {
         super.setHostname(hostname);
     }
-
-    @DataBoundSetter
-    @Override
-    protected final String getPassword() { return keyInfo.getPassphrase(); }
 
     public void setRemoteRootDir(String remoteRootDir) {
         super.setRemoteRootDir(remoteRootDir);

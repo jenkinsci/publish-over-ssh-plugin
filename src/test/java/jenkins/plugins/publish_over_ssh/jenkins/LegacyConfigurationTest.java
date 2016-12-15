@@ -60,7 +60,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
     public void testLoadR0x1Minimal() throws Exception {
         final List<BapSshHostConfiguration> configurations = getPublisherPluginDescriptor().getHostConfigurations();
         assertEquals(1, configurations.size());
-        final BapSshHostConfiguration expected = prepare("default", "hostname", "username", "password", "", DEFAULT_JUMPHOST,
+        final BapSshHostConfiguration expected = prepare("default", "hostname", "username", "password", "", null,
                                                                        DEFAULT_PORT, DEFAULT_TIMEOUT, true, "", "", false);
         expected.setCommonConfig(new BapSshCommonConfiguration("", "", "", false));
         assertEquals(expected, configurations.get(0));
