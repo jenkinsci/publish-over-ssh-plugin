@@ -46,7 +46,7 @@ public class JenkinsTestHelper {
         toFill.setUsername(username);
         toFill.setEncryptedPassword(encryptedPassword);
         toFill.setRemoteRootDir(remoteRootDir);
-        //toFill.setJumpHost(jumpHost);
+        toFill.setJumpHost(jumpHost);
         toFill.setPort(port);
         toFill.setTimeout(timeout);
         toFill.setOverrideKey(overrideKey);
