@@ -29,15 +29,18 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
+
 import hudson.FilePath;
 import hudson.Util;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPDefaultClient;
 import jenkins.plugins.publish_over.BapPublisherException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.InputStream;
+import java.util.Stack;
 
 @SuppressWarnings("PMD.TooManyMethods")
 public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
@@ -45,7 +48,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     private static final transient Log LOG = LogFactory.getLog(BapSshClient.class);
 
     private final BPBuildInfo buildInfo;
-    private final Session session;
+    private final Stack<Session> sessions = new Stack<Session>();
     private final boolean disableExec;
     private ChannelSftp sftp;
 
@@ -54,9 +57,17 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     }
 
     public BapSshClient(final BPBuildInfo buildInfo, final Session session, final boolean disableExec) {
-        this.buildInfo = buildInfo;
-        this.session = session;
+        this.buildInfo = buildInfo;        
         this.disableExec = disableExec;
+        addSession(session);
+    }
+    
+    /** Add a new session to the already known session chain (forwarding)
+     * The new session will become the current session.
+     * @param session new session to add
+     */
+    public void addSession(final Session session) {
+        sessions.push(session);
     }
 
     public boolean isDisableExec() {
@@ -72,7 +83,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     }
 
     public Session getSession() {
-        return session;
+        return sessions.peek();
     }
 
     public void beginTransfers(final BapSshTransfer transfer) {
@@ -159,7 +170,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         exec.setCommand(command);
         buildInfo.println(Messages.console_exec_connecting(command));
         try {
-            exec.connect(session.getTimeout());
+            exec.connect(getSession().getTimeout());
         } catch (JSchException jse) {
             final String message = Messages.exception_exec_connect(jse.getLocalizedMessage());
             LOG.warn(message, jse);
@@ -171,7 +182,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     private ChannelExec openExecChannel() {
         buildInfo.printIfVerbose(Messages.console_exec_opening());
         try {
-            final ChannelExec exec = (ChannelExec) session.openChannel("exec");
+            final ChannelExec exec = (ChannelExec) getSession().openChannel("exec");
             buildInfo.printIfVerbose(Messages.console_exec_opened());
             return exec;
         } catch (JSchException jse) {
@@ -207,9 +218,11 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     }
 
     private void disconnectSession() {
-        if (session == null) return;
-        if (session.isConnected())
+        while (!sessions.empty()) {
+            Session session = sessions.pop();
+            if (session.isConnected())
                 session.disconnect();
+        }
     }
 
     public void disconnectQuietly() {

@@ -53,13 +53,14 @@ public class LegacyConfigurationTest extends HudsonTestCase {
     private static final int DEFAULT_PORT = 22;
     private static final int DEFAULT_TIMEOUT = 300000;
     private static final int DEFAULT_EXEC_TIMEOUT = 120000;
+    private static final String DEFAULT_JUMPHOST = "";
 
     @LocalData
     @Test
     public void testLoadR0x1Minimal() throws Exception {
         final List<BapSshHostConfiguration> configurations = getPublisherPluginDescriptor().getHostConfigurations();
         assertEquals(1, configurations.size());
-        final BapSshHostConfiguration expected = prepare("default", "hostname", "username", "password", "",
+        final BapSshHostConfiguration expected = prepare("default", "hostname", "username", "password", "", null,
                                                                        DEFAULT_PORT, DEFAULT_TIMEOUT, true, "", "", false);
         expected.setCommonConfig(new BapSshCommonConfiguration("", "", "", false));
         assertEquals(expected, configurations.get(0));
@@ -93,7 +94,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         final List<BapSshPublisher> builderPublishers = Collections.singletonList(
                                         newPublisher(configName('c'), false, new ArrayList<BapSshTransfer>(builderTransfers)));
         final BapSshBuilderPlugin expectedBuilderPlugin = new BapSshBuilderPlugin(new ArrayList<BapSshPublisher>(builderPublishers),
-                                          true, false, false, "", null);
+                                        true, false, false, "", null);
         assertEquals(expectedBuilderPlugin, getConfiguredBuilderPlugin());
 
         final List<BapSshTransfer> preTransfers = Collections.singletonList(
@@ -118,13 +119,13 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         final int configDTimeout = 10000;
         final BapSshHostConfiguration[] expectedConfig = new BapSshHostConfiguration[] {
                 prepare(configName('a'), hostname('a'), "username.a", "password.a", "remoteDirectory.a",
-                        DEFAULT_PORT, DEFAULT_TIMEOUT, false, "", "", false),
+                        DEFAULT_JUMPHOST, DEFAULT_PORT, DEFAULT_TIMEOUT, false, "", "", false),
                 prepare(configName('b'), hostname('b'), "username.b", "", "",
-                        DEFAULT_PORT, DEFAULT_TIMEOUT, true, "/an/unencrypted/key", "", false),
+                        DEFAULT_JUMPHOST, DEFAULT_PORT, DEFAULT_TIMEOUT, true, "/an/unencrypted/key", "", false),
                 prepare(configName('c'), hostname('c'), "username.c", "", "",
-                        DEFAULT_PORT, DEFAULT_TIMEOUT, true, "", KEY_2, false),
+                        DEFAULT_JUMPHOST, DEFAULT_PORT, DEFAULT_TIMEOUT, true, "", KEY_2, false),
                 prepare(configName('d'), hostname('d'), "username.d", "passphrase", "remoteDirectory.d",
-                        configDPort, configDTimeout, true, "path/to/key", KEY_2, false)
+                        DEFAULT_JUMPHOST, configDPort, configDTimeout, true, "path/to/key", KEY_2, false)
         };
         final BapSshCommonConfiguration common = new BapSshCommonConfiguration("hello", COMMON_KEY, "/this/will/be/ignored", false);
         for (BapSshHostConfiguration hostConfig : expectedConfig) {
@@ -136,7 +137,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         final int transfer12Timeout = 15000;
         final BapSshTransfer transfer11 = new BapSshTransfer("", null, "", "", false, false, "date", transfer11Timeout, false, false, false, null);
         final BapSshTransfer transfer12 = new BapSshTransfer("target/*.jar", null, "'builds/'yyyy_MM_dd/'build-${BUILD_NUMBER}'", "target",
-                                                       true, true, "ls -la /tmp", transfer12Timeout, false, false, false, null);
+                                                        true, true, "ls -la /tmp", transfer12Timeout, false, false, false, null);
         final ArrayList<BapSshTransfer> transfers1 = new ArrayList<BapSshTransfer>();
         transfers1.add(transfer11);
         transfers1.add(transfer12);
@@ -165,8 +166,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
     private static final String COMMON_KEY =
         "-----BEGIN RSA PRIVATE KEY-----\n"
             + "Proc-Type: 4,ENCRYPTED\n"
-            + "DEK-Info: AES-128-CBC,8885F902F99146AA580E7A6D270020D4\n"
-            + "\n"
+            + "DEK-Info: AES-128-CBC,8885F902F99146AA580E7A6D270020D4\n" + "\n"
             + "HFzZpIKKLghgZeDBXSFpgm3uoiMUSX/+zyNWRw0ifPXciPIz4DnFSkjVMTM+eCil\n"
             + "/Jo03n7rzh9bO2hbvTxAFa+LImbQcp8T3dRBfJFP8G01ZnjtSobTJ/ykB38kOChc\n"
             + "VyPF5uebIaKy56JECJ0AM7YI1+2VqKemaKNUwsWoAPG8efdK7w7v0x/loA6gZ8Fi\n"
@@ -241,7 +241,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
     }
 
     private static BapSshPublisher newPublisher(final String configName, final boolean verbose, final ArrayList<BapSshTransfer> transfers) {
-        return new BapSshPublisher(configName, verbose, transfers, false, false, null, null, null);        
+        return new BapSshPublisher(configName, verbose, transfers, false, false, null, null, null);
     }
 
 }
