@@ -114,13 +114,10 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 
 				try {
 					uri = new java.net.URI(Stapler.getCurrentRequest().getOriginalRequestURI()).getPath();
-
-					System.out.println(uri);
 					Matcher m = Pattern.compile("(?<=job\\/)[^\\/]*(?=\\/|$)").matcher(uri);
 					while (m.find()) {
 						jobFound = true;
 						job = job + "/" + m.group();
-						System.out.println(m.group());
 					}
 
 					if (jobFound && job.charAt(0) == '/') {
@@ -128,7 +125,6 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 					}
 
 					if (config.getRegex().matcher(job).matches()) {
-						System.out.println(config.getRegex().matcher(job).matches());
 						validConfigurations.add(config);
 					}
 				} catch (URISyntaxException e) {
