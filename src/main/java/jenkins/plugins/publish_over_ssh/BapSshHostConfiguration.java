@@ -32,6 +32,7 @@ import hudson.model.Hudson;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import jenkins.plugins.publish_over.*;
 import jenkins.plugins.publish_over_ssh.descriptor.BapSshHostConfigurationDescriptor;
@@ -85,12 +86,24 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
                                    final String remoteRootDir, final int port, final int timeout, final boolean overrideKey,
                                    final String keyPath, final String key, final boolean disableExec, final String regex) {
         // CSON: ParameterNumberCheck
-        super(name, hostname, username, null, remoteRootDir, port);	
-        this.regex= Pattern.compile(regex);
+        super(name, hostname, username, null, remoteRootDir, port);
+        if(checkRegex(regex)){
+        	this.regex= Pattern.compile(regex);
+        }
         this.timeout = timeout;
         this.overrideKey = overrideKey;
         this.keyInfo = new BapSshKeyInfo(encryptedPassword, key, keyPath);
         this.disableExec = disableExec;
+    }
+    
+    private boolean checkRegex(String regex){
+    	try{
+    		Pattern.compile(regex);
+    		return true;
+    	} catch (PatternSyntaxException e){
+    		System.out.println(regex);//TODO sinnvolles irgendwie ?!
+    		return false;
+    	}
     }
 
     @DataBoundSetter
@@ -146,7 +159,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     public void setEncryptedPassword(final String encryptedPassword) {
         this.keyInfo.setPassphrase(encryptedPassword);
     }
-    
+
     public Pattern getRegex() {
 		return regex;
 	}
@@ -155,6 +168,11 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	public void setRegex(Pattern regex) {
 		this.regex = regex;
 	}
+   
+    @DataBoundSetter
+    public void setUseRegex(boolean useRegex){
+    	this.useRegex= useRegex;
+    }
     
     public boolean isUseRegex(){
     	return useRegex;

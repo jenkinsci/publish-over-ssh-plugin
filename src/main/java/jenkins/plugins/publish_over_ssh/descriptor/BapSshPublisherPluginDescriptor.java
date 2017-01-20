@@ -46,172 +46,217 @@ import jenkins.plugins.publish_over_ssh.Messages;
 import jenkins.plugins.publish_over_ssh.options.SshDefaults;
 import jenkins.plugins.publish_over_ssh.options.SshPluginDefaults;
 import net.sf.json.JSONObject;
+
+import org.kohsuke.stapler.Stapler;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @SuppressWarnings("PMD.TooManyMethods")
 public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publisher> {
 
-    /** null - prevent complaints from xstream */
-    @SuppressFBWarnings(value = "URF_UNREAD_FIELD")
-    private transient BPPluginDescriptor.BPDescriptorMessages msg;
-    /** null - prevent complaints from xstream */
-    @SuppressFBWarnings(value = "URF_UNREAD_FIELD")
-    private transient Class commonConfigClass;
-    /** null - prevent complaints from xstream */
-    @SuppressFBWarnings(value = "URF_UNREAD_FIELD")
-    private transient Class hostConfigClass;
-    private final CopyOnWriteList<BapSshHostConfiguration> hostConfigurations = new CopyOnWriteList<BapSshHostConfiguration>();
-    private BapSshCommonConfiguration commonConfig;
-    private SshDefaults defaults;
+	/** null - prevent complaints from xstream */
+	@SuppressFBWarnings(value = "URF_UNREAD_FIELD")
+	private transient BPPluginDescriptor.BPDescriptorMessages msg;
+	/** null - prevent complaints from xstream */
+	@SuppressFBWarnings(value = "URF_UNREAD_FIELD")
+	private transient Class commonConfigClass;
+	/** null - prevent complaints from xstream */
+	@SuppressFBWarnings(value = "URF_UNREAD_FIELD")
+	private transient Class hostConfigClass;
+	private final CopyOnWriteList<BapSshHostConfiguration> hostConfigurations = new CopyOnWriteList<BapSshHostConfiguration>();
+	private BapSshCommonConfiguration commonConfig;
+	private SshDefaults defaults;
 
-    public BapSshPublisherPluginDescriptor() {
-        super(BapSshPublisherPlugin.class);
-        load();
-        if (defaults == null)
-            defaults = new SshPluginDefaults();
-    }
+	public BapSshPublisherPluginDescriptor() {
+		super(BapSshPublisherPlugin.class);
+		load();
+		if (defaults == null)
+			defaults = new SshPluginDefaults();
+	}
 
-    public BapSshCommonConfiguration getCommonConfig() { return commonConfig; }
-    public void setCommonConfig(final BapSshCommonConfiguration commonConfig) { this.commonConfig = commonConfig; }
+	public BapSshCommonConfiguration getCommonConfig() {
+		return commonConfig;
+	}
 
-    public SshDefaults getDefaults() {
-        return defaults;
-    }
+	public void setCommonConfig(final BapSshCommonConfiguration commonConfig) {
+		this.commonConfig = commonConfig;
+	}
 
-    public String getDisplayName() {
-        return Messages.descriptor_displayName();
-    }
+	public SshDefaults getDefaults() {
+		return defaults;
+	}
 
-    public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
-        return !BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
-    }
+	public String getDisplayName() {
+		return Messages.descriptor_displayName();
+	}
 
-    public List<BapSshHostConfiguration> getHostConfigurations() {
-        return hostConfigurations.getView();
-    }
+	public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
+		return !BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
+	}
 
-    public BapSshHostConfiguration getConfiguration(final String name) {
-        for (BapSshHostConfiguration configuration : hostConfigurations) {
-            if (configuration.getName().equals(name)) {
-                return configuration;
-            }
-        }
-        return null;
-    }
+	public List<BapSshHostConfiguration> getHostConfigurations() {
+		return hostConfigurations.getView();
+	}
 
-    /**
-     * Add a Host Configuration to the list of configurations.
-     * 
-     * @param configuration Host Configuration to add. The common configuration will be automatically set.
-     */
-    public void addHostConfiguration(final BapSshHostConfiguration configuration) {
-        configuration.setCommonConfig(commonConfig);
-        hostConfigurations.add(configuration);
-    }
+	public List<BapSshHostConfiguration> getLimitedHostConfigurations() {
+		ArrayList<BapSshHostConfiguration> validConfigurations = new ArrayList<BapSshHostConfiguration>();
+		for (BapSshHostConfiguration config : hostConfigurations) {
+			if (config.isUseRegex()) {
+				boolean jobFound = false;
+				String job = "";
+				String uri = "";
 
-    /**
-     * Removes the given named Host Configuration from the list of configurations.
-     * 
-     * @param name The Name of the Host Configuration to remove.
-     */
-    public void removeHostConfiguration(final String name) {
-        BapSshHostConfiguration configuration = getConfiguration(name);
-        if (configuration != null) {
-            hostConfigurations.remove(configuration);
-        }
-    }
+				try {
+					uri = new java.net.URI(Stapler.getCurrentRequest().getOriginalRequestURI()).getPath();
 
-    public boolean configure(final StaplerRequest request, final JSONObject formData) {
-        final List<BapSshHostConfiguration> newConfigurations = request.bindJSONToList(BapSshHostConfiguration.class,
-                                                                                                                formData.get("instance"));
-        commonConfig = request.bindJSON(BapSshCommonConfiguration.class, formData.getJSONObject("commonConfig"));
-        for (BapSshHostConfiguration hostConfig : newConfigurations) {
-            hostConfig.setCommonConfig(commonConfig);
-        }
-        hostConfigurations.replaceBy(newConfigurations);
-        if (isEnableOverrideDefaults())
-            defaults = request.bindJSON(SshDefaults.class, formData.getJSONObject("defaults"));
-        save();
-        return true;
-    }
+					System.out.println(uri);
+					Matcher m = Pattern.compile("(?<=job\\/)[^\\/]*(?=\\/|$)").matcher(uri);
+					while (m.find()) {
+						jobFound = true;
+						job = job + "/" + m.group();
+						System.out.println(m.group());
+					}
 
-    public boolean canSetMasterNodeName() {
-        return JenkinsCapabilities.missing(JenkinsCapabilities.MASTER_HAS_NODE_NAME);
-    }
+					if (jobFound && job.charAt(0) == '/') {
+						job = job.substring(1, job.length());
+					}
 
-    public String getDefaultMasterNodeName() {
-        return BPInstanceConfig.DEFAULT_MASTER_NODE_NAME;
-    }
+					if (config.getRegex().matcher(job).matches()) {
+						System.out.println(config.getRegex().matcher(job).matches());
+						validConfigurations.add(config);
+					}
+				} catch (URISyntaxException e) {
+					// TODO etwas sinnvolles ausdenken
+				}
+			} else {
+				validConfigurations.add(config);
+			}
+		}
+		return validConfigurations;
+	}
 
-    public boolean isEnableOverrideDefaults() {
-        return JenkinsCapabilities.available(JenkinsCapabilities.SIMPLE_DESCRIPTOR_SELECTOR);
-    }
+	public BapSshHostConfiguration getConfiguration(final String name) {
+		for (BapSshHostConfiguration configuration : hostConfigurations) {
+			if (configuration.getName().equals(name)) {
+				return configuration;
+			}
+		}
+		return null;
+	}
 
-    public BapSshPublisherDescriptor getPublisherDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(BapSshPublisherDescriptor.class);
-    }
+	/**
+	 * Add a Host Configuration to the list of configurations.
+	 * 
+	 * @param configuration
+	 *            Host Configuration to add. The common configuration will be
+	 *            automatically set.
+	 */
+	public void addHostConfiguration(final BapSshHostConfiguration configuration) {
+		configuration.setCommonConfig(commonConfig);
+		hostConfigurations.add(configuration);
+	}
 
-    public BapSshHostConfigurationDescriptor getHostConfigurationDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(BapSshHostConfigurationDescriptor.class);
-    }
+	/**
+	 * Removes the given named Host Configuration from the list of
+	 * configurations.
+	 * 
+	 * @param name
+	 *            The Name of the Host Configuration to remove.
+	 */
+	public void removeHostConfiguration(final String name) {
+		BapSshHostConfiguration configuration = getConfiguration(name);
+		if (configuration != null) {
+			hostConfigurations.remove(configuration);
+		}
+	}
 
-    public SshPluginDefaults.SshPluginDefaultsDescriptor getPluginDefaultsDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(SshPluginDefaults.SshPluginDefaultsDescriptor.class);
-    }
+	public boolean configure(final StaplerRequest request, final JSONObject formData) {
+		final List<BapSshHostConfiguration> newConfigurations = request.bindJSONToList(BapSshHostConfiguration.class,
+				formData.get("instance"));
+		commonConfig = request.bindJSON(BapSshCommonConfiguration.class, formData.getJSONObject("commonConfig"));
+		for (BapSshHostConfiguration hostConfig : newConfigurations) {
+			hostConfig.setCommonConfig(commonConfig);
+		}
+		hostConfigurations.replaceBy(newConfigurations);
+		if (isEnableOverrideDefaults())
+			defaults = request.bindJSON(SshDefaults.class, formData.getJSONObject("defaults"));
+		save();
+		return true;
+	}
 
-    public jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages getCommonFieldNames() {
-        return new jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages();
-    }
+	public boolean canSetMasterNodeName() {
+		return JenkinsCapabilities.missing(JenkinsCapabilities.MASTER_HAS_NODE_NAME);
+	}
 
-    public jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages getCommonManageMessages() {
-        return new jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages();
-    }
+	public String getDefaultMasterNodeName() {
+		return BPInstanceConfig.DEFAULT_MASTER_NODE_NAME;
+	}
 
-    public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
-        final BapSshHostConfiguration hostConfig = request.bindParameters(BapSshHostConfiguration.class, "");
-        hostConfig.setCommonConfig(request.bindParameters(BapSshCommonConfiguration.class, "common."));
-        return validateConnection(hostConfig, createDummyBuildInfo());
-    }
+	public boolean isEnableOverrideDefaults() {
+		return JenkinsCapabilities.available(JenkinsCapabilities.SIMPLE_DESCRIPTOR_SELECTOR);
+	}
 
-    public static FormValidation validateConnection(BapSshHostConfiguration hostConfig, BPBuildInfo buildInfo) {
-        try {
-            hostConfig.createClient(buildInfo).disconnect();
-            return FormValidation.ok(Messages.descriptor_testConnection_ok());
-        } catch (BapSshSftpSetupException sse) {
-            return connectionError(Messages.descriptor_testConnection_sftpError(), sse);
-        } catch (Exception e) {
-            return connectionError(Messages.descriptor_testConnection_error(), e);
-        }
-    }
+	public BapSshPublisherDescriptor getPublisherDescriptor() {
+		return Hudson.getInstance().getDescriptorByType(BapSshPublisherDescriptor.class);
+	}
 
-    private static FormValidation connectionError(final String description, final Exception exception) {
-        return FormValidation.errorWithMarkup("<p>"
-                + description + "</p><p><pre>"
-                + Util.escape(exception.getClass().getCanonicalName() + ": " + exception.getLocalizedMessage())
-                + "</pre></p>");
-    }
+	public BapSshHostConfigurationDescriptor getHostConfigurationDescriptor() {
+		return Hudson.getInstance().getDescriptorByType(BapSshHostConfigurationDescriptor.class);
+	}
 
-    public static BPBuildInfo createDummyBuildInfo() {
-        return new BPBuildInfo(
-            TaskListener.NULL,
-            "",
-            Hudson.getInstance().getRootPath(),
-            null,
-            null
-        );
-    }
+	public SshPluginDefaults.SshPluginDefaultsDescriptor getPluginDefaultsDescriptor() {
+		return Hudson.getInstance().getDescriptorByType(SshPluginDefaults.SshPluginDefaultsDescriptor.class);
+	}
 
-    public Object readResolve() {
-        // nuke the legacy config
-        msg = null;
-        commonConfigClass = null;
-        hostConfigClass = null;
-        if (defaults == null)
-            defaults = new SshPluginDefaults();
-        return this;
-    }
+	public jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages getCommonFieldNames() {
+		return new jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages();
+	}
+
+	public jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages getCommonManageMessages() {
+		return new jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages();
+	}
+
+	public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
+		final BapSshHostConfiguration hostConfig = request.bindParameters(BapSshHostConfiguration.class, "");
+		hostConfig.setCommonConfig(request.bindParameters(BapSshCommonConfiguration.class, "common."));
+		return validateConnection(hostConfig, createDummyBuildInfo());
+	}
+
+	public static FormValidation validateConnection(BapSshHostConfiguration hostConfig, BPBuildInfo buildInfo) {
+		try {
+			hostConfig.createClient(buildInfo).disconnect();
+			return FormValidation.ok(Messages.descriptor_testConnection_ok());
+		} catch (BapSshSftpSetupException sse) {
+			return connectionError(Messages.descriptor_testConnection_sftpError(), sse);
+		} catch (Exception e) {
+			return connectionError(Messages.descriptor_testConnection_error(), e);
+		}
+	}
+
+	private static FormValidation connectionError(final String description, final Exception exception) {
+		return FormValidation.errorWithMarkup("<p>" + description + "</p><p><pre>"
+				+ Util.escape(exception.getClass().getCanonicalName() + ": " + exception.getLocalizedMessage())
+				+ "</pre></p>");
+	}
+
+	public static BPBuildInfo createDummyBuildInfo() {
+		return new BPBuildInfo(TaskListener.NULL, "", Hudson.getInstance().getRootPath(), null, null);
+	}
+
+	public Object readResolve() {
+		// nuke the legacy config
+		msg = null;
+		commonConfigClass = null;
+		hostConfigClass = null;
+		if (defaults == null)
+			defaults = new SshPluginDefaults();
+		return this;
+	}
 
 }
