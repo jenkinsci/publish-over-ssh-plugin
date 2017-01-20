@@ -84,26 +84,21 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     @DataBoundConstructor
     public BapSshHostConfiguration(final String name, final String hostname, final String username, final String encryptedPassword,
                                    final String remoteRootDir, final int port, final int timeout, final boolean overrideKey,
-                                   final String keyPath, final String key, final boolean disableExec, final String regex) {
+                                   final String keyPath, final String key, final boolean disableExec, final String regex, final boolean useRegex) {
         // CSON: ParameterNumberCheck
         super(name, hostname, username, null, remoteRootDir, port);
-        if(checkRegex(regex)){
-        	this.regex= Pattern.compile(regex);
-        }
         this.timeout = timeout;
         this.overrideKey = overrideKey;
         this.keyInfo = new BapSshKeyInfo(encryptedPassword, key, keyPath);
         this.disableExec = disableExec;
-    }
-    
-    private boolean checkRegex(String regex){
-    	try{
-    		Pattern.compile(regex);
-    		return true;
-    	} catch (PatternSyntaxException e){
-    		System.out.println(regex);//TODO sinnvolles irgendwie ?!
-    		return false;
-    	}
+        if(useRegex){
+        	try{
+        		this.regex= Pattern.compile(regex);
+        		this.useRegex = useRegex;
+        	} catch (PatternSyntaxException e){
+        		this.useRegex=false;
+        	}
+        }
     }
 
     @DataBoundSetter
