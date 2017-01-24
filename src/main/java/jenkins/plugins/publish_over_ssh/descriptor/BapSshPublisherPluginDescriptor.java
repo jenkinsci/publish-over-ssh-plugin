@@ -53,9 +53,11 @@ import org.kohsuke.stapler.StaplerResponse;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("PMD.TooManyMethods")
 public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publisher> {
@@ -120,7 +122,15 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 						job = job + "/" + m.group();
 					}
 
-					if (jobFound && job.charAt(0) == '/') {
+					String[] splittedJobs = job.split("/");
+					if (splittedJobs.length > 1 && splittedJobs[splittedJobs.length - 1].equals("configure")
+							&& splittedJobs[splittedJobs.length - 2].equals("job")) {
+						job = "";
+						for (int i = 0; i < splittedJobs.length - 1; i++) {
+							job = job + "/" + splittedJobs[i];
+						}
+					}
+					while (jobFound && job.charAt(0) == '/') {
 						job = job.substring(1, job.length());
 					}
 
@@ -128,7 +138,6 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 						validConfigurations.add(config);
 					}
 				} catch (URISyntaxException e) {
-					// TODO etwas sinnvolles ausdenken
 				}
 			} else {
 				validConfigurations.add(config);
