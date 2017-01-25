@@ -53,11 +53,9 @@ import org.kohsuke.stapler.StaplerResponse;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("PMD.TooManyMethods")
 public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publisher> {
