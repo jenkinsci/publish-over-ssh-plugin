@@ -131,7 +131,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 							&& splittedJobs[splittedJobs.length - 2].equals("job")) {
 						job = "";
 						for (int i = 0; i < splittedJobs.length - 1; i++) {
-							job=job.concat("/".concat(m.group()));
+							job=job.concat("/".concat(splittedJobs[i]));
 						}
 					}
 					
@@ -139,7 +139,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 					while (jobFound && job.charAt(0) == '/') {
 						job = job.substring(1, job.length());
 					}
-
+					
 					if (config.getRegex().matcher(job).matches()) {
 						validConfigurations.add(config);
 					}
