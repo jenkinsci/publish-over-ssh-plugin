@@ -105,7 +105,12 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 	public List<BapSshHostConfiguration> getHostConfigurations() {
 		return hostConfigurations.getView();
 	}
-
+	
+	/**
+	 * 
+	 * Limits the returned host configurations to those with a matching pattern or those which shouldn't be limited
+	 * @return
+	 */
 	public List<BapSshHostConfiguration> getLimitedHostConfigurations() {
 		ArrayList<BapSshHostConfiguration> validConfigurations = new ArrayList<BapSshHostConfiguration>();
 		for (BapSshHostConfiguration config : hostConfigurations) {
