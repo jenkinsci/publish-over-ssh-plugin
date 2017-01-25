@@ -109,7 +109,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 	/**
 	 * 
 	 * Limits the returned host configurations to those with a matching pattern or those which shouldn't be limited
-	 * @return
+	 * @return a list of host configurations
 	 */
 	public List<BapSshHostConfiguration> getLimitedHostConfigurations() {
 		ArrayList<BapSshHostConfiguration> validConfigurations = new ArrayList<BapSshHostConfiguration>();
@@ -122,23 +122,19 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 				try {
 					uri = new java.net.URI(Stapler.getCurrentRequest().getOriginalRequestURI()).getPath();
 					Matcher m = Pattern.compile("(?<=job\\/)[^\\/]*(?=\\/|$)").matcher(uri);
-					StringBuilder sb = new StringBuilder();
 					
 					while (m.find()) {
 						jobFound = true;
-						sb.append("/"+m.group());
+						job=job.concat("/".concat(m.group()));
 					}
-					job=sb.toString();
-					sb.delete(0, sb.length());
-					System.out.println(job);//TODO entfernen
+
 					String[] splittedJobs = job.split("/");
 					if (splittedJobs.length > 1 && splittedJobs[splittedJobs.length - 1].equals("configure")
 							&& splittedJobs[splittedJobs.length - 2].equals("job")) {
 						job = "";
 						for (int i = 0; i < splittedJobs.length - 1; i++) {
-							sb.append("/"+splittedJobs[i]);
+							job=job.concat("/".concat(m.group()));
 						}
-						job=sb.toString();
 					}
 					
 					
@@ -149,7 +145,6 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 					if (config.getRegex().matcher(job).matches()) {
 						validConfigurations.add(config);
 					}
-					System.out.println(job);//TODO entfernen
 				} catch (URISyntaxException e) {
 				}
 			} else {
