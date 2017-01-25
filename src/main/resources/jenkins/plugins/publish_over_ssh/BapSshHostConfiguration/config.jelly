@@ -27,7 +27,7 @@
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:poj="/pojelly">
 
     <poj:defaultMessages/>
-    
+
     <f:entry title="${m.name()}" field="name">
         <f:textbox/>
     </f:entry>
@@ -48,7 +48,7 @@
 	</f:optionalBlock>
 
     <f:advanced>
-        
+
         <f:optionalBlock inline="true" title="${%override.default.key}" field="overrideKey">
             <f:entry title="${%password}" field="encryptedPassword">
                 <f:password/>
@@ -61,6 +61,9 @@
             </f:entry>
         </f:optionalBlock>
 
+        <f:entry title="${%jumpHost}" field="jumpHost">
+            <f:textbox default="${descriptor.defaultJumpHost}"/>
+        </f:entry>
         <f:entry title="${m.port()}" field="port">
             <f:textbox default="${descriptor.defaultPort}"/>
         </f:entry>
@@ -93,8 +96,7 @@
         </f:entry>
         
     </f:advanced>
-    
+
     <f:validateButton title="${m.test_title()}" progress="${m.test_progress()}" method="testConnection"
-                      with="name,hostname,username,encryptedPassword,remoteRootDir,port,timeout,keyPath,key,overrideKey,common.encryptedPassphrase,common.key,common.keyPath,proxyType,proxyHost,proxyPort,proxyUser,proxyPassword"/>
-            
+                      with="name,hostname,username,encryptedPassword,remoteRootDir,jumpHost,port,timeout,keyPath,key,overrideKey,common.encryptedPassphrase,common.key,common.keyPath,proxyType,proxyHost,proxyPort,proxyUser,proxyPassword"/>
 </j:jelly>
