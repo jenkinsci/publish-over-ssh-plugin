@@ -31,6 +31,7 @@ import hudson.model.Hudson;
 import hudson.util.FormValidation;
 import jenkins.plugins.publish_over.BPTransfer;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 
 public class SshOverrideTransferDefaults implements SshTransferOptions, Describable<SshOverrideTransferDefaults> {
@@ -119,6 +120,7 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
         return useAgentForwarding;
     }
 
+    @DataBoundSetter
     public void setUseAgentForwarding(boolean value) {
         useAgentForwarding = value;
     }
