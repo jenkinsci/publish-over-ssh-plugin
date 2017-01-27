@@ -318,6 +318,22 @@ public class BapSshClientTest {
         mockControl.replay();
         bapSshClient.endTransfers(new BapSshTransfer("", "", "", "", false, false, command, timeout, true, false, false, null));
         assertTrue(exec.isUsePty());
+        assertFalse(exec.isUseAgentForwarding());
+    }
+
+    @Test public void testUseAgentForwarding() throws Exception {
+        final String command = "n/a";
+        final int timeout = 20000;
+        final int pollsBeforeClosed = 1;
+        final TestExec exec = new TestExec(command, timeout, 0, pollsBeforeClosed);
+        expect(mockSession.openChannel("exec")).andReturn(exec);
+        expect(mockSession.getTimeout()).andReturn(timeout);
+        mockControl.replay();
+        BapSshTransfer transfer = new BapSshTransfer("", "", "", "", false, false, command, timeout, true, false, false, null);
+        transfer.setUseAgentForwarding(true);
+        bapSshClient.endTransfers(transfer);
+        assertTrue(exec.isUsePty());
+        assertTrue(exec.isUseAgentForwarding());
     }
 
     public static class TestExec extends ChannelExec {
@@ -365,6 +381,9 @@ public class BapSshClientTest {
         }
         public boolean isUsePty() {
             return usePty;
+        }
+        public boolean isUseAgentForwarding() {
+            return agent_forwarding;
         }
     }
 
