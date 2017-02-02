@@ -33,6 +33,8 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.kohsuke.accmod.Restricted;
+import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
@@ -78,6 +80,7 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
     }
 
     @DataBoundSetter
+    @Restricted(value = NoExternalUse.class)
     public void setUseAgentForwarding(boolean value) {
         useAgentForwarding = value;
     }
