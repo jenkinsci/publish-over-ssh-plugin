@@ -30,11 +30,14 @@ public interface SshTransferOptions extends TransferOptions {
 
     int DEFAULT_EXEC_TIMEOUT = 120000;
     boolean DEFAULT_USE_PTY = false;
+    boolean DEFAULT_USE_AGENT_FORWARDING = false;
 
     String getExecCommand();
 
     int getExecTimeout();
 
     boolean isUsePty();
+
+    boolean isUseAgentForwarding();
 
 }

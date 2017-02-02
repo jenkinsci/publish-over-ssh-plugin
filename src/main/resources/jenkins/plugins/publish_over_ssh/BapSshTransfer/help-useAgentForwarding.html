@@ -1,0 +1,12 @@
+<div>
+    <p>Exec the command using Agent Forwarding</p>
+    <p>Allows a chain of ssh connections to forward key challenges back to the original agent, thus eliminating the need
+        for using a password or public/private keys for these connections.</p>
+    <p>From the ssh(1) man page:</p>
+    <pre>
+        Enables forwarding of the authentication agent connection.  This can also be specified on a per-host basis in a configuration file.
+
+        Agent forwarding should be enabled with caution.  Users with the ability to bypass file permissions on the remote host (for the agent's UNIX-domain socket) can access the local agent through the forwarded connection.
+        An attacker cannot obtain key material from the agent, however they can perform operations on the keys that enable them to authenticate using the identities loaded into the agent.
+    </pre>
+</div>

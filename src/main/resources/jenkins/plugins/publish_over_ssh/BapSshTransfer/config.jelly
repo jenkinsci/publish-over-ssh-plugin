@@ -81,6 +81,9 @@
         <f:entry title="${%usePty}" field="usePty">
             <f:checkbox default="${defaults.transfer.usePty}"/>
         </f:entry>
+        <f:entry title="${%useAgentForwarding}" field="useAgentForwarding">
+            <f:checkbox default="${defaults.transfer.useAgentForwarding}"/>
+        </f:entry>
 
     </f:advanced>
 
