@@ -1,4 +1,8 @@
 publish-over-ssh-plugin
 =======================
 
-Merged changes from afischer211 into mainline.
+send artifacts to an SSH server (using SFTP) and/or execute commands over SSH
+
+For more information, visit the wiki page:
+
+https://wiki.jenkins-ci.org/display/JENKINS/Publish+Over+SSH+Plugin
