@@ -42,7 +42,7 @@
     </f:entry>
 	
 	<f:optionalBlock inline="true" title="${%useRegex}" field="useRegex">
-		<f:entry title="${%regex}" field="regex">
+		<f:entry title="${%regexValue}" field="regexValue">
 			<f:textbox/>
 		</f:entry>
 	</f:optionalBlock>

@@ -63,6 +63,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     
     private boolean useRegex;
     private Pattern regex;
+    private String regexValue;
     private int timeout;
     private boolean overrideKey;
     private boolean disableExec;
@@ -88,7 +89,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     @DataBoundConstructor
     public BapSshHostConfiguration(final String name, final String hostname, final String username, final String encryptedPassword,
                                    final String remoteRootDir, final int port, final int timeout, final boolean overrideKey,
-                                   final String keyPath, final String key, final boolean disableExec, final String regex, final boolean useRegex){
+                                   final String keyPath, final String key, final boolean disableExec){
 
 
         // CSON: ParameterNumberCheck
@@ -97,14 +98,6 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         this.overrideKey = overrideKey;
         this.keyInfo = new BapSshKeyInfo(encryptedPassword, key, keyPath);
         this.disableExec = disableExec;
-        if(useRegex){
-        	try{
-        		this.regex= Pattern.compile(regex);
-        		this.useRegex = useRegex;
-        	} catch (PatternSyntaxException e){
-        		this.useRegex=false;
-        	}
-        }
     }
     
     @DataBoundSetter
@@ -175,10 +168,26 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		return regex;
 	}
     
+    /**
+     * Sets regexValue and regex. Workaround for Jelly
+     * @param regexValue
+     */
     @DataBoundSetter
-	public void setRegex(Pattern regex) {
-		this.regex = regex;
+	public void setRegexValue(String regexValue) {
+    	this.regexValue=regexValue;
+        	try{
+        		regex= Pattern.compile(regexValue);
+        	} catch (PatternSyntaxException e){
+        		useRegex=false;
+        	}
+        	if(regexValue == null || Pattern.matches("\\u0008*",regexValue)){
+        		useRegex=false;
+        	}
 	}
+    
+    public String getRegexValue(){
+    	return regexValue;
+    }
    
     @DataBoundSetter
     public void setUseRegex(boolean useRegex){
