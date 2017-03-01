@@ -54,6 +54,8 @@ import org.kohsuke.stapler.StaplerResponse;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -72,6 +74,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 	private final CopyOnWriteList<BapSshHostConfiguration> hostConfigurations = new CopyOnWriteList<BapSshHostConfiguration>();
 	private BapSshCommonConfiguration commonConfig;
 	private SshDefaults defaults;
+	private static final Logger LOGGER = Logger.getLogger(BapSshPublisherDescriptor.class.getName());
 
 	public BapSshPublisherPluginDescriptor() {
 		super(BapSshPublisherPlugin.class);
@@ -135,7 +138,6 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 						}
 					}
 					
-					
 					while (jobFound && job.charAt(0) == '/') {
 						job = job.substring(1, job.length());
 					}
@@ -144,6 +146,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 						validConfigurations.add(config);
 					}
 				} catch (URISyntaxException e) {
+					LOGGER.log(Level.WARNING, "Unexpected URI syntax", e);
 				}
 			} else {
 				validConfigurations.add(config);

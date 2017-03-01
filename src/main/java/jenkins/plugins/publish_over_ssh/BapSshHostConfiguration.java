@@ -44,6 +44,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.kohsuke.accmod.Restricted;
+import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
@@ -163,7 +165,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         this.keyInfo.setPassphrase(encryptedPassword);
     }
 
-
+    @Restricted(NoExternalUse.class)
     public Pattern getRegex() {
 		return regex;
 	}
@@ -172,6 +174,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
      * Sets regexValue and regex. Workaround for Jelly
      * @param regexValue
      */
+    @Restricted(NoExternalUse.class)
     @DataBoundSetter
 	public void setRegexValue(String regexValue) {
     	this.regexValue=regexValue;
@@ -185,15 +188,18 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         	}
 	}
     
+    @Restricted(NoExternalUse.class)
     public String getRegexValue(){
     	return regexValue;
     }
    
+    @Restricted(NoExternalUse.class)
     @DataBoundSetter
     public void setUseRegex(boolean useRegex){
     	this.useRegex= useRegex;
     }
     
+    @Restricted(NoExternalUse.class)
     public boolean isUseRegex(){
     	return useRegex;
     }

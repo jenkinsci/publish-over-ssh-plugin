@@ -36,6 +36,8 @@ import jenkins.plugins.publish_over_ssh.Messages;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.kohsuke.accmod.Restricted;
+import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -88,6 +90,7 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
         return BPValidators.validateFileOnMaster(value);
     }
     
+    @Restricted(NoExternalUse.class)
 	public FormValidation doCheckRegex(@QueryParameter final String regexValue){
 		try{
 			Pattern.compile(regexValue);
