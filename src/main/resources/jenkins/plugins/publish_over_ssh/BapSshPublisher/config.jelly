@@ -30,7 +30,7 @@
 
     <f:entry title="${m.hostconfig()}" field="configName">
         <select class="setting-input ssh-config-name" name="configName">
-            <j:forEach var="s" items="${descriptor.publisherPluginDescriptor.hostConfigurations}">
+            <j:forEach var="s" items="${descriptor.publisherPluginDescriptor.limitedHostConfigurations}">
                 <f:option value="${s.name}" selected="${s.name==instance.configName or ( instance==null and s.name==defaults.publisher.configName ) }">${s.name}<j:if test="${s.effectiveDisableExec}">${%hostconfig.noexec.suffix}</j:if></f:option>
             </j:forEach>
         </select>

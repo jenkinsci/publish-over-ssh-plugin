@@ -32,6 +32,8 @@ import hudson.model.Hudson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import jenkins.plugins.publish_over.*;
 import jenkins.plugins.publish_over_ssh.descriptor.BapSshHostConfigurationDescriptor;
@@ -42,6 +44,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.kohsuke.accmod.Restricted;
+import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
@@ -58,7 +62,10 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     public static final String HTTP_PROXY_TYPE = "http";
     public static final String SOCKS_4_PROXY_TYPE = "socks4";
     public static final String SOCKS_5_PROXY_TYPE = "socks5";
-
+    
+    private boolean useRegex;
+    private Pattern regex;
+    private String regexValue;
     private int timeout;
     private boolean overrideKey;
     private boolean disableExec;
@@ -83,8 +90,10 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     @SuppressWarnings("PMD.ExcessiveParameterList") // DBC for you!
     @DataBoundConstructor
     public BapSshHostConfiguration(final String name, final String hostname, final String username, final String encryptedPassword,
-                                   final String remoteRootDir, final int port, final int timeout, final boolean overrideKey, final String keyPath,
-                                   final String key, final boolean disableExec) {
+                                   final String remoteRootDir, final int port, final int timeout, final boolean overrideKey,
+                                   final String keyPath, final String key, final boolean disableExec){
+
+
         // CSON: ParameterNumberCheck
         super(name, hostname, username, null, remoteRootDir, port);
         this.timeout = timeout;
@@ -156,7 +165,46 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         this.keyInfo.setPassphrase(encryptedPassword);
     }
 
-    public String getKeyPath() { return keyInfo.getKeyPath(); }
+    @Restricted(NoExternalUse.class)
+    public Pattern getRegex() {
+		return regex;
+	}
+    
+    /**
+     * Sets regexValue and regex. Workaround for Jelly
+     * @param regexValue
+     */
+    @Restricted(NoExternalUse.class)
+    @DataBoundSetter
+	public void setRegexValue(String regexValue) {
+    	this.regexValue=regexValue;
+        	try{
+        		regex= Pattern.compile(regexValue);
+        	} catch (PatternSyntaxException e){
+        		useRegex=false;
+        	}
+        	if(regexValue == null || Pattern.matches("\\u0008*",regexValue)){
+        		useRegex=false;
+        	}
+	}
+    
+    @Restricted(NoExternalUse.class)
+    public String getRegexValue(){
+    	return regexValue;
+    }
+   
+    @Restricted(NoExternalUse.class)
+    @DataBoundSetter
+    public void setUseRegex(boolean useRegex){
+    	this.useRegex= useRegex;
+    }
+    
+    @Restricted(NoExternalUse.class)
+    public boolean isUseRegex(){
+    	return useRegex;
+    }
+
+	public String getKeyPath() { return keyInfo.getKeyPath(); }
 
     public void setKeyPath(final String keyPath) { keyInfo.setKeyPath(keyPath); }
 
@@ -448,7 +496,8 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
                 .append(proxyHost, that.proxyHost)
                 .append(proxyPort, that.proxyPort)
                 .append(proxyUser, that.proxyUser)
-                .append(proxyPassword, that.proxyPassword);
+                .append(proxyPassword, that.proxyPassword)
+                .append(regex, that.regex);
     }
 
     @Override
@@ -463,7 +512,9 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
                 .append(proxyHost)
                 .append(proxyPort)
                 .append(proxyUser)
-                .append(proxyPassword);
+                .append(proxyPassword)
+                .append(regex)
+                .append(useRegex);
     }
 
     @Override
@@ -478,7 +529,9 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
                 .append("proxyHost", proxyHost)
                 .append("proxyPort", proxyPort)
                 .append("proxyUser", proxyUser)
-                .append("proxyPassword", proxyPassword);
+                .append("proxyPassword", proxyPassword)
+                .append("regex",regex)
+                .append("useRegex",useRegex);
     }
 
     @Override

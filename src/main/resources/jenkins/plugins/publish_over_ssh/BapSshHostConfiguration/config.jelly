@@ -40,6 +40,12 @@
     <f:entry title="${m.remotePath()}" field="remoteRootDir">
         <f:textbox/>
     </f:entry>
+	
+	<f:optionalBlock inline="true" title="${%useRegex}" field="useRegex">
+		<f:entry title="${%regexValue}" field="regexValue">
+			<f:textbox/>
+		</f:entry>
+	</f:optionalBlock>
 
     <f:advanced>
 
@@ -58,7 +64,6 @@
         <f:entry title="${%jumpHost}" field="jumpHost">
             <f:textbox default="${descriptor.defaultJumpHost}"/>
         </f:entry>
-
         <f:entry title="${m.port()}" field="port">
             <f:textbox default="${descriptor.defaultPort}"/>
         </f:entry>
