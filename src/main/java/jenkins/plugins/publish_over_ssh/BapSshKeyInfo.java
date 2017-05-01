@@ -67,11 +67,11 @@ public class BapSshKeyInfo implements Serializable {
         if (hasKey())
             return BapSshUtil.toBytes(key);
         
-        System.out.println("IDP : Attempting to resolve JOB PARAMETERS for " + keyPath);
+        
         
         keyPath = Util.replaceMacro(keyPath, buildInfo.getEnvVars());
         
-        System.out.println("IDP : Resolved keyPath is " + keyPath);
+      
         
         return buildInfo.readFileFromMaster(keyPath.trim());
     }
