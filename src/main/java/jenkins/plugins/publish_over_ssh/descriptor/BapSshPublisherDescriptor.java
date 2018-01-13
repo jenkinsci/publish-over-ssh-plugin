@@ -26,7 +26,7 @@ package jenkins.plugins.publish_over_ssh.descriptor;
 
 import hudson.Extension;
 import hudson.model.Descriptor;
-import hudson.model.Hudson;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over_ssh.BapSshPublisher;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import jenkins.plugins.publish_over_ssh.Messages;
@@ -44,11 +44,11 @@ public class BapSshPublisherDescriptor extends Descriptor<BapSshPublisher> {
     }
 
     public BapSshPublisherPlugin.Descriptor getPublisherPluginDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+        return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
     }
 
     public BapSshTransferDescriptor getTransferDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(BapSshTransferDescriptor.class);
+        return Jenkins.getActiveInstance().getDescriptorByType(BapSshTransferDescriptor.class);
     }
 
     public jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages getCommonFieldNames() {

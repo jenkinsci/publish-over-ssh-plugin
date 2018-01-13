@@ -26,7 +26,7 @@ package jenkins.plugins.publish_over_ssh;
 
 import hudson.Util;
 import hudson.model.Describable;
-import hudson.model.Hudson;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.BPTransfer;
 import jenkins.plugins.publish_over_ssh.descriptor.BapSshTransferDescriptor;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -86,7 +86,7 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
     }
 
     public BapSshTransferDescriptor getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(BapSshTransferDescriptor.class);
+        return Jenkins.getActiveInstance().getDescriptorByType(BapSshTransferDescriptor.class);
     }
 
     protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {

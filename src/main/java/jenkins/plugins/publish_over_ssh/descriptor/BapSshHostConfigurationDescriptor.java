@@ -26,8 +26,8 @@ package jenkins.plugins.publish_over_ssh.descriptor;
 
 import hudson.Extension;
 import hudson.model.Descriptor;
-import hudson.model.Hudson;
 import hudson.util.FormValidation;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.BPValidators;
 import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
@@ -85,7 +85,7 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
     }
 
     public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
-        final BapSshPublisherPlugin.Descriptor pluginDescriptor = Hudson.getInstance().getDescriptorByType(
+        final BapSshPublisherPlugin.Descriptor pluginDescriptor = Jenkins.getActiveInstance().getDescriptorByType(
                 BapSshPublisherPlugin.Descriptor.class);
         return pluginDescriptor.doTestConnection(request, response);
     }

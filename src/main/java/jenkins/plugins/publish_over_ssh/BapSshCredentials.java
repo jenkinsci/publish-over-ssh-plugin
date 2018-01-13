@@ -25,6 +25,7 @@
 package jenkins.plugins.publish_over_ssh;
 
 import hudson.model.Hudson;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.Credentials;
 import jenkins.plugins.publish_over_ssh.descriptor.BapSshCredentialsDescriptor;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -50,7 +51,7 @@ public class BapSshCredentials extends BapSshKeyInfo implements Credentials<BapS
     }
 
     public BapSshCredentialsDescriptor getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(BapSshCredentialsDescriptor.class);
+        return Jenkins.getActiveInstance().getDescriptorByType(BapSshCredentialsDescriptor.class);
     }
 
     protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshCredentials that) {

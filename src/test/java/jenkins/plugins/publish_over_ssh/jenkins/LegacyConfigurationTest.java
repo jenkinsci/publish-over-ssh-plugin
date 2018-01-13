@@ -29,6 +29,7 @@ import hudson.model.Hudson;
 import hudson.model.Project;
 import hudson.tasks.BuildWrapper;
 import hudson.util.DescribableList;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over_ssh.BapSshBuilderPlugin;
 import jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
@@ -209,7 +210,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
             + "-----END DSA PRIVATE KEY-----\n";
 
     private BapSshPublisherPlugin.Descriptor getPublisherPluginDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+        return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
     }
     private BapSshPublisherPlugin getConfiguredPublisherPlugin() {
         for (Project project : hudson.getProjects()) {

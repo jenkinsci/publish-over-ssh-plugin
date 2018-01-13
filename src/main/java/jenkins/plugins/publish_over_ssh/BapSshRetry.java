@@ -27,8 +27,8 @@ package jenkins.plugins.publish_over_ssh;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
-import hudson.model.Hudson;
 import hudson.util.FormValidation;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.Retry;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -47,7 +47,7 @@ public class BapSshRetry extends Retry implements Describable<BapSshRetry> {
     }
 
     public BapSshRetryDescriptor getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(BapSshRetryDescriptor.class);
+        return Jenkins.getActiveInstance().getDescriptorByType(BapSshRetryDescriptor.class);
     }
 
     public boolean equals(final Object that) {

@@ -27,7 +27,7 @@ package jenkins.plugins.publish_over_ssh.options;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
-import hudson.model.Hudson;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.options.PublisherLabelOptions;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherLabel;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -46,7 +46,7 @@ public class SshOverridePublisherLabelDefaults implements PublisherLabelOptions,
     }
 
     public SshOverridePublisherLabelDefaultsDescriptor getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(SshOverridePublisherLabelDefaultsDescriptor.class);
+        return Jenkins.getActiveInstance().getDescriptorByType(SshOverridePublisherLabelDefaultsDescriptor.class);
     }
 
     @Extension

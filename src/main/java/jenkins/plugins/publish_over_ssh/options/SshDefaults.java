@@ -29,15 +29,16 @@ import hudson.ExtensionPoint;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.model.Hudson;
+import jenkins.model.Jenkins;
 
 public abstract class SshDefaults implements Describable<SshDefaults>, ExtensionPoint, SshOptions {
 
     public static DescriptorExtensionList<SshDefaults, SshDefaultsDescriptor> all() {
-        return Hudson.getInstance().<SshDefaults, SshDefaultsDescriptor>getDescriptorList(SshDefaults.class);
+        return Jenkins.getActiveInstance().getDescriptorList(SshDefaults.class);
     }
 
     public SshDefaultsDescriptor getDescriptor() {
-        return (SshDefaultsDescriptor) Hudson.getInstance().getDescriptor(getClass());
+        return (SshDefaultsDescriptor) Jenkins.getActiveInstance().getDescriptor(getClass());
     }
 
     public abstract static class SshDefaultsDescriptor extends Descriptor<SshDefaults> {
