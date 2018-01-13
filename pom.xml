@@ -66,9 +66,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.jcraft</groupId>
+            <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>jsch</artifactId>
-            <version>0.1.53</version>
+            <version>0.1.54.1</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
