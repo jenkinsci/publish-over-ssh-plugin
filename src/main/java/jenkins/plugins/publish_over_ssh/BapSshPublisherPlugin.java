@@ -27,6 +27,8 @@ package jenkins.plugins.publish_over_ssh;
 import hudson.Extension;
 import hudson.model.Hudson;
 import java.util.ArrayList;
+
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.BPPlugin;
 import jenkins.plugins.publish_over.BPPluginDescriptor;
 import jenkins.plugins.publish_over_ssh.descriptor.BapSshPublisherPluginDescriptor;
@@ -74,7 +76,7 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
 
     @Override
     public Descriptor getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(Descriptor.class);
+        return Jenkins.getActiveInstance().getDescriptorByType(Descriptor.class);
     }
 
     public BapSshHostConfiguration getConfiguration(final String name) {

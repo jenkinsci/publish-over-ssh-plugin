@@ -27,12 +27,12 @@ package jenkins.plugins.publish_over_ssh.descriptor;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Util;
 import hudson.model.AbstractProject;
-import hudson.model.Hudson;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
 import hudson.util.CopyOnWriteList;
 import hudson.util.FormValidation;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPInstanceConfig;
 import jenkins.plugins.publish_over.BPPlugin;
@@ -151,15 +151,15 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
     }
 
     public BapSshPublisherDescriptor getPublisherDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(BapSshPublisherDescriptor.class);
+        return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherDescriptor.class);
     }
 
     public BapSshHostConfigurationDescriptor getHostConfigurationDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(BapSshHostConfigurationDescriptor.class);
+        return Jenkins.getActiveInstance().getDescriptorByType(BapSshHostConfigurationDescriptor.class);
     }
 
     public SshPluginDefaults.SshPluginDefaultsDescriptor getPluginDefaultsDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(SshPluginDefaults.SshPluginDefaultsDescriptor.class);
+        return Jenkins.getActiveInstance().getDescriptorByType(SshPluginDefaults.SshPluginDefaultsDescriptor.class);
     }
 
     public jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages getCommonFieldNames() {
@@ -198,7 +198,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
         return new BPBuildInfo(
             TaskListener.NULL,
             "",
-            Hudson.getInstance().getRootPath(),
+            Jenkins.getActiveInstance().getRootPath(),
             null,
             null
         );

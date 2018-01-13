@@ -26,6 +26,7 @@ package jenkins.plugins.publish_over_ssh;
 
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
+import hudson.model.Run;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -47,7 +48,7 @@ public class BapSshAlwaysRunPublisherPlugin extends BapSshPublisherPlugin {
     }
 
     @Override
-    protected boolean isBuildGoodEnoughToRun(final AbstractBuild<?, ?> build, final PrintStream console) {
+    protected boolean isBuildGoodEnoughToRun(final Run<?, ?> build, final PrintStream console) {
         return true;
     }
 

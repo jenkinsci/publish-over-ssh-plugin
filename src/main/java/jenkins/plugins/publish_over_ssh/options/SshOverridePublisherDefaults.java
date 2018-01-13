@@ -27,7 +27,7 @@ package jenkins.plugins.publish_over_ssh.options;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
-import hudson.model.Hudson;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.options.PublisherOptions;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -65,7 +65,7 @@ public class SshOverridePublisherDefaults implements PublisherOptions, Describab
     }
 
     public SshOverridePublisherDefaultsDescriptor getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(SshOverridePublisherDefaultsDescriptor.class);
+        return Jenkins.getActiveInstance().getDescriptorByType(SshOverridePublisherDefaultsDescriptor.class);
     }
 
     @Extension
@@ -77,7 +77,7 @@ public class SshOverridePublisherDefaults implements PublisherOptions, Describab
         }
 
         public BapSshPublisherPlugin.Descriptor getPublisherPluginDescriptor() {
-            return Hudson.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+            return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
         }
 
         public jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages getCommonFieldNames() {

@@ -27,7 +27,6 @@ package jenkins.plugins.publish_over_ssh.descriptor;
 import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.model.Descriptor;
-import hudson.model.Hudson;
 import hudson.model.Item;
 import hudson.security.AccessControlled;
 import hudson.util.FormValidation;
@@ -80,7 +79,7 @@ public class BapSshCredentialsDescriptor extends Descriptor<BapSshCredentials> {
         final BapSshCredentials credentials = new BapSshCredentials(username, encryptedPassphrase, key, keyPath);
         final BPBuildInfo buildInfo = BapSshPublisherPluginDescriptor.createDummyBuildInfo();
         buildInfo.put(BPBuildInfo.OVERRIDE_CREDENTIALS_CONTEXT_KEY, credentials);
-        final BapSshPublisherPlugin.Descriptor pluginDescriptor = Hudson.getInstance().getDescriptorByType(
+        final BapSshPublisherPlugin.Descriptor pluginDescriptor = Jenkins.getActiveInstance().getDescriptorByType(
                                                                                                     BapSshPublisherPlugin.Descriptor.class);
         final BapSshHostConfiguration hostConfig = pluginDescriptor.getConfiguration(configName);
         return BapSshPublisherPluginDescriptor.validateConnection(hostConfig, buildInfo);

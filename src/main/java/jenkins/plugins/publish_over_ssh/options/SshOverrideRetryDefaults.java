@@ -27,8 +27,8 @@ package jenkins.plugins.publish_over_ssh.options;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
-import hudson.model.Hudson;
 import hudson.util.FormValidation;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.options.RetryOptions;
 import jenkins.plugins.publish_over_ssh.BapSshRetry;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -54,7 +54,7 @@ public class SshOverrideRetryDefaults implements RetryOptions, Describable<SshOv
     }
 
     public SshOverrideRetryDefaultsDescriptor getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(SshOverrideRetryDefaultsDescriptor.class);
+        return Jenkins.getActiveInstance().getDescriptorByType(SshOverrideRetryDefaultsDescriptor.class);
     }
 
     @Extension

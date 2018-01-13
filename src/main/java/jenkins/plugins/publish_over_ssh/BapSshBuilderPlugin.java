@@ -32,6 +32,7 @@ import hudson.model.BuildListener;
 import hudson.model.Hudson;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.BPPlugin;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -100,7 +101,7 @@ public class BapSshBuilderPlugin extends Builder {
             return Messages.builder_descriptor_displayName();
         }
         public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return Hudson.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+            return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
         }
     }
 

@@ -27,7 +27,7 @@ package jenkins.plugins.publish_over_ssh.options;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
-import hudson.model.Hudson;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.options.InstanceConfigOptions;
 import org.kohsuke.stapler.DataBoundConstructor;
 
@@ -58,7 +58,7 @@ public class SshOverrideInstanceConfigDefaults implements InstanceConfigOptions,
     }
 
     public SshOverrideInstanceConfigDefaultsDescriptor getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(SshOverrideInstanceConfigDefaultsDescriptor.class);
+        return Jenkins.getActiveInstance().getDescriptorByType(SshOverrideInstanceConfigDefaultsDescriptor.class);
     }
 
     @Extension

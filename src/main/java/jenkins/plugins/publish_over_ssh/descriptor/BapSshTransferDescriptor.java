@@ -27,8 +27,8 @@ package jenkins.plugins.publish_over_ssh.descriptor;
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.Descriptor;
-import hudson.model.Hudson;
 import hudson.util.FormValidation;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.BPTransfer;
 import jenkins.plugins.publish_over.BPValidators;
 import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
@@ -56,7 +56,7 @@ public class BapSshTransferDescriptor extends Descriptor<BapSshTransfer> {
     public FormValidation doCheckSourceFiles(@QueryParameter final String configName, @QueryParameter final String sourceFiles,
                                              @QueryParameter final String execCommand) {
         if (Util.fixEmptyAndTrim(configName) != null) {
-            final BapSshPublisherPlugin.Descriptor pluginDescriptor = Hudson.getInstance().getDescriptorByType(
+            final BapSshPublisherPlugin.Descriptor pluginDescriptor = Jenkins.getActiveInstance().getDescriptorByType(
                     BapSshPublisherPlugin.Descriptor.class);
             final BapSshHostConfiguration hostConfig = pluginDescriptor.getConfiguration(configName);
             if (hostConfig == null)

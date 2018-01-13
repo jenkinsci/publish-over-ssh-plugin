@@ -27,7 +27,7 @@ package jenkins.plugins.publish_over_ssh.options;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
-import hudson.model.Hudson;
+import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.options.ParamPublishOptions;
 import jenkins.plugins.publish_over_ssh.BapSshParamPublish;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -46,7 +46,7 @@ public class SshOverrideParamPublishDefaults implements ParamPublishOptions, Des
     }
 
     public SshOverrideParamPublishDefaultsDescriptor getDescriptor() {
-        return Hudson.getInstance().getDescriptorByType(SshOverrideParamPublishDefaultsDescriptor.class);
+        return Jenkins.getActiveInstance().getDescriptorByType(SshOverrideParamPublishDefaultsDescriptor.class);
     }
 
     @Extension
