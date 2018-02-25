@@ -52,7 +52,7 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
         this(sourceFiles, null, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, execCommand, execTimeout, false, false, false, null);
     }
 
-    @DataBoundConstructor
+    @Deprecated
     public BapSshTransfer(final String sourceFiles, final String excludes, final String remoteDirectory, final String removePrefix,
                           final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout,
                           final boolean usePty, final boolean noDefaultExcludes, final boolean makeEmptyDirs, final String patternSeparator) {
@@ -63,9 +63,24 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
         this.useAgentForwarding = false;
     }
 
+    @DataBoundConstructor
+    public BapSshTransfer(final String sourceFiles) {
+        super(sourceFiles, null, null, null, false, false);
+    }
+
     public String getExecCommand() { return execCommand; }
 
+    @DataBoundSetter
+    public void setExecCommand(String execCommand) {
+        this.execCommand = execCommand;
+    }
+
     public int getExecTimeout() { return execTimeout; }
+
+    @DataBoundSetter
+    public void setExecTimeout(int execTimeout) {
+        this.execTimeout = execTimeout;
+    }
 
     public boolean hasExecCommand() {
         return Util.fixEmptyAndTrim(getExecCommand()) != null;
@@ -75,12 +90,16 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
         return usePty;
     }
 
+    @DataBoundSetter
+    public void setUsePty(boolean usePty) {
+        this.usePty = usePty;
+    }
+
     public boolean isUseAgentForwarding() {
         return useAgentForwarding;
     }
 
     @DataBoundSetter
-    @Restricted(value = NoExternalUse.class)
     public void setUseAgentForwarding(boolean value) {
         useAgentForwarding = value;
     }

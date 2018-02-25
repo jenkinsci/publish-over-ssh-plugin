@@ -30,8 +30,9 @@ import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over_ssh.BapSshPublisher;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import jenkins.plugins.publish_over_ssh.Messages;
+import org.jenkinsci.Symbol;
 
-@Extension
+@Extension @Symbol("sshPublisherDesc")
 public class BapSshPublisherDescriptor extends Descriptor<BapSshPublisher> {
 
     public BapSshPublisherDescriptor() {

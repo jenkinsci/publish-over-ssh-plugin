@@ -146,7 +146,6 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         keyInfo.setPassphrase(password);
     }
 
-    @DataBoundSetter
     @Override
     public final String getEncryptedPassword() {
         return keyInfo.getEncryptedPassphrase();
@@ -159,10 +158,12 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
     public String getKeyPath() { return keyInfo.getKeyPath(); }
 
+    @DataBoundSetter
     public void setKeyPath(final String keyPath) { keyInfo.setKeyPath(keyPath); }
 
     public String getKey() { return keyInfo.getKey(); }
 
+    @DataBoundSetter
     public void setKey(final String key) { keyInfo.setKey(key); }
 
     public boolean isOverrideKey() { return overrideKey; }

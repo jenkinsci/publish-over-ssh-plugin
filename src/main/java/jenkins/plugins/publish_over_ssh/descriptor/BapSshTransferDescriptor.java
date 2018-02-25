@@ -35,9 +35,10 @@ import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import jenkins.plugins.publish_over_ssh.BapSshTransfer;
 import jenkins.plugins.publish_over_ssh.Messages;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.QueryParameter;
 
-@Extension
+@Extension @Symbol("sshTransfer")
 public class BapSshTransferDescriptor extends Descriptor<BapSshTransfer> {
 
     public BapSshTransferDescriptor() {
