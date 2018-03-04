@@ -109,7 +109,7 @@
     </dependencies>
 
     <scm>
-        <url>https://github.com/jenkinsci/publish-over-ftp-plugin</url>
+        <url>https://github.com/jenkinsci/publish-over-ssh-plugin</url>
         <connection>scm:git:git://github.com/jenkinsci/publish-over-ssh-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/publish-over-ssh-plugin.git</developerConnection>
       <tag>publish-over-ssh-1.15</tag>
