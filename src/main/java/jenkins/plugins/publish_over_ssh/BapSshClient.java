@@ -41,6 +41,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.io.InputStream;
 import java.util.Stack;
+import java.util.Vector;
 
 @SuppressWarnings("PMD.TooManyMethods")
 public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
@@ -112,6 +113,46 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
             return true;
         } catch (SftpException sftpe) {
             throw new BapPublisherException(Messages.exception_cwdException(directory, sftpe.getLocalizedMessage()), sftpe);
+        }
+    }
+
+    public void deleteTree() throws SftpException {
+        delete();
+    }
+
+    private void delete() throws SftpException {
+        // List source directory structure.
+        Vector<ChannelSftp.LsEntry> fileAndFolderList = sftp.ls(sftp.pwd());
+
+        // Iterate objects in the list to get file/folder names.
+        for (ChannelSftp.LsEntry item : fileAndFolderList) {
+            delete(item);
+        }
+    }
+
+    private void delete(ChannelSftp.LsEntry entry) throws SftpException {
+        if (entry == null)
+            throw new BapPublisherException(Messages.exception_client_entryIsNull());
+        final String entryName = entry.getFilename();
+        if (".".equals(entryName) || "..".equals(entryName))
+            return;
+        if (entry.getAttrs().isDir()) {
+            if (!changeDirectory(entryName))
+                throw new BapPublisherException(Messages.exception_cwdException(entryName, "Error occurred changing directory"));
+            delete();
+            if (!changeDirectory(".."))
+                throw new BapPublisherException(Messages.exception_client_cdup());
+            try {
+                sftp.rmdir(entryName);
+            } catch(SftpException e) {
+                throw new BapPublisherException(Messages.exception_client_rmdir(entryName));
+            }
+        } else {
+            try {
+                sftp.rm(entryName);
+            } catch (SftpException e) {
+                throw new BapPublisherException(Messages.exception_client_dele(entryName));
+            }
         }
     }
 

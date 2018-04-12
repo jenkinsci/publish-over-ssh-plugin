@@ -27,6 +27,7 @@ package jenkins.plugins.publish_over_ssh;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import hudson.FilePath;
 import jenkins.plugins.publish_over.BPBuildInfo;
@@ -42,6 +43,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -213,6 +215,89 @@ public class BapSshClientTest {
         mockControl.replay();
         bapSshClient.disconnectQuietly();
         mockControl.verify();
+    }
+
+    @Test public void testDeleteTreeIgnoresCurrentDirAndParentDirEntries() throws Exception {
+        Vector<ChannelSftp.LsEntry> entries = new Vector();
+        expect(mockSftp.pwd()).andReturn("test");
+        expect(mockSftp.ls("test")).andReturn(entries);
+        expectLsEntry(entries, ".");
+        expectLsEntry(entries, "..");
+        expectDeleteFiles(entries, "file1", "file2", "anotherOne");
+        expectLastCall();
+        mockControl.replay();
+        bapSshClient.deleteTree();
+        mockControl.verify();
+    }
+
+    @Test public void testDeleteTreeDeletesFiles() throws Exception {
+        Vector<ChannelSftp.LsEntry> entries = new Vector<>();
+        expect(mockSftp.pwd()).andReturn("test");
+        expect(mockSftp.ls("test")).andReturn(entries);
+        expectDeleteFiles(entries, "file1", "file2", "anotherOne");
+        expectLastCall();
+        mockControl.replay();
+        bapSshClient.deleteTree();
+        mockControl.verify();
+    }
+
+    @Test public void testDeleteTreeDeletesDirectoryWithFiles() throws Exception {
+        Vector<ChannelSftp.LsEntry> entries = new Vector<>();
+        final String dirname = "directory";
+
+        expect(mockSftp.pwd()).andReturn("test");
+        expect(mockSftp.ls("test")).andReturn(entries);
+
+        expectDirectory(entries, dirname);
+        SftpATTRS attrs = mockControl.createMock(SftpATTRS.class);
+        expect(mockSftp.stat(dirname)).andReturn(attrs);
+        expect(attrs.isDir()).andReturn(true);
+        mockSftp.cd(dirname);
+        expect(mockSftp.pwd()).andReturn(dirname);
+        entries = new Vector<>();
+        expect(mockSftp.ls(dirname)).andReturn(entries);
+        expectDeleteFiles(entries, "file1", "file2", "anotherOne");
+
+        attrs = mockControl.createMock(SftpATTRS.class);
+        expect(mockSftp.stat("..")).andReturn(attrs);
+        expect(attrs.isDir()).andReturn(true);
+        mockSftp.cd("..");
+        mockSftp.rmdir(dirname);
+
+        expectLastCall();
+        mockControl.replay();
+        bapSshClient.deleteTree();
+        mockControl.verify();
+    }
+
+    private void expectDeleteFiles(final Vector<ChannelSftp.LsEntry> entries, final String... filenames) throws Exception {
+        for (final String filename : filenames) {
+            expectFile(entries, filename);
+            mockSftp.rm(filename);
+        }
+    }
+
+    private ChannelSftp.LsEntry expectFile(final Vector<ChannelSftp.LsEntry> entries, final String filename) {
+        final ChannelSftp.LsEntry file = expectLsEntry(entries, filename);
+        SftpATTRS attrs = mockControl.createMock(SftpATTRS.class);
+        expect(file.getAttrs()).andReturn(attrs);
+        expect(attrs.isDir()).andReturn(false);
+        return file;
+    }
+
+    private ChannelSftp.LsEntry expectDirectory(final Vector<ChannelSftp.LsEntry> entries, final String dirname) {
+        final ChannelSftp.LsEntry dir = expectLsEntry(entries, dirname);
+        SftpATTRS attrs = mockControl.createMock(SftpATTRS.class);
+        expect(dir.getAttrs()).andReturn(attrs);
+        expect(attrs.isDir()).andReturn(true);
+        return dir;
+    }
+
+    private ChannelSftp.LsEntry expectLsEntry(final Vector<ChannelSftp.LsEntry> entries, final String filename) {
+        final ChannelSftp.LsEntry entry = mockControl.createMock(ChannelSftp.LsEntry.class);
+        expect(entry.getFilename()).andReturn(filename);
+        entries.add(entry);
+        return entry;
     }
 
     @Test public void testBeginTransfersFailIfNoSourceFilesAndNoExecCommand() throws Exception {
