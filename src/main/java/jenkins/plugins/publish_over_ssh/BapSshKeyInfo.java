@@ -66,6 +66,7 @@ public class BapSshKeyInfo implements Serializable {
     public byte[] getEffectiveKey(final BPBuildInfo buildInfo) {
         if (hasKey())
             return BapSshUtil.toBytes(key);
+        keyPath = Util.replaceMacro(keyPath, buildInfo.getEnvVars());
         return buildInfo.readFileFromMaster(keyPath.trim());
     }
 
