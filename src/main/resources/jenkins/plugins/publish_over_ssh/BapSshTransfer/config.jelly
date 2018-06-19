@@ -41,7 +41,7 @@
     </f:entry>
 
     <f:entry title="${%execCommand}" field="execCommand">
-        <poj:textarea minRows="1" class="ssh-exec-control" default="${defaults.transfer.execCommand}"/>
+        <poj:textarea checkUrl="'${rootURL}/descriptorByName/jenkins.plugins.publish_over_ssh.BapSshTransfer/checkExecCommand'+qs(this).nearBy('sourceFiles').nearBy('execCommand').toString()" minRows="1" class="ssh-exec-control" default="${defaults.transfer.execCommand}"/>
     </f:entry>
 
     <f:description>
