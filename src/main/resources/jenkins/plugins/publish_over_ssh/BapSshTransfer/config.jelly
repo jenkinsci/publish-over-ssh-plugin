@@ -27,7 +27,7 @@
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:poj="/pojelly">
 
     <poj:defaultMessages/>
-    
+
     <f:entry title="${m.sourceFiles()}" field="sourceFiles" help="${descriptor.getHelpFile((inPromotion and !matrixPromotion) ? 'sourceFilesForPromotion' : 'sourceFiles')}">
         <f:textbox checkUrl="'${rootURL}/descriptorByName/jenkins.plugins.publish_over_ssh.BapSshTransfer/checkSourceFiles'+qs(this).nearBy('sourceFiles').nearBy('execCommand').toString()+bap_get_configName_qs(this)" default="${defaults.transfer.sourceFiles}"/>
     </f:entry>
@@ -87,6 +87,10 @@
         </f:entry>
         <f:entry title="${%useAgentForwarding}" field="useAgentForwarding">
             <f:checkbox default="${defaults.transfer.useAgentForwarding}"/>
+        </f:entry>
+
+        <f:entry title="${%useSftpForExec}" field="useSftpForExec">
+            <f:checkbox />
         </f:entry>
 
     </f:advanced>

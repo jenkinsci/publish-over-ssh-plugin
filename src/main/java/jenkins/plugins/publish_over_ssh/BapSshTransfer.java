@@ -46,31 +46,34 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
     private int execTimeout;
     private boolean usePty;
     private boolean useAgentForwarding;
+    private boolean useSftpForExec;
 
     BapSshTransfer(final String sourceFiles, final String remoteDirectory, final String removePrefix,
                    final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout) {
-        this(sourceFiles, null, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, execCommand, execTimeout, false, false, false, null);
+        this(sourceFiles, null, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, execCommand, execTimeout, false, false, false, null, false);
     }
 
     public BapSshTransfer(final String sourceFiles, final String excludes, final String remoteDirectory, final String removePrefix,
                           final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout,
-                          final boolean usePty, final boolean noDefaultExcludes, final boolean makeEmptyDirs, final String patternSeparator) {
+                          final boolean usePty, final boolean noDefaultExcludes, final boolean makeEmptyDirs, final String patternSeparator, final boolean useSftpForExec) {
         super(sourceFiles, excludes, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, false, noDefaultExcludes, makeEmptyDirs, patternSeparator);
         this.execCommand = execCommand;
         this.execTimeout = execTimeout;
         this.usePty = usePty;
         this.useAgentForwarding = false;
+        this.useSftpForExec = useSftpForExec;
     }
     
     @DataBoundConstructor
     public BapSshTransfer(final String sourceFiles, final String excludes, final String remoteDirectory, final String removePrefix,
                           final boolean remoteDirectorySDF, final boolean flatten, final boolean cleanRemote, final String execCommand, final int execTimeout,
-                          final boolean usePty, final boolean noDefaultExcludes, final boolean makeEmptyDirs, final String patternSeparator) {
+                          final boolean usePty, final boolean noDefaultExcludes, final boolean makeEmptyDirs, final String patternSeparator, final boolean useSftpForExec) {
         super(sourceFiles, excludes, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, cleanRemote, noDefaultExcludes, makeEmptyDirs, patternSeparator);
         this.execCommand = execCommand;
         this.execTimeout = execTimeout;
         this.usePty = usePty;
         this.useAgentForwarding = false;
+        this.useSftpForExec = useSftpForExec;
     }
 
     public String getExecCommand() { return execCommand; }
@@ -98,6 +101,15 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
     @DataBoundSetter
     public void setUsePty(boolean usePty) {
         this.usePty = usePty;
+    }
+
+    public boolean isUseSftpForExec() {
+        return useSftpForExec;
+    }
+
+    @DataBoundSetter
+    public void setUseSftpForExec(boolean useSftpForExec) {
+        this.useSftpForExec = useSftpForExec;
     }
 
     public boolean isUseAgentForwarding() {

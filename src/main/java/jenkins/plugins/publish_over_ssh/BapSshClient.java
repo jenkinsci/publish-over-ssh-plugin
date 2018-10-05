@@ -62,7 +62,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         this.disableExec = disableExec;
         addSession(session);
     }
-    
+
     /** Add a new session to the already known session chain (forwarding)
      * The new session will become the current session.
      * @param session new session to add
@@ -185,8 +185,99 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     }
 
     public void endTransfers(final BapSshTransfer transfer) {
-        if (!disableExec && transfer.hasExecCommand())
-            exec(transfer);
+        if (!disableExec && transfer.hasExecCommand()) {
+            if (transfer.isUseSftpForExec())
+                sftpExec(transfer);
+            else
+                exec(transfer);
+        }
+    }
+
+    public void makeSymlink(final String oldPath, final String newPath) {
+        try {
+            buildInfo.printIfVerbose(Messages.sftpExec_symlink(oldPath, newPath));
+            sftp.symlink(oldPath, newPath);
+            success();
+        } catch (SftpException sftpe) {
+            buildInfo.println(Messages.console_failure(sftpe.getLocalizedMessage()));
+        }
+    }
+
+    public void makeHardlink(final String oldPath, final String newPath) {
+        try {
+            buildInfo.printIfVerbose(Messages.sftpExec_hardlink(oldPath, newPath));
+            sftp.hardlink(oldPath, newPath);
+            success();
+        } catch (SftpException sftpe) {
+            buildInfo.println(Messages.console_failure(sftpe.getLocalizedMessage()));
+        }
+    }
+
+    public void deleteDirectory(String pathName) {
+        try {
+            buildInfo.printIfVerbose(Messages.sftpExec_deleteDirectory(pathName));
+            sftp.rmdir(pathName);
+            success();
+        } catch (SftpException sftpe) {
+            buildInfo.println(Messages.console_failure(sftpe.getLocalizedMessage()));
+        }
+    }
+
+    public void deleteFile(String pathName) {
+        try {
+            buildInfo.printIfVerbose(Messages.sftpExec_deleteFile(pathName));
+            sftp.rm(pathName);
+            success();
+        } catch (SftpException sftpe) {
+            buildInfo.println(Messages.console_failure(sftpe.getLocalizedMessage()));
+        }
+    }
+
+    private void sftpExec(final BapSshTransfer transfer) {
+
+        String commandName = "";
+        String firstArgument = "";
+        String secondArgument = "";
+
+        changeDirectory(getAbsoluteRemoteRoot());
+
+        String[] commandTokens = Util.replaceMacro(transfer.getExecCommand(), buildInfo.getEnvVars()).split("\n");
+
+        for (String commandToken:commandTokens) {
+            String[] command = commandToken.split(" ");
+            commandName = command[0];
+            switch (commandName) {
+                case "cd" :
+                    firstArgument = command[1];
+                    changeDirectory(firstArgument);
+                    break;
+                case "symlink" :
+                    firstArgument = command[1];
+                    secondArgument = command[2];
+                    makeSymlink(firstArgument, secondArgument);
+                    break;
+                case "mkdir" :
+                    firstArgument = command[1];
+                    makeDirectory(firstArgument);
+                    break;
+                case "rm" :
+                    firstArgument = command[1];
+                    deleteFile(firstArgument);
+                    break;
+                case "rmdir" :
+                    firstArgument = command[1];
+                    deleteDirectory(firstArgument);
+                    break;
+                case "ln" :
+                    firstArgument = command[1];
+                    secondArgument = command[2];
+                    makeHardlink(firstArgument, secondArgument);
+                    break;
+                default :
+                    buildInfo.println(Messages.sftpExec_unsupportedCommand(commandName));
+                    break;
+            }
+        }
     }
 
     private void exec(final BapSshTransfer transfer) {
