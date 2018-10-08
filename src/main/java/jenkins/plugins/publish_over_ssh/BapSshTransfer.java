@@ -46,6 +46,7 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
     private int execTimeout;
     private boolean usePty;
     private boolean useAgentForwarding;
+    private boolean useSftpForExec;
 
     BapSshTransfer(final String sourceFiles, final String remoteDirectory, final String removePrefix,
                    final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout) {
@@ -61,7 +62,7 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
         this.usePty = usePty;
         this.useAgentForwarding = false;
     }
-    
+
     @DataBoundConstructor
     public BapSshTransfer(final String sourceFiles, final String excludes, final String remoteDirectory, final String removePrefix,
                           final boolean remoteDirectorySDF, final boolean flatten, final boolean cleanRemote, final String execCommand, final int execTimeout,
@@ -98,6 +99,15 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
     @DataBoundSetter
     public void setUsePty(boolean usePty) {
         this.usePty = usePty;
+    }
+
+    public boolean isUseSftpForExec() {
+        return useSftpForExec;
+    }
+
+    @DataBoundSetter
+    public void setUseSftpForExec(boolean useSftpForExec) {
+        this.useSftpForExec = useSftpForExec;
     }
 
     public boolean isUseAgentForwarding() {

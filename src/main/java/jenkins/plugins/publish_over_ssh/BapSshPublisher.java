@@ -54,7 +54,7 @@ public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Des
 
     public final boolean isSftpRequired() {
         for (BapSshTransfer transfer : getTransfers()) {
-            if (transfer.hasConfiguredSourceFiles()) return true;
+            if (transfer.hasConfiguredSourceFiles() || transfer.isUseSftpForExec()) return true;
         }
         return false;
     }
