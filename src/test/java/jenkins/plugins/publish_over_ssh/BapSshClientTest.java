@@ -401,7 +401,7 @@ public class BapSshClientTest {
         expect(mockSession.openChannel("exec")).andReturn(exec);
         expect(mockSession.getTimeout()).andReturn(timeout);
         mockControl.replay();
-        bapSshClient.endTransfers(new BapSshTransfer("", "", "", "", false, false, command, timeout, true, false, false, null, false));
+        bapSshClient.endTransfers(new BapSshTransfer("", "", "", "", false, false, command, timeout, true, false, false, null));
         assertTrue(exec.isUsePty());
         assertFalse(exec.isUseAgentForwarding());
     }
@@ -414,7 +414,7 @@ public class BapSshClientTest {
         expect(mockSession.openChannel("exec")).andReturn(exec);
         expect(mockSession.getTimeout()).andReturn(timeout);
         mockControl.replay();
-        BapSshTransfer transfer = new BapSshTransfer("", "", "", "", false, false, command, timeout, true, false, false, null, false);
+        BapSshTransfer transfer = new BapSshTransfer("", "", "", "", false, false, command, timeout, true, false, false, null);
         transfer.setUseAgentForwarding(true);
         bapSshClient.endTransfers(transfer);
         assertTrue(exec.isUsePty());
