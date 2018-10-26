@@ -11,7 +11,7 @@ import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 
 
-public class sftpForExecTest {
+public class SftpForExecTest {
 
 private final IMocksControl mockControl = EasyMock.createStrictControl();
 private final Session mockSession = mockControl.createMock(Session.class);
