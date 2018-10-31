@@ -124,7 +124,7 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
     }
 
     protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
-        return super.addToHashCode(builder).append(execCommand).append(execTimeout).append(usePty).append(useAgentForwarding);
+        return super.addToHashCode(builder).append(execCommand).append(execTimeout).append(usePty).append(useAgentForwarding).append(useSftpForExec);
     }
 
     protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshTransfer that) {
@@ -132,7 +132,8 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
                 .append(execCommand, that.execCommand)
                 .append(execTimeout, that.execTimeout)
                 .append(usePty, that.usePty)
-                .append(useAgentForwarding, that.useAgentForwarding);
+                .append(useAgentForwarding, that.useAgentForwarding)
+                .append(useSftpForExec, that.useSftpForExec);
     }
 
     protected ToStringBuilder addToToString(final ToStringBuilder builder) {
@@ -140,7 +141,8 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
                 .append("execCommand", execCommand)
                 .append("execTimeout", execTimeout)
                 .append("pseudoTty", usePty)
-                .append("agentForwarding", useAgentForwarding);
+                .append("agentForwarding", useAgentForwarding)
+                .append("useSftpForExec", useSftpForExec);
     }
 
     public boolean equals(final Object that) {
