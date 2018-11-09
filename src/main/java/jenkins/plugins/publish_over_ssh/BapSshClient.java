@@ -39,7 +39,8 @@ import jenkins.plugins.publish_over.BapPublisherException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.InputStream;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -233,6 +234,148 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         }
     }
 
+    private String getStringFromArrayList(ArrayList<String> commandArguments) {
+        StringBuilder command = new StringBuilder();
+        for (String str : commandArguments) {
+            command.append(str);
+            command.append(" ");
+        }
+        return command.toString().trim();
+    }
+
+    private void getDirContent(final ArrayList<String> commandArguments) {
+        boolean withAttrs = false;
+        Vector<ChannelSftp.LsEntry> fileAndDirectoryList;
+        try {
+            buildInfo.println(Messages.sftpExec_ls(getStringFromArrayList(commandArguments)));
+            String currentDir = sftp.pwd();
+            if (commandArguments.size() > 0) {
+                withAttrs = commandArguments.get(0).equals("-l");
+                if (withAttrs)
+                    commandArguments.remove(0);
+                if (commandArguments.size() > 0)
+                    currentDir = commandArguments.get(0);
+            }
+            fileAndDirectoryList = sftp.ls(currentDir);
+            if (fileAndDirectoryList.size() == 0)
+                buildInfo.println(Messages.sftpExec_lsEmpty(currentDir));
+            else
+                showDirContent(sftp.ls(currentDir), withAttrs);
+        } catch (SftpException sftpe) {
+            buildInfo.println(Messages.sftpExec_failedCommand("ls"));
+            buildInfo.println(Messages.console_failure(sftpe.getLocalizedMessage()));
+        }
+    }
+
+    private void showDirContent(final Vector<ChannelSftp.LsEntry> entry, final boolean withAttrs) {
+        for (ChannelSftp.LsEntry item : entry) {
+            final String getName;
+            if (!item.getFilename().equals(".") && !item.getFilename().equals("..")) {
+                if (withAttrs)
+                    getName = item.getLongname();
+                else
+                    getName = item.getFilename();
+                buildInfo.println(Messages.sftpExec_display(getName));
+            }
+        }
+        success();
+    }
+
+    private String parsePathName(String pathName, final boolean isDir) {
+        if (pathName.contains("*") || pathName.contains("?")) {
+            if (pathName.length() > 1 && pathName.contains("/"))
+                pathName = pathName.substring(0, pathName.lastIndexOf("/") + 1);
+            else
+                pathName = "./";
+        }
+        if (isDir && pathName.charAt(pathName.length() - 1) != '/')
+            pathName += "/";
+        return pathName;
+    }
+
+    private String parsePathName(String pathName) {
+        return parsePathName(pathName, true);
+    }
+
+    private boolean changeLocalBaseDirectory(final String newBaseDir) {
+        try {
+            buildInfo.printIfVerbose(Messages.sftpExec_lcd(newBaseDir));
+            sftp.lcd(newBaseDir);
+            success();
+            return true;
+        } catch (SftpException sftpe) {
+            buildInfo.println(Messages.console_failure(sftpe.getLocalizedMessage()));
+            return false;
+        }
+    }
+
+    private void getFiles(final ArrayList<String> commandArguments) {
+        String workspace = Util.replaceMacro("$WORKSPACE", buildInfo.getEnvVars());
+        buildInfo.println(Messages.sftpExec_get(getStringFromArrayList(commandArguments)));
+        if (commandArguments.size() == 0 || commandArguments.size() == 1 && commandArguments.get(0).equals("-r")) {
+            buildInfo.println(Messages.sftpExec_getArgumentsEmpty());
+            return;
+        }
+        final boolean isRecursive = commandArguments.get(0).equals("-r");
+        if (isRecursive)
+            commandArguments.remove(0);
+        if (commandArguments.size() > 1 && changeLocalBaseDirectory(workspace) &&
+                changeLocalBaseDirectory(commandArguments.get(1))) {
+                workspace = sftp.lpwd();
+        }
+        getFileList(commandArguments.get(0), workspace, isRecursive);
+    }
+
+    private void getFileList(final String remotePathName, final String localBaseDir, final boolean isRecursive) {
+        try {
+            buildInfo.printIfVerbose(Messages.sftpExec_baseDir(localBaseDir));
+            buildInfo.printIfVerbose(Messages.sftpExec_showRemotePath(remotePathName));
+            Vector<ChannelSftp.LsEntry> fileAndDirectoryList = sftp.ls(remotePathName);
+            if (fileAndDirectoryList.size() == 0) {
+                buildInfo.println(Messages.sftpExec_getEmpty(remotePathName));
+                return;
+            }
+            for (ChannelSftp.LsEntry item : fileAndDirectoryList) {
+                final String itemFileName = item.getFilename();
+                if (!itemFileName.equals(".") && !itemFileName.equals("..")) {
+                    if (!item.getAttrs().isDir())
+                        getFile(itemFileName, parsePathName(remotePathName, false), localBaseDir);
+                    else if (isRecursive) {
+                        File newFile = new File(localBaseDir, itemFileName);
+                        newFile.mkdir();
+                        getFileList(parsePathName(remotePathName, true) + itemFileName + "/",
+                                localBaseDir + "/" + itemFileName, true);
+                    } else
+                        buildInfo.printIfVerbose(Messages.sftpExec_isDirectory(itemFileName));
+                }
+            }
+        } catch (SftpException | IOException  e) {
+            buildInfo.println(Messages.sftpExec_failedCommand("get"));
+            buildInfo.println(Messages.console_failure(e.getLocalizedMessage()));
+        }
+    }
+
+    private void getFile(final String fileName, final String remotePathName, final String localBaseDir)
+            throws SftpException, IOException {
+        buildInfo.println(Messages.sftpExec_getFile(fileName));
+        try(OutputStream outputStream =
+                    new FileOutputStream(new File(localBaseDir, fileName))) {
+            if (!fileName.equals(remotePathName.substring(remotePathName.lastIndexOf("/") + 1)))
+                sftp.get(parsePathName(remotePathName) + fileName, outputStream);
+            else
+                sftp.get(remotePathName, outputStream);
+            success();
+        }
+    }
+
+    private ArrayList<String> createArrayList(final String[] command, final int maxSize) {
+        ArrayList<String> commandArguments = new ArrayList<>();
+        final int commandLength = (command.length > maxSize) ? maxSize : command.length;
+        for (int i = 1; i < commandLength; i++)
+            commandArguments.add(command[i]);
+        return commandArguments;
+    }
+
     public String[] parseAllCommands(final BapSshTransfer transfer) {
         return Util.replaceMacro(transfer.getExecCommand(), buildInfo.getEnvVars()).split("\n\\s*");
     }
@@ -269,6 +412,12 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
                             makeSymlink(command[2], command[3]);
                         else
                             makeHardlink(command[1], command[2]);
+                        break;
+                    case "ls" :
+                        getDirContent(createArrayList(command, 3));
+                        break;
+                    case "get" :
+                        getFiles(createArrayList(command, 4));
                         break;
                     default :
                         buildInfo.println(Messages.sftpExec_unsupportedCommand(command[0]));
