@@ -24,6 +24,14 @@
 
 package jenkins.plugins.publish_over_ssh.descriptor;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Util;
 import hudson.model.AbstractProject;
@@ -45,10 +53,6 @@ import jenkins.plugins.publish_over_ssh.Messages;
 import jenkins.plugins.publish_over_ssh.options.SshDefaults;
 import jenkins.plugins.publish_over_ssh.options.SshPluginDefaults;
 import net.sf.json.JSONObject;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
-
-import java.util.List;
 
 @SuppressWarnings("PMD.TooManyMethods")
 public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publisher> {
@@ -73,8 +77,13 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
             defaults = new SshPluginDefaults();
     }
 
-    public BapSshCommonConfiguration getCommonConfig() { return commonConfig; }
-    public void setCommonConfig(final BapSshCommonConfiguration commonConfig) { this.commonConfig = commonConfig; }
+    public BapSshCommonConfiguration getCommonConfig() {
+        return commonConfig;
+    }
+
+    public void setCommonConfig(final BapSshCommonConfiguration commonConfig) {
+        this.commonConfig = commonConfig;
+    }
 
     public SshDefaults getDefaults() {
         return defaults;
@@ -89,7 +98,23 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
     }
 
     public List<BapSshHostConfiguration> getHostConfigurations() {
-        return hostConfigurations.getView();
+        List<BapSshHostConfiguration> retVal = new ArrayList<>();
+
+        for (BapSshHostConfiguration current : hostConfigurations.getView()) {
+            retVal.add(current);
+        }
+
+        Collections.sort(retVal, new Comparator<BapSshHostConfiguration>() {
+
+            @Override
+            public int compare(BapSshHostConfiguration p1, BapSshHostConfiguration p2) {
+                return p1.getName().compareTo(p2.getName());
+            }
+
+        });
+
+        return retVal;
+        // return hostConfigurations.getView();
     }
 
     public BapSshHostConfiguration getConfiguration(final String name) {
@@ -104,7 +129,8 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
     /**
      * Add a Host Configuration to the list of configurations.
      * 
-     * @param configuration Host Configuration to add. The common configuration will be automatically set.
+     * @param configuration
+     *            Host Configuration to add. The common configuration will be automatically set.
      */
     public void addHostConfiguration(final BapSshHostConfiguration configuration) {
         configuration.setCommonConfig(commonConfig);
@@ -114,7 +140,8 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
     /**
      * Removes the given named Host Configuration from the list of configurations.
      * 
-     * @param name The Name of the Host Configuration to remove.
+     * @param name
+     *            The Name of the Host Configuration to remove.
      */
     public void removeHostConfiguration(final String name) {
         BapSshHostConfiguration configuration = getConfiguration(name);
@@ -124,8 +151,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
     }
 
     public boolean configure(final StaplerRequest request, final JSONObject formData) {
-        final List<BapSshHostConfiguration> newConfigurations = request.bindJSONToList(BapSshHostConfiguration.class,
-                                                                                                                formData.get("instance"));
+        final List<BapSshHostConfiguration> newConfigurations = request.bindJSONToList(BapSshHostConfiguration.class, formData.get("instance"));
         commonConfig = request.bindJSON(BapSshCommonConfiguration.class, formData.getJSONObject("commonConfig"));
         for (BapSshHostConfiguration hostConfig : newConfigurations) {
             hostConfig.setCommonConfig(commonConfig);
@@ -187,20 +213,12 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
     }
 
     private static FormValidation connectionError(final String description, final Exception exception) {
-        return FormValidation.errorWithMarkup("<p>"
-                + description + "</p><p><pre>"
-                + Util.escape(exception.getClass().getCanonicalName() + ": " + exception.getLocalizedMessage())
-                + "</pre></p>");
+        return FormValidation.errorWithMarkup(
+                "<p>" + description + "</p><p><pre>" + Util.escape(exception.getClass().getCanonicalName() + ": " + exception.getLocalizedMessage()) + "</pre></p>");
     }
 
     public static BPBuildInfo createDummyBuildInfo() {
-        return new BPBuildInfo(
-            TaskListener.NULL,
-            "",
-            Jenkins.getActiveInstance().getRootPath(),
-            null,
-            null
-        );
+        return new BPBuildInfo(TaskListener.NULL, "", Jenkins.getActiveInstance().getRootPath(), null, null);
     }
 
     public Object readResolve() {
