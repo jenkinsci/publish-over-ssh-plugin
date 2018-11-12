@@ -24,6 +24,14 @@
 
 package jenkins.plugins.publish_over_ssh.descriptor;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Util;
 import hudson.model.AbstractProject;
@@ -45,10 +53,6 @@ import jenkins.plugins.publish_over_ssh.Messages;
 import jenkins.plugins.publish_over_ssh.options.SshDefaults;
 import jenkins.plugins.publish_over_ssh.options.SshPluginDefaults;
 import net.sf.json.JSONObject;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
-
-import java.util.List;
 
 @SuppressWarnings("PMD.TooManyMethods")
 public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publisher> {
@@ -89,7 +93,22 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
     }
 
     public List<BapSshHostConfiguration> getHostConfigurations() {
-        return hostConfigurations.getView();
+        List<BapSshHostConfiguration> retVal = new ArrayList<>();
+
+        for (BapSshHostConfiguration current : hostConfigurations.getView()) {
+            retVal.add(current);
+        }
+
+        Collections.sort(retVal, new Comparator<BapSshHostConfiguration>() {
+
+            @Override
+            public int compare(BapSshHostConfiguration p1, BapSshHostConfiguration p2) {
+                return p1.getName().compareTo(p2.getName());
+            }
+
+        });
+
+        return retVal;
     }
 
     public BapSshHostConfiguration getConfiguration(final String name) {
