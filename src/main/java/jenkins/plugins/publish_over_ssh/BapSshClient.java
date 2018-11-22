@@ -40,9 +40,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Stack;
-import java.util.Vector;
+import java.util.*;
 
 @SuppressWarnings("PMD.TooManyMethods")
 public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
@@ -234,20 +232,11 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         }
     }
 
-    private String getStringFromArrayList(ArrayList<String> commandArguments) {
-        StringBuilder command = new StringBuilder();
-        for (String str : commandArguments) {
-            command.append(str);
-            command.append(" ");
-        }
-        return command.toString().trim();
-    }
-
-    private void getDirContent(final ArrayList<String> commandArguments) {
+    private void getDirContent(final List<String> commandArguments) {
         boolean withAttrs = false;
         Vector<ChannelSftp.LsEntry> fileAndDirectoryList;
         try {
-            buildInfo.println(Messages.sftpExec_ls(getStringFromArrayList(commandArguments)));
+            buildInfo.println(Messages.sftpExec_ls(String.join(" ", commandArguments)));
             String currentDir = sftp.pwd();
             if (commandArguments.size() > 0) {
                 withAttrs = commandArguments.get(0).equals("-l");
@@ -309,9 +298,9 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         }
     }
 
-    private void getFiles(final ArrayList<String> commandArguments) {
-        String workspace = Util.replaceMacro("$WORKSPACE", buildInfo.getEnvVars());
-        buildInfo.println(Messages.sftpExec_get(getStringFromArrayList(commandArguments)));
+    private void getFiles(final List<String> commandArguments) {
+        String workspace = buildInfo.getBaseDirectory().getRemote();
+        buildInfo.println(Messages.sftpExec_get(String.join(" ", commandArguments)));
         if (commandArguments.size() == 0 || commandArguments.size() == 1 && commandArguments.get(0).equals("-r")) {
             buildInfo.println(Messages.sftpExec_getArgumentsEmpty());
             return;
@@ -368,14 +357,6 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         }
     }
 
-    private ArrayList<String> createArrayList(final String[] command, final int maxSize) {
-        ArrayList<String> commandArguments = new ArrayList<>();
-        final int commandLength = (command.length > maxSize) ? maxSize : command.length;
-        for (int i = 1; i < commandLength; i++)
-            commandArguments.add(command[i]);
-        return commandArguments;
-    }
-
     public String[] parseAllCommands(final BapSshTransfer transfer) {
         return Util.replaceMacro(transfer.getExecCommand(), buildInfo.getEnvVars()).split("\n\\s*");
     }
@@ -385,6 +366,8 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     }
 
     private void sftpExec(final BapSshTransfer transfer) {
+
+        int maxSize;
 
         changeDirectory(getAbsoluteRemoteRoot());
 
@@ -414,10 +397,12 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
                             makeHardlink(command[1], command[2]);
                         break;
                     case "ls" :
-                        getDirContent(createArrayList(command, 3));
+                        maxSize = command.length > 3 ? 3 : command.length;
+                        getDirContent(new ArrayList<>(Arrays.asList(command).subList(1, maxSize)));
                         break;
                     case "get" :
-                        getFiles(createArrayList(command, 4));
+                        maxSize = command.length > 4 ? 4 : command.length;
+                        getFiles(new ArrayList<>(Arrays.asList(command).subList(1, maxSize)));
                         break;
                     default :
                         buildInfo.println(Messages.sftpExec_unsupportedCommand(command[0]));
