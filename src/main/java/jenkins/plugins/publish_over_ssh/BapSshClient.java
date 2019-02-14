@@ -39,8 +39,16 @@ import jenkins.plugins.publish_over.BapPublisherException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Stack;
+import java.util.Vector;
 
 @SuppressWarnings("PMD.TooManyMethods")
 public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
