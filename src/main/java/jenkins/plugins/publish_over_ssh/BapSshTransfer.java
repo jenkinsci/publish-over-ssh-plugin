@@ -120,7 +120,7 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
     }
 
     public BapSshTransferDescriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(BapSshTransferDescriptor.class);
+        return Jenkins.getInstance().getDescriptorByType(BapSshTransferDescriptor.class);
     }
 
     protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {

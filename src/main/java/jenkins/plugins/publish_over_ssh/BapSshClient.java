@@ -287,8 +287,10 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
             exec.setPty(transfer.isUsePty());
             exec.setAgentForwarding(transfer.isUseAgentForwarding());
             exec.setInputStream(null);
-            exec.setOutputStream(buildInfo.getListener().getLogger(), true);
-            exec.setErrStream(buildInfo.getListener().getLogger(), true);
+            if(buildInfo.isVerbose()) {
+                exec.setOutputStream(buildInfo.getListener().getLogger(), true);
+                exec.setErrStream(buildInfo.getListener().getLogger(), true);
+            }
             connectExecChannel(exec, Util.replaceMacro(transfer.getExecCommand(), buildInfo.getEnvVars()));
             waitForExec(exec, transfer.getExecTimeout());
             final int status = exec.getExitStatus();
@@ -301,7 +303,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
 
     private void connectExecChannel(final ChannelExec exec, final String command) {
         exec.setCommand(command);
-        buildInfo.println(Messages.console_exec_connecting(command));
+        buildInfo.printIfVerbose(Messages.console_exec_connecting(command));
         try {
             exec.connect(getSession().getTimeout());
         } catch (JSchException jse) {

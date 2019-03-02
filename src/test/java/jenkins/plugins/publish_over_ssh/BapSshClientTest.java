@@ -204,7 +204,7 @@ public class BapSshClientTest {
         mockControl.verify();
     }
 
-    @Test public void testDisconnectQuietlySurpressExceptions() throws Exception {
+    @Test public void testDisconnectQuietlySuppressExceptions() throws Exception {
         mockControl.checkOrder(false);
         expect(mockSftp.isConnected()).andReturn(true);
         mockSftp.disconnect();
@@ -384,7 +384,7 @@ public class BapSshClientTest {
         mockControl.verify();
     }
 
-    @Test public void testEndTransfersDoesNothingIfExecDisabled() throws Exception {
+     @Test public void testEndTransfersDoesNothingIfExecDisabled() throws Exception {
         final BapSshClient noExecBapSshClient = new BapSshClient(buildInfo, mockSession, true);
         noExecBapSshClient.setSftp(mockSftp);
         final int execTimeout = 10000;
