@@ -47,8 +47,9 @@ import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import jenkins.plugins.publish_over_ssh.BapSshTransfer;
 import jenkins.plugins.publish_over_ssh.BapSshUtil;
 
+import org.junit.Rule;
 import org.junit.Test;
-import org.jvnet.hudson.test.HudsonTestCase;
+import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
 
 import com.jcraft.jsch.ChannelSftp;
@@ -57,7 +58,10 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpATTRS;
 
 @SuppressWarnings("PMD.SignatureDeclareThrowsException")
-public class IntegrationTest extends HudsonTestCase {
+public class IntegrationTest {
+
+    @Rule
+    public JenkinsRule j = new JenkinsRule();
 
 // @TODO test that we get the expected result when in a promotion
 
@@ -90,7 +94,7 @@ public class IntegrationTest extends HudsonTestCase {
         final BapSshPublisherPlugin plugin = new BapSshPublisherPlugin(
                         new ArrayList<BapSshPublisher>(Collections.singletonList(publisher)), false, false, false, "master", null);
 
-        final FreeStyleProject project = createFreeStyleProject();
+        final FreeStyleProject project = j.createFreeStyleProject();
         project.getPublishersList().add(plugin);
         final String buildDirectory = "build-dir";
         final String buildFileName = "file.txt";
@@ -113,7 +117,7 @@ public class IntegrationTest extends HudsonTestCase {
         when(mockAttrs.isDir()).thenReturn(true);
         when(mockSftp.stat(anyString())).thenReturn(mockAttrs);
 
-        assertBuildStatusSuccess(project.scheduleBuild2(0).get());
+        j.assertBuildStatusSuccess(project.scheduleBuild2(0).get());
 
         verify(mockJsch).addIdentity("TheKey", BapSshUtil.toBytes("key"), null, BapSshUtil.toBytes("passphrase"));
         verify(mockSession).connect(timeout);
