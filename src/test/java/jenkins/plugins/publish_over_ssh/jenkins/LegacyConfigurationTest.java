@@ -50,7 +50,6 @@ import static jenkins.plugins.publish_over_ssh.jenkins.JenkinsTestHelper.prepare
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-@SuppressWarnings({ "PMD.SignatureDeclareThrowsException", "PMD.TooManyMethods" })
 public class LegacyConfigurationTest {
 
     @Rule
@@ -63,7 +62,7 @@ public class LegacyConfigurationTest {
 
     @LocalData
     @Test
-    public void testLoadR0x1Minimal() throws Exception {
+    public void testLoadR0x1Minimal() {
         final List<BapSshHostConfiguration> configurations = getPublisherPluginDescriptor().getHostConfigurations();
         assertEquals(1, configurations.size());
         final BapSshHostConfiguration expected = prepare("default", "hostname", "username", "password", "", null,
@@ -83,7 +82,7 @@ public class LegacyConfigurationTest {
 
     @LocalData
     @Test
-    public void testLoadR0x1() throws Exception {
+    public void testLoadR0x1() {
         assertGlobalConfig();
         final int transfer11Timeout = 120000;
         assertPublisherPluginConfiguration(transfer11Timeout);
@@ -91,7 +90,7 @@ public class LegacyConfigurationTest {
 
     @LocalData
     @Test
-    public void testLoadR0x12() throws Exception {
+    public void testLoadR0x12() {
         assertGlobalConfig();
         assertPublisherPluginConfiguration(DEFAULT_EXEC_TIMEOUT);
 
