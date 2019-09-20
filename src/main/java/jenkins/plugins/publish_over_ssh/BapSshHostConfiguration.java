@@ -27,7 +27,6 @@ package jenkins.plugins.publish_over_ssh;
 import com.jcraft.jsch.*;
 import hudson.Util;
 import hudson.model.Describable;
-import hudson.model.Hudson;
 
 import java.io.IOException;
 import java.util.ArrayList;

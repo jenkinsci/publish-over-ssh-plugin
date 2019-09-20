@@ -28,7 +28,6 @@ import hudson.DescriptorExtensionList;
 import hudson.ExtensionPoint;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
-import hudson.model.Hudson;
 import jenkins.model.Jenkins;
 
 public abstract class SshDefaults implements Describable<SshDefaults>, ExtensionPoint, SshOptions {

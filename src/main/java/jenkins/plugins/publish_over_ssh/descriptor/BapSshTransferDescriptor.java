@@ -29,7 +29,6 @@ import hudson.Util;
 import hudson.model.Descriptor;
 import hudson.util.FormValidation;
 import jenkins.model.Jenkins;
-import jenkins.plugins.publish_over.BPTransfer;
 import jenkins.plugins.publish_over.BPValidators;
 import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;

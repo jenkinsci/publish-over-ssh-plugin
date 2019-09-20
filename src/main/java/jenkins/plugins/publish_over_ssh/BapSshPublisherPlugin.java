@@ -25,7 +25,7 @@
 package jenkins.plugins.publish_over_ssh;
 
 import hudson.Extension;
-import hudson.model.Hudson;
+
 import java.util.ArrayList;
 import java.util.List;
 

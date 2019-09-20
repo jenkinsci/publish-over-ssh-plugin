@@ -24,7 +24,6 @@
 
 package jenkins.plugins.publish_over_ssh;
 
-import hudson.model.Hudson;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.Credentials;
 import jenkins.plugins.publish_over_ssh.descriptor.BapSshCredentialsDescriptor;

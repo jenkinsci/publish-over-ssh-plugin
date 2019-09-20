@@ -25,7 +25,6 @@
 package jenkins.plugins.publish_over_ssh.jenkins;
 
 import hudson.model.Descriptor;
-import hudson.model.Hudson;
 import hudson.model.Project;
 import hudson.tasks.BuildWrapper;
 import hudson.util.DescribableList;
