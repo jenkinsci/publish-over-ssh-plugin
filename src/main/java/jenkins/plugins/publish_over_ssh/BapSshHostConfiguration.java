@@ -278,7 +278,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         static String[] getHosts(String target, String jumpHosts) {
             ArrayList<String> hosts = new ArrayList<String>();
             if (jumpHosts != null) {
-                String[] jumpHostsList = jumpHosts.split(" |;|,");
+                String[] jumpHostsList = jumpHosts.split("[ ;,]");
                 for (String host : jumpHostsList) {
                     if (StringUtils.isNotBlank(host))
                         hosts.add(host);
