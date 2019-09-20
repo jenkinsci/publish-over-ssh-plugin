@@ -84,7 +84,7 @@ public class BapSshHostConfigurationTest extends HudsonTestCase {
     }
 
     @After
-    public void aferTest() {
+    public void afterTest() {
         hostConfig = null;
     }
 
@@ -269,7 +269,7 @@ public class BapSshHostConfigurationTest extends HudsonTestCase {
     }
 
     @Test
-    public void failToConnectSftpChanel() throws Exception {
+    public void failToConnectSftpChannel() throws Exception {
         hostConfig = createWithOverrideUsernameAndPassword(mockJSch);
         getHostConfig().setCommonConfig(new BapSshCommonConfiguration("", "", "", false));
         expect(mockJSch.getSession(getHostConfig().getUsername(), getHostConfig().getHostname(), getHostConfig().getPort())).andReturn(mockSession);
@@ -285,7 +285,7 @@ public class BapSshHostConfigurationTest extends HudsonTestCase {
     }
 
     @Test
-    public void failToOpenSftpChanel() throws Exception {
+    public void failToOpenSftpChannel() throws Exception {
         hostConfig = createWithOverrideUsernameAndPassword(mockJSch);
         getHostConfig().setCommonConfig(new BapSshCommonConfiguration("", "", "", false));
         expect(mockJSch.getSession(getHostConfig().getUsername(), getHostConfig().getHostname(), getHostConfig().getPort())).andReturn(mockSession);
