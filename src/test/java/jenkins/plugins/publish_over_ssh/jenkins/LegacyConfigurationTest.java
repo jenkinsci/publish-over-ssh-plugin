@@ -25,7 +25,6 @@
 package jenkins.plugins.publish_over_ssh.jenkins;
 
 import hudson.model.Descriptor;
-import hudson.model.Hudson;
 import hudson.model.Project;
 import hudson.tasks.BuildWrapper;
 import hudson.util.DescribableList;
@@ -38,8 +37,9 @@ import jenkins.plugins.publish_over_ssh.BapSshPreBuildWrapper;
 import jenkins.plugins.publish_over_ssh.BapSshPublisher;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import jenkins.plugins.publish_over_ssh.BapSshTransfer;
+import org.junit.Rule;
 import org.junit.Test;
-import org.jvnet.hudson.test.HudsonTestCase;
+import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.recipes.LocalData;
 
 import java.util.ArrayList;
@@ -47,9 +47,13 @@ import java.util.Collections;
 import java.util.List;
 
 import static jenkins.plugins.publish_over_ssh.jenkins.JenkinsTestHelper.prepare;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-@SuppressWarnings({ "PMD.SignatureDeclareThrowsException", "PMD.TooManyMethods" })
-public class LegacyConfigurationTest extends HudsonTestCase {
+public class LegacyConfigurationTest {
+
+    @Rule
+    public JenkinsRule j = new JenkinsRule();
 
     private static final int DEFAULT_PORT = 22;
     private static final int DEFAULT_TIMEOUT = 300000;
@@ -58,7 +62,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
 
     @LocalData
     @Test
-    public void testLoadR0x1Minimal() throws Exception {
+    public void testLoadR0x1Minimal() {
         final List<BapSshHostConfiguration> configurations = getPublisherPluginDescriptor().getHostConfigurations();
         assertEquals(1, configurations.size());
         final BapSshHostConfiguration expected = prepare("default", "hostname", "username", "password", "", null,
@@ -78,7 +82,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
 
     @LocalData
     @Test
-    public void testLoadR0x1() throws Exception {
+    public void testLoadR0x1() {
         assertGlobalConfig();
         final int transfer11Timeout = 120000;
         assertPublisherPluginConfiguration(transfer11Timeout);
@@ -86,7 +90,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
 
     @LocalData
     @Test
-    public void testLoadR0x12() throws Exception {
+    public void testLoadR0x12() {
         assertGlobalConfig();
         assertPublisherPluginConfiguration(DEFAULT_EXEC_TIMEOUT);
 
@@ -213,7 +217,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
         return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
     }
     private BapSshPublisherPlugin getConfiguredPublisherPlugin() {
-        for (Project project : hudson.getProjects()) {
+        for (Project project : j.jenkins.getProjects()) {
             if (project.getPublisher(getPublisherPluginDescriptor()) != null)
                 return (BapSshPublisherPlugin) project.getPublisher(getPublisherPluginDescriptor());
         }
@@ -222,7 +226,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
     }
 
     private BapSshBuilderPlugin getConfiguredBuilderPlugin() {
-        for (Project project : hudson.getProjects()) {
+        for (Project project : j.jenkins.getProjects()) {
             for (Object builder : project.getBuilders())
                 if (builder instanceof BapSshBuilderPlugin)
                     return (BapSshBuilderPlugin) builder;
@@ -232,7 +236,7 @@ public class LegacyConfigurationTest extends HudsonTestCase {
     }
 
     private BuildWrapper getConfiguredBuildWrapper(final Class<? extends BuildWrapper> wrapperClass) {
-        for (Project project : hudson.getProjects()) {
+        for (Project project : j.jenkins.getProjects()) {
             final DescribableList<BuildWrapper, Descriptor<BuildWrapper>> wrappers = project.getBuildWrappersList();
             final BuildWrapper wrapper = wrappers.get(wrapperClass);
             if (wrapper != null) return wrapper;

@@ -30,6 +30,9 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.isNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import com.jcraft.jsch.*;
 import hudson.FilePath;
@@ -55,10 +58,13 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import org.jvnet.hudson.test.HudsonTestCase;
+import org.jvnet.hudson.test.JenkinsRule;
 
 @SuppressWarnings({"PMD.SignatureDeclareThrowsException", "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
-public class BapSshHostConfigurationTest extends HudsonTestCase {
+public class BapSshHostConfigurationTest {
+
+    @Rule
+    public JenkinsRule j = new JenkinsRule();
 
     private static final String TEST_NAME = "test config";
     private static final String TEST_HOSTNAME = "test.host.name";
@@ -84,11 +90,10 @@ public class BapSshHostConfigurationTest extends HudsonTestCase {
     }
 
     @After
-    public void aferTest() {
+    public void afterTest() {
         hostConfig = null;
     }
 
-    @Rule
     private final IMocksControl mockControl = EasyMock.createStrictControl();
     private final JSch mockJSch = mockControl.createMock(JSch.class);
     private final Session mockSession = mockControl.createMock(Session.class);
@@ -99,13 +104,11 @@ public class BapSshHostConfigurationTest extends HudsonTestCase {
     private BPBuildInfo buildInfo;
     private BapSshHostConfiguration hostConfig;
 
-    @Override
     @Before
     public void setUp() throws Exception {
         jenkinsHome = new TemporaryFolder();
         jenkinsHome.create();
         buildInfo = new BPBuildInfo(TaskListener.NULL, "", new FilePath(jenkinsHome.getRoot()), null, null);
-        super.setUp();
     }
 
     @Test
@@ -269,7 +272,7 @@ public class BapSshHostConfigurationTest extends HudsonTestCase {
     }
 
     @Test
-    public void failToConnectSftpChanel() throws Exception {
+    public void failToConnectSftpChannel() throws Exception {
         hostConfig = createWithOverrideUsernameAndPassword(mockJSch);
         getHostConfig().setCommonConfig(new BapSshCommonConfiguration("", "", "", false));
         expect(mockJSch.getSession(getHostConfig().getUsername(), getHostConfig().getHostname(), getHostConfig().getPort())).andReturn(mockSession);
@@ -285,7 +288,7 @@ public class BapSshHostConfigurationTest extends HudsonTestCase {
     }
 
     @Test
-    public void failToOpenSftpChanel() throws Exception {
+    public void failToOpenSftpChannel() throws Exception {
         hostConfig = createWithOverrideUsernameAndPassword(mockJSch);
         getHostConfig().setCommonConfig(new BapSshCommonConfiguration("", "", "", false));
         expect(mockJSch.getSession(getHostConfig().getUsername(), getHostConfig().getHostname(), getHostConfig().getPort())).andReturn(mockSession);

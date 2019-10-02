@@ -30,6 +30,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.FilePath;
 import hudson.Util;
 import jenkins.plugins.publish_over.BPBuildInfo;
@@ -323,6 +324,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         getFileList(commandArguments.get(0), workspace, isRecursive);
     }
 
+    @SuppressFBWarnings("RV_RETURN_VALUE_IGNORED_BAD_PRACTICE")
     private void getFileList(final String remotePathName, final String localBaseDir, final boolean isRecursive) {
         try {
             buildInfo.printIfVerbose(Messages.sftpExec_baseDir(localBaseDir));

@@ -27,7 +27,6 @@ package jenkins.plugins.publish_over_ssh;
 import com.jcraft.jsch.*;
 import hudson.Util;
 import hudson.model.Describable;
-import hudson.model.Hudson;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -278,7 +277,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         static String[] getHosts(String target, String jumpHosts) {
             ArrayList<String> hosts = new ArrayList<String>();
             if (jumpHosts != null) {
-                String[] jumpHostsList = jumpHosts.split(" |;|,");
+                String[] jumpHostsList = jumpHosts.split("[ ;,]");
                 for (String host : jumpHostsList) {
                     if (StringUtils.isNotBlank(host))
                         hosts.add(host);
