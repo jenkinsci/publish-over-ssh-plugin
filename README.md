@@ -52,14 +52,14 @@ the job configuration
     Use the publisher (Send build artifacts over SSH in Post-build
     Actions) to publish build artifacts from succesful builds
 
-## Configure
-
-### Create host configurations in the main Jenkins configuration
+## Global Configuration
 
 From the Jenkins home page, click "Manage Jenkins" and then click on
-"Configure System"
+"Configure System" and find the SSH section. 
+It allows you to configure hosts that are later available in your builds.
 
-Find the SSH section (as below)  
+### Default settings
+The SSH configuration section looks like this:
 ![](docs/images/global_ssh.png)
 
 This configures the default key that will be used by all of the SSH
@@ -70,6 +70,8 @@ To configure, set **either** the path to a file containing the key
 **or** paste the key into the Key field.  
 If you enter data into both Path to key and Key, the pasted Key will
 take precedence and the Path to file will be ignored.
+
+These settings are use for all hosts by default.
 
 #### Unencrypted keys
 
@@ -124,44 +126,43 @@ remote host (if using public key authentication).
 [see Publish Over ... for common options for Host
 Configurations](https://wiki.jenkins.io/display/JENKINS/Publish+Over#PublishOver-host)
 
-#### Use password authentication, or use a different key
+##### Use password authentication, or use a different key
 
 Selecting this option will produce 3 more configuration boxes that
 mirror the options available for the Jenkins SSH Key.
 
-#### Passphrase / Password
+##### Passphrase / Password
 
 If either Path to key or Key are configured then this is the passphrase
 to use with the encrypted key.  
 If no key is configured then this is the password that will be used for
 password authentication.
 
-#### Path to key
+##### Path to key
 
-[See description above.](/README.md#PublishOverSSHPlugin-defaultkeyconfig)
+See [description above](/README.md#default-settings).
 
-#### Key
+##### Key
 
-[See description above.](/README.md#PublishOverSSHPlugin-defaultkeyconfig)
+See [description above](/README.md#default-settings).
 
-#### Disable exec
+##### Disable exec
 
 This option will remove the ability to execute commands using this
 configuration.
 
-#### Add the public key to the remote server
+##### Add the public key to the remote server
 
 Ensure that the public key (counterpart to the private key configured
 above) is in the authorized keys file for the user that you connect as
 on the server you want to connect to.
 
-#### Click "Test Configuration".
+##### Check and save configuration
+* Click "Test Configuration".
+* Add more server configurations (if required)
+* Save
 
-#### Add more server configurations (if required)
-
-#### Save
-
-### Use SSH during a build
+## Use SSH during a build
 
 This plugin includes a builder which enables the use of the publisher
 during the build process.
