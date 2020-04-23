@@ -34,7 +34,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class required to enable stapler/DBC to bind to correct BPTransfer - BapSshTransfer
@@ -45,7 +45,7 @@ public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Des
     private static final long serialVersionUID = 1L;
 
     @DataBoundConstructor
-    public BapSshPublisher(final String configName, final boolean verbose, final ArrayList<BapSshTransfer> transfers,
+    public BapSshPublisher(final String configName, final boolean verbose, final List<BapSshTransfer> transfers,
                            final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp, final BapSshRetry sshRetry,
                            final BapSshPublisherLabel sshLabel, final BapSshCredentials sshCredentials) {
         super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp, sshRetry, sshLabel, sshCredentials);
@@ -71,7 +71,7 @@ public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Des
     }
 
     public BapSshPublisherDescriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherDescriptor.class);
+        return Jenkins.getInstanceOrNull().getDescriptorByType(BapSshPublisherDescriptor.class);
     }
 
     public boolean equals(final Object that) {

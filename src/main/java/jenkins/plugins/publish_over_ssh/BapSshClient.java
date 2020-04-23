@@ -247,11 +247,11 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         try {
             buildInfo.println(Messages.sftpExec_ls(String.join(" ", commandArguments)));
             String currentDir = sftp.pwd();
-            if (commandArguments.size() > 0) {
+            if (!commandArguments.isEmpty()) {
                 withAttrs = commandArguments.get(0).equals("-l");
                 if (withAttrs)
                     commandArguments.remove(0);
-                if (commandArguments.size() > 0)
+                if (!commandArguments.isEmpty())
                     currentDir = commandArguments.get(0);
             }
             fileAndDirectoryList = sftp.ls(currentDir);

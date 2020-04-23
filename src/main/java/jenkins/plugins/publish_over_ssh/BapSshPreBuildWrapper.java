@@ -39,7 +39,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("PMD.LooseCoupling") // serializable
 public class BapSshPreBuildWrapper extends BuildWrapper {
@@ -47,7 +47,7 @@ public class BapSshPreBuildWrapper extends BuildWrapper {
     private final BapSshAlwaysRunPublisherPlugin preBuild;
 
     @DataBoundConstructor
-    public BapSshPreBuildWrapper(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
+    public BapSshPreBuildWrapper(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
                                  final boolean alwaysPublishFromMaster, final String masterNodeName,
                                  final BapSshParamPublish paramPublish) {
         preBuild = new BapSshAlwaysRunPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName,
@@ -59,6 +59,7 @@ public class BapSshPreBuildWrapper extends BuildWrapper {
     }
 
     @SuppressWarnings("PMD.JUnit4TestShouldUseBeforeAnnotation")
+    @Override
     public Environment setUp(final AbstractBuild build, final Launcher launcher, final BuildListener listener)
                     throws IOException, InterruptedException {
         return preBuild.perform(build, launcher, listener) ? new Environment() { } : null;
@@ -96,11 +97,12 @@ public class BapSshPreBuildWrapper extends BuildWrapper {
         public boolean isApplicable(final AbstractProject<?, ?> abstractProject) {
             return true;
         }
+        @Override
         public String getDisplayName() {
             return Messages.preBuild_descriptor_displayName();
         }
         public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+            return Jenkins.getInstanceOrNull().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
         }
     }
 
