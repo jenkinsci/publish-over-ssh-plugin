@@ -34,6 +34,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("PMD.LooseCoupling") // serializable
@@ -44,7 +45,7 @@ public class BapSshAlwaysRunPublisherPlugin extends BapSshPublisherPlugin {
     public BapSshAlwaysRunPublisherPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError,
                                           final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName,
                                           final BapSshParamPublish paramPublish) {
-        super(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName, paramPublish);
+        super((ArrayList)publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName, paramPublish);
     }
 
     @Override

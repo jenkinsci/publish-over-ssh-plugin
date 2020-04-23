@@ -40,6 +40,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("PMD.LooseCoupling") // serializable
@@ -50,7 +51,7 @@ public class BapSshBuilderPlugin extends Builder {
     @DataBoundConstructor
     public BapSshBuilderPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
                                final boolean alwaysPublishFromMaster, final String masterNodeName, final BapSshParamPublish paramPublish) {
-        this.delegate = new BapSshPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName,
+        this.delegate = new BapSshPublisherPlugin((ArrayList)publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName,
                                                   paramPublish);
     }
 
