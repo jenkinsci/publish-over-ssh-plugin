@@ -34,6 +34,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,7 +49,7 @@ public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Des
     public BapSshPublisher(final String configName, final boolean verbose, final List<BapSshTransfer> transfers,
                            final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp, final BapSshRetry sshRetry,
                            final BapSshPublisherLabel sshLabel, final BapSshCredentials sshCredentials) {
-        super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp, sshRetry, sshLabel, sshCredentials);
+        super(configName, verbose, (ArrayList)transfers, useWorkspaceInPromotion, usePromotionTimestamp, sshRetry, sshLabel, sshCredentials);
     }
 
     public final boolean isSftpRequired() {
@@ -71,7 +72,13 @@ public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Des
     }
 
     public BapSshPublisherDescriptor getDescriptor() {
-        return Jenkins.getInstanceOrNull().getDescriptorByType(BapSshPublisherDescriptor.class);
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+        if(jenkins != null) {
+            return jenkins.getDescriptorByType(BapSshPublisherDescriptor.class);
+        }
+        else {
+            throw new NullPointerException("Jenkins is not ready or on shutdowning");
+        }
     }
 
     public boolean equals(final Object that) {
