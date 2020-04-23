@@ -27,6 +27,7 @@ package jenkins.plugins.publish_over_ssh;
 import hudson.model.Describable;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over_ssh.descriptor.BapSshCommonConfigurationDescriptor;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -51,7 +52,13 @@ public class BapSshCommonConfiguration extends BapSshKeyInfo implements Describa
     }
 
     public BapSshCommonConfigurationDescriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(BapSshCommonConfigurationDescriptor.class);
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+        if(jenkins != null) {
+            return Jenkins.getInstanceOrNull().getDescriptorByType(BapSshCommonConfigurationDescriptor.class);
+        }
+        else {
+            throw new NullPointerException("Jenkins is not ready or on Shutdowning.");
+        }
     }
 
     protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshCommonConfiguration that) {

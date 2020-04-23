@@ -34,14 +34,14 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("PMD.LooseCoupling") // serializable
 public class BapSshAlwaysRunPublisherPlugin extends BapSshPublisherPlugin {
 
     private static final long serialVersionUID = 1L;
 
-    public BapSshAlwaysRunPublisherPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError,
+    public BapSshAlwaysRunPublisherPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError,
                                           final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName,
                                           final BapSshParamPublish paramPublish) {
         super(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName, paramPublish);

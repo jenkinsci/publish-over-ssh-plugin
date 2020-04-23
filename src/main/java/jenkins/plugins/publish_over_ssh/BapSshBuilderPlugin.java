@@ -40,7 +40,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("PMD.LooseCoupling") // serializable
 public class BapSshBuilderPlugin extends Builder {
@@ -48,7 +48,7 @@ public class BapSshBuilderPlugin extends Builder {
     private final BapSshPublisherPlugin delegate;
 
     @DataBoundConstructor
-    public BapSshBuilderPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
+    public BapSshBuilderPlugin(final List<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
                                final boolean alwaysPublishFromMaster, final String masterNodeName, final BapSshParamPublish paramPublish) {
         this.delegate = new BapSshPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName,
                                                   paramPublish);
@@ -96,11 +96,19 @@ public class BapSshBuilderPlugin extends Builder {
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
             return !BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
         }
+        @Override
         public String getDisplayName() {
             return Messages.builder_descriptor_displayName();
         }
         public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+            Jenkins jenkins = Jenkins.getInstanceOrNull();
+            if(jenkins != null) {
+                return jenkins.getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+            }
+            else
+            {
+                throw new NullPointerException("Jenkins instance is not ready or on shutdowning.");
+            }
         }
     }
 
