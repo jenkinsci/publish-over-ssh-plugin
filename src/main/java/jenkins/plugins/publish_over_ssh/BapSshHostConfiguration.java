@@ -275,7 +275,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
     static class HostsHelper {
         static String[] getHosts(String target, String jumpHosts) {
-            ArrayList<String> hosts = new ArrayList<String>();
+            ArrayList<String> hosts = new ArrayList<>();
             if (jumpHosts != null) {
                 String[] jumpHostsList = jumpHosts.split("[ ;,]");
                 for (String host : jumpHostsList) {
@@ -435,7 +435,13 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     }
 
     public BapSshHostConfigurationDescriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(BapSshHostConfigurationDescriptor.class);
+        Jenkins j = Jenkins.getInstanceOrNull();
+        if(j != null) {
+            return j.getDescriptorByType(BapSshHostConfigurationDescriptor.class);
+        }
+        else {
+            throw new NullPointerException("Jenkins is not ready on going to be offline...");
+        }
     }
 
     protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshHostConfiguration that) {
@@ -499,11 +505,6 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     @Override
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
-    }
-
-    @Override
-    public Object readResolve() {
-        return super.readResolve();
     }
 
 }

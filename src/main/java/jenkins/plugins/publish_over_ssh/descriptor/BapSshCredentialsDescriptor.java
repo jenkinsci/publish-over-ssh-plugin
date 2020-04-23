@@ -79,8 +79,15 @@ public class BapSshCredentialsDescriptor extends Descriptor<BapSshCredentials> {
         final BapSshCredentials credentials = new BapSshCredentials(username, encryptedPassphrase, key, keyPath);
         final BPBuildInfo buildInfo = BapSshPublisherPluginDescriptor.createDummyBuildInfo();
         buildInfo.put(BPBuildInfo.OVERRIDE_CREDENTIALS_CONTEXT_KEY, credentials);
-        final BapSshPublisherPlugin.Descriptor pluginDescriptor = Jenkins.getActiveInstance().getDescriptorByType(
-                                                                                                    BapSshPublisherPlugin.Descriptor.class);
+        Jenkins j = Jenkins.getInstanceOrNull();
+        final BapSshPublisherPlugin.Descriptor pluginDescriptor;
+        if(j != null) {
+            pluginDescriptor = j.getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+        }
+        else {
+            throw new NullPointerException("Jenkins is not ready on going to be offline...");
+        }
+
         final BapSshHostConfiguration hostConfig = pluginDescriptor.getConfiguration(configName);
         return BapSshPublisherPluginDescriptor.validateConnection(hostConfig, buildInfo);
     }

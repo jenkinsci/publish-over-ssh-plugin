@@ -50,7 +50,13 @@ public class BapSshCredentials extends BapSshKeyInfo implements Credentials<BapS
     }
 
     public BapSshCredentialsDescriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(BapSshCredentialsDescriptor.class);
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+        if(jenkins != null) {
+            return jenkins.getDescriptorByType(BapSshCredentialsDescriptor.class);
+        }
+        else {
+            throw new NullPointerException("Jenkins is not ready on going to be offline...");
+        }
     }
 
     protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshCredentials that) {
