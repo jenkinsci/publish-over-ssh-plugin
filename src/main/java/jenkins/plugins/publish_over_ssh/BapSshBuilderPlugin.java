@@ -96,11 +96,18 @@ public class BapSshBuilderPlugin extends Builder {
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
             return !BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
         }
+        @Override
         public String getDisplayName() {
             return Messages.builder_descriptor_displayName();
         }
         public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+            Jenkins j = Jenkins.getInstanceOrNull();
+            if(j != null) {
+                return j.getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+            }
+            else {
+                throw new NullPointerException("Jenkins is not ready on going to be offline...");
+            }
         }
     }
 

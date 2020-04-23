@@ -57,7 +57,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     private static final transient Log LOG = LogFactory.getLog(BapSshClient.class);
 
     private final BPBuildInfo buildInfo;
-    private final Stack<Session> sessions = new Stack<Session>();
+    private final Stack<Session> sessions = new Stack<>();
     private final boolean disableExec;
     private ChannelSftp sftp;
 
@@ -124,6 +124,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         }
     }
 
+    @Override
     public void deleteTree() throws SftpException {
         delete();
     }
@@ -247,15 +248,15 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         try {
             buildInfo.println(Messages.sftpExec_ls(String.join(" ", commandArguments)));
             String currentDir = sftp.pwd();
-            if (commandArguments.size() > 0) {
+            if (!commandArguments.isEmpty()) {
                 withAttrs = commandArguments.get(0).equals("-l");
                 if (withAttrs)
                     commandArguments.remove(0);
-                if (commandArguments.size() > 0)
+                if (!commandArguments.isEmpty())
                     currentDir = commandArguments.get(0);
             }
             fileAndDirectoryList = sftp.ls(currentDir);
-            if (fileAndDirectoryList.size() == 0)
+            if (fileAndDirectoryList.isEmpty())
                 buildInfo.println(Messages.sftpExec_lsEmpty(currentDir));
             else
                 showDirContent(sftp.ls(currentDir), withAttrs);
@@ -282,7 +283,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     private String parsePathName(String pathName, final boolean isDir) {
         if (pathName.contains("*") || pathName.contains("?")) {
             if (pathName.length() > 1 && pathName.contains("/"))
-                pathName = pathName.substring(0, pathName.lastIndexOf("/") + 1);
+                pathName = pathName.substring(0, pathName.lastIndexOf('/') + 1);
             else
                 pathName = "./";
         }
@@ -310,7 +311,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     private void getFiles(final List<String> commandArguments) {
         String workspace = buildInfo.getBaseDirectory().getRemote();
         buildInfo.println(Messages.sftpExec_get(String.join(" ", commandArguments)));
-        if (commandArguments.size() == 0 || commandArguments.size() == 1 && commandArguments.get(0).equals("-r")) {
+        if (commandArguments.isEmpty() || commandArguments.size() == 1 && commandArguments.get(0).equals("-r")) {
             buildInfo.println(Messages.sftpExec_getArgumentsEmpty());
             return;
         }
@@ -330,7 +331,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
             buildInfo.printIfVerbose(Messages.sftpExec_baseDir(localBaseDir));
             buildInfo.printIfVerbose(Messages.sftpExec_showRemotePath(remotePathName));
             Vector<ChannelSftp.LsEntry> fileAndDirectoryList = sftp.ls(remotePathName);
-            if (fileAndDirectoryList.size() == 0) {
+            if (fileAndDirectoryList.isEmpty()) {
                 buildInfo.println(Messages.sftpExec_getEmpty(remotePathName));
                 return;
             }
@@ -359,7 +360,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         buildInfo.println(Messages.sftpExec_getFile(fileName));
         try(OutputStream outputStream =
                     new FileOutputStream(new File(localBaseDir, fileName))) {
-            if (!fileName.equals(remotePathName.substring(remotePathName.lastIndexOf("/") + 1)))
+            if (!fileName.equals(remotePathName.substring(remotePathName.lastIndexOf('/') + 1)))
                 sftp.get(parsePathName(remotePathName) + fileName, outputStream);
             else
                 sftp.get(remotePathName, outputStream);
@@ -546,7 +547,9 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
                 while (!exec.isClosed()) {
                     Thread.sleep(POLL_TIME);
                 }
-            } catch (InterruptedException ie) { }
+            } catch (InterruptedException ie) {
+                System.out.println(ie.getMessage());
+            }
         }
     }
 
