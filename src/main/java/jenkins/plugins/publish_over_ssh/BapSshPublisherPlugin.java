@@ -133,7 +133,12 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
 
     @Override
     public Descriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(Descriptor.class);
+        Jenkins jenkins = Jenkins.getInstanceOrNull();
+        if (jenkins != null) {
+            return jenkins.getDescriptorByType(Descriptor.class);
+        } else {
+            throw new NullPointerException("Jenkins is not ready on going to be offline...");
+        }
     }
 
     public BapSshHostConfiguration getConfiguration(final String name) {
@@ -148,7 +153,10 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
         }
     }
 
-    /** prevent xstream noise */
+    /**
+     * @deprecated
+     * prevent xstream noise
+     * */
     @Deprecated
     public static class DescriptorMessages implements BPPluginDescriptor.BPDescriptorMessages { }
 

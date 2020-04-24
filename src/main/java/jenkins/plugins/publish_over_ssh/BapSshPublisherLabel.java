@@ -45,7 +45,13 @@ public class BapSshPublisherLabel extends PublisherLabel implements Describable<
     }
 
     public BapSshPublisherLabelDescriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherLabelDescriptor.class);
+        Jenkins j = Jenkins.getInstanceOrNull();
+        if(j != null) {
+            return j.getDescriptorByType(BapSshPublisherLabelDescriptor.class);
+        }
+        else {
+            throw new JenkinsException();
+        }
     }
 
     public boolean equals(final Object that) {

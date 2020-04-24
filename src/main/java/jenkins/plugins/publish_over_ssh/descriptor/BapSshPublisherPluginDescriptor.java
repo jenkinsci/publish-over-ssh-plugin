@@ -84,6 +84,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
         return defaults;
     }
 
+    @Override
     public String getDisplayName() {
         return Messages.descriptor_displayName();
     }
@@ -142,6 +143,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
         }
     }
 
+    @Override
     public boolean configure(final StaplerRequest request, final JSONObject formData) {
         final List<BapSshHostConfiguration> newConfigurations = request.bindJSONToList(BapSshHostConfiguration.class,
                                                                                                                 formData.get("instance"));
