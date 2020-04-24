@@ -133,12 +133,7 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
 
     @Override
     public Descriptor getDescriptor() {
-        Jenkins jenkins = Jenkins.getInstanceOrNull();
-        if (jenkins != null) {
-            return jenkins.getDescriptorByType(Descriptor.class);
-        } else {
-            throw new NullPointerException("Jenkins is not ready on going to be offline...");
-        }
+        return Jenkins.getInstance().getDescriptorByType(Descriptor.class);
     }
 
     public BapSshHostConfiguration getConfiguration(final String name) {

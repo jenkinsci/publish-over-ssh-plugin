@@ -101,12 +101,7 @@ public class BapSshBuilderPlugin extends Builder {
             return Messages.builder_descriptor_displayName();
         }
         public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
-            Jenkins j = Jenkins.getInstanceOrNull();
-            if (j != null) {
-                return j.getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
-            } else {
-                throw new NullPointerException("Jenkins is not ready on going to be offline...");
-            }
+            return Jenkins.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
         }
     }
 

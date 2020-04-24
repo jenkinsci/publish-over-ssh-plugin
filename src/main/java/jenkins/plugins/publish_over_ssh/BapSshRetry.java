@@ -47,13 +47,7 @@ public class BapSshRetry extends Retry implements Describable<BapSshRetry> {
     }
 
     public BapSshRetryDescriptor getDescriptor() {
-        Jenkins j = Jenkins.getInstanceOrNull();
-        if(j != null) {
-            return j.getDescriptorByType(BapSshRetryDescriptor.class);
-        }
-        else {
-            throw new JenkinsException();
-        }
+        return Jenkins.getInstance().getDescriptorByType(BapSshRetryDescriptor.class);
     }
 
     public boolean equals(final Object that) {

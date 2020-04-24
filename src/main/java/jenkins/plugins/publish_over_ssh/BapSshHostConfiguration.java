@@ -435,13 +435,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     }
 
     public BapSshHostConfigurationDescriptor getDescriptor() {
-        Jenkins j = Jenkins.getInstanceOrNull();
-        if(j != null) {
-            return j.getDescriptorByType(BapSshHostConfigurationDescriptor.class);
-        }
-        else {
-            throw new NullPointerException("Jenkins is not ready on going to be offline...");
-        }
+        return Jenkins.getInstance().getDescriptorByType(BapSshHostConfigurationDescriptor.class);
     }
 
     protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshHostConfiguration that) {

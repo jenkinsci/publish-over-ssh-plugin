@@ -109,7 +109,7 @@ public class BapSshPromotionPublisherPlugin extends Notifier implements SimpleBu
             return Messages.promotion_descriptor_displayName();
         }
         public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+            return Jenkins.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
         }
     }
 

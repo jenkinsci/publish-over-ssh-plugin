@@ -106,7 +106,7 @@ public class BapSshPostBuildWrapper extends BuildWrapper {
             return Messages.postBuild_descriptor_displayName();
         }
         public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+            return Jenkins.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
         }
     }
 
