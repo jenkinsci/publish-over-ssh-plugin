@@ -524,7 +524,10 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         waiter.start();
         try {
             waiter.join(timeout);
-        } catch (InterruptedException ie) { }
+        } catch (InterruptedException ie) {
+            waiter.interrupt();
+            LOG.warn(ie.getMessage(), ie);
+        }
         final long duration = System.currentTimeMillis() - start;
         if (waiter.isAlive()) {
             waiter.interrupt();
@@ -548,7 +551,8 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
                     Thread.sleep(POLL_TIME);
                 }
             } catch (InterruptedException ie) {
-                System.out.println(ie.getMessage());
+                interrupt();
+                LOG.warn(ie.getMessage(), ie);
             }
         }
     }

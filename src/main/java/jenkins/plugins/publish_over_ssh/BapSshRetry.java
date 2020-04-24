@@ -47,7 +47,13 @@ public class BapSshRetry extends Retry implements Describable<BapSshRetry> {
     }
 
     public BapSshRetryDescriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(BapSshRetryDescriptor.class);
+        Jenkins j = Jenkins.getInstanceOrNull();
+        if(j != null) {
+            return j.getDescriptorByType(BapSshRetryDescriptor.class);
+        }
+        else {
+            throw new NullPointerException("Jenkins is not ready on going to be offline...");
+        }
     }
 
     public boolean equals(final Object that) {
