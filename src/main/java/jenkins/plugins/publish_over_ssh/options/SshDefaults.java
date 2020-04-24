@@ -43,7 +43,7 @@ public abstract class SshDefaults implements Describable<SshDefaults>, Extension
     }
 
     public static DescriptorExtensionList<SshDefaults, SshDefaultsDescriptor> all() {
-        getJenkinsInstance().getDescriptorList(SshDefaults.class);
+        return getJenkinsInstance().getDescriptorList(SshDefaults.class);
     }
 
     public SshDefaultsDescriptor getDescriptor() {
