@@ -88,7 +88,7 @@ public class IntegrationTest {
         new JenkinsTestHelper().setGlobalConfig(commonConfig, testHostConfig);
         final String dirToIgnore = "target";
         final int execTimeout = 10000;
-        final BapSshTransfer transfer = new BapSshTransfer("**/*", null, "sub-home", dirToIgnore, false, false, "", execTimeout, false, false, false, null);
+        final BapSshTransfer transfer = new BapSshTransfer("**/*", null, "sub-home", dirToIgnore, false, false, "", execTimeout, false, false, false, false, null);
         final BapSshPublisher publisher = new BapSshPublisher(testHostConfig.getName(), false,
                         new ArrayList<BapSshTransfer>(Collections.singletonList(transfer)), false, false, null, null, null);
         final BapSshPublisherPlugin plugin = new BapSshPublisherPlugin(
