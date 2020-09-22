@@ -57,7 +57,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     private static final transient Log LOG = LogFactory.getLog(BapSshClient.class);
 
     private final BPBuildInfo buildInfo;
-    private final Stack<Session> sessions = new Stack<Session>();
+    private final Stack<Session> sessions = new Stack<>();
     private final boolean disableExec;
     private ChannelSftp sftp;
 
@@ -124,6 +124,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         }
     }
 
+    @Override
     public void deleteTree() throws SftpException {
         delete();
     }
@@ -177,8 +178,20 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         }
     }
 
+    /***
+     * @deprecated Use the overloaded method with the 
+     * @param bapSshTransfer
+     * @param filePath
+     * @param inputStream
+     * @throws SftpException
+     */
+    @Deprecated
     public void transferFile(final BapSshTransfer bapSshTransfer, final FilePath filePath,
                              final InputStream inputStream) throws SftpException {
+        transferFile(filePath, inputStream);
+    }
+
+    public void transferFile(final FilePath filePath, final InputStream inputStream) throws SftpException {
         buildInfo.printIfVerbose(Messages.console_put(filePath.getName()));
         sftp.put(inputStream, filePath.getName());
         success();
@@ -247,15 +260,15 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         try {
             buildInfo.println(Messages.sftpExec_ls(String.join(" ", commandArguments)));
             String currentDir = sftp.pwd();
-            if (commandArguments.size() > 0) {
+            if (!commandArguments.isEmpty()) {
                 withAttrs = commandArguments.get(0).equals("-l");
                 if (withAttrs)
                     commandArguments.remove(0);
-                if (commandArguments.size() > 0)
+                if (!commandArguments.isEmpty())
                     currentDir = commandArguments.get(0);
             }
             fileAndDirectoryList = sftp.ls(currentDir);
-            if (fileAndDirectoryList.size() == 0)
+            if (fileAndDirectoryList.isEmpty())
                 buildInfo.println(Messages.sftpExec_lsEmpty(currentDir));
             else
                 showDirContent(sftp.ls(currentDir), withAttrs);
@@ -310,7 +323,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     private void getFiles(final List<String> commandArguments) {
         String workspace = buildInfo.getBaseDirectory().getRemote();
         buildInfo.println(Messages.sftpExec_get(String.join(" ", commandArguments)));
-        if (commandArguments.size() == 0 || commandArguments.size() == 1 && commandArguments.get(0).equals("-r")) {
+        if (!commandArguments.isEmpty() || commandArguments.size() == 1 && commandArguments.get(0).equals("-r")) {
             buildInfo.println(Messages.sftpExec_getArgumentsEmpty());
             return;
         }
@@ -330,7 +343,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
             buildInfo.printIfVerbose(Messages.sftpExec_baseDir(localBaseDir));
             buildInfo.printIfVerbose(Messages.sftpExec_showRemotePath(remotePathName));
             Vector<ChannelSftp.LsEntry> fileAndDirectoryList = sftp.ls(remotePathName);
-            if (fileAndDirectoryList.size() == 0) {
+            if (fileAndDirectoryList.isEmpty()) {
                 buildInfo.println(Messages.sftpExec_getEmpty(remotePathName));
                 return;
             }
@@ -523,7 +536,9 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         waiter.start();
         try {
             waiter.join(timeout);
-        } catch (InterruptedException ie) { }
+        } catch (InterruptedException ie) {
+            LOG.info(ie);
+        }
         final long duration = System.currentTimeMillis() - start;
         if (waiter.isAlive()) {
             waiter.interrupt();
@@ -546,7 +561,9 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
                 while (!exec.isClosed()) {
                     Thread.sleep(POLL_TIME);
                 }
-            } catch (InterruptedException ie) { }
+            } catch (InterruptedException ie) {
+                LOG.info(ie);
+            }
         }
     }
 
