@@ -51,7 +51,7 @@ public class BapSshCommonConfiguration extends BapSshKeyInfo implements Describa
     }
 
     public BapSshCommonConfigurationDescriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(BapSshCommonConfigurationDescriptor.class);
+        return Jenkins.getInstance().getDescriptorByType(BapSshCommonConfigurationDescriptor.class);
     }
 
     protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshCommonConfiguration that) {

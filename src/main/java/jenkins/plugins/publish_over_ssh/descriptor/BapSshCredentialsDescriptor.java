@@ -79,7 +79,7 @@ public class BapSshCredentialsDescriptor extends Descriptor<BapSshCredentials> {
         final BapSshCredentials credentials = new BapSshCredentials(username, encryptedPassphrase, key, keyPath);
         final BPBuildInfo buildInfo = BapSshPublisherPluginDescriptor.createDummyBuildInfo();
         buildInfo.put(BPBuildInfo.OVERRIDE_CREDENTIALS_CONTEXT_KEY, credentials);
-        final BapSshPublisherPlugin.Descriptor pluginDescriptor = Jenkins.getActiveInstance().getDescriptorByType(
+        final BapSshPublisherPlugin.Descriptor pluginDescriptor = Jenkins.getInstance().getDescriptorByType(
                                                                                                     BapSshPublisherPlugin.Descriptor.class);
         final BapSshHostConfiguration hostConfig = pluginDescriptor.getConfiguration(configName);
         return BapSshPublisherPluginDescriptor.validateConnection(hostConfig, buildInfo);

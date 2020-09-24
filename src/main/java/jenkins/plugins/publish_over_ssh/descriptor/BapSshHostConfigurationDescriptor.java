@@ -85,7 +85,7 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
     }
 
     public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
-        final BapSshPublisherPlugin.Descriptor pluginDescriptor = Jenkins.getActiveInstance().getDescriptorByType(
+        final BapSshPublisherPlugin.Descriptor pluginDescriptor = Jenkins.getInstance().getDescriptorByType(
                 BapSshPublisherPlugin.Descriptor.class);
         return pluginDescriptor.doTestConnection(request, response);
     }

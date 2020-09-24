@@ -251,10 +251,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             }
             if (connectSftp)
                 setupSftp(bapClient);
-        } catch (IOException e) {
-            bapClient.disconnectQuietly();
-            throw new BapPublisherException(Messages.exception_failedToCreateClient(e.getLocalizedMessage()), e);
-        } catch (JSchException e) {
+        } catch (JSchException | IOException e) {
             bapClient.disconnectQuietly();
             throw new BapPublisherException(Messages.exception_failedToCreateClient(e.getLocalizedMessage()), e);
         } catch (BapPublisherException e) {
@@ -275,7 +272,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
     static class HostsHelper {
         static String[] getHosts(String target, String jumpHosts) {
-            ArrayList<String> hosts = new ArrayList<String>();
+            ArrayList<String> hosts = new ArrayList<>();
             if (jumpHosts != null) {
                 String[] jumpHostsList = jumpHosts.split("[ ;,]");
                 for (String host : jumpHostsList) {
@@ -435,7 +432,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     }
 
     public BapSshHostConfigurationDescriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(BapSshHostConfigurationDescriptor.class);
+        return Jenkins.getInstance().getDescriptorByType(BapSshHostConfigurationDescriptor.class);
     }
 
     protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshHostConfiguration that) {

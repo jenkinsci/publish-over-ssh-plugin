@@ -179,7 +179,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     }
 
     /***
-     * @deprecated Use the overloaded method with the 
+     * @deprecated Use the overloaded method with the
      * @param bapSshTransfer
      * @param filePath
      * @param inputStream
