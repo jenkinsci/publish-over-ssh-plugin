@@ -178,20 +178,8 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         }
     }
 
-    /***
-     * @deprecated Use the overloaded method with the
-     * @param bapSshTransfer
-     * @param filePath
-     * @param inputStream
-     * @throws SftpException
-     */
-    @Deprecated
     public void transferFile(final BapSshTransfer bapSshTransfer, final FilePath filePath,
                              final InputStream inputStream) throws SftpException {
-        transferFile(filePath, inputStream);
-    }
-
-    public void transferFile(final FilePath filePath, final InputStream inputStream) throws SftpException {
         buildInfo.printIfVerbose(Messages.console_put(filePath.getName()));
         sftp.put(inputStream, filePath.getName());
         success();
@@ -323,7 +311,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     private void getFiles(final List<String> commandArguments) {
         String workspace = buildInfo.getBaseDirectory().getRemote();
         buildInfo.println(Messages.sftpExec_get(String.join(" ", commandArguments)));
-        if (!commandArguments.isEmpty() || commandArguments.size() == 1 && commandArguments.get(0).equals("-r")) {
+        if (commandArguments.isEmpty() || commandArguments.size() == 1 && commandArguments.get(0).equals("-r")) {
             buildInfo.println(Messages.sftpExec_getArgumentsEmpty());
             return;
         }
