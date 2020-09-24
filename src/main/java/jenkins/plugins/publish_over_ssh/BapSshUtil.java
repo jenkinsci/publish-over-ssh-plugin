@@ -35,7 +35,7 @@ public class BapSshUtil {
 
     public static byte[] toBytes(final String string) {
         if (string == null){
-            return new byte[];
+            return new byte[0];
         }
         return string.getBytes(StandardCharsets.UTF_8);
     }
