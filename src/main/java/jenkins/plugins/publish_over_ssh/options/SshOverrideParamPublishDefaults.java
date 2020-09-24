@@ -46,7 +46,7 @@ public class SshOverrideParamPublishDefaults implements ParamPublishOptions, Des
     }
 
     public SshOverrideParamPublishDefaultsDescriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(SshOverrideParamPublishDefaultsDescriptor.class);
+        return Jenkins.getInstance().getDescriptorByType(SshOverrideParamPublishDefaultsDescriptor.class);
     }
 
     @Extension
@@ -61,6 +61,7 @@ public class SshOverrideParamPublishDefaults implements ParamPublishOptions, Des
             return new jenkins.plugins.publish_over.view_defaults.ParamPublish.Messages();
         }
 
+        @Override
         public String getConfigPage() {
             return getViewPage(BapSshParamPublish.class, "config.jelly");
         }

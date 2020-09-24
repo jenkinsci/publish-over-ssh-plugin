@@ -65,7 +65,7 @@ public class SshOverridePublisherDefaults implements PublisherOptions, Describab
     }
 
     public SshOverridePublisherDefaultsDescriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(SshOverridePublisherDefaultsDescriptor.class);
+        return Jenkins.getInstance().getDescriptorByType(SshOverridePublisherDefaultsDescriptor.class);
     }
 
     @Extension
@@ -77,7 +77,7 @@ public class SshOverridePublisherDefaults implements PublisherOptions, Describab
         }
 
         public BapSshPublisherPlugin.Descriptor getPublisherPluginDescriptor() {
-            return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+            return Jenkins.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
         }
 
         public jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages getCommonFieldNames() {

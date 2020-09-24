@@ -54,7 +54,7 @@ public class SshOverrideRetryDefaults implements RetryOptions, Describable<SshOv
     }
 
     public SshOverrideRetryDefaultsDescriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(SshOverrideRetryDefaultsDescriptor.class);
+        return Jenkins.getInstance().getDescriptorByType(SshOverrideRetryDefaultsDescriptor.class);
     }
 
     @Extension
@@ -77,6 +77,7 @@ public class SshOverrideRetryDefaults implements RetryOptions, Describable<SshOv
             return new jenkins.plugins.publish_over.view_defaults.Retry.Messages();
         }
 
+        @Override
         public String getConfigPage() {
             return getViewPage(BapSshRetry.class, "config.jelly");
         }

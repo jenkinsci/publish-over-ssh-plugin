@@ -49,7 +49,9 @@ public final class SshPluginDefaults extends SshDefaults {
     }
 
     @DataBoundConstructor
-    public SshPluginDefaults() { }
+    public SshPluginDefaults() {
+        /* DataBoundConstructor */
+    }
 
     public InstanceConfigOptions getInstanceConfig() {
         return GLOBAL_DEFAULTS;

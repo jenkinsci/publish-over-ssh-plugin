@@ -251,12 +251,9 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             }
             if (connectSftp)
                 setupSftp(bapClient);
-        } catch (JSchException | IOException e) {
+        } catch (BapPublisherException | JSchException | IOException e) {
             bapClient.disconnectQuietly();
             throw new BapPublisherException(Messages.exception_failedToCreateClient(e.getLocalizedMessage()), e);
-        } catch (BapPublisherException e) {
-            bapClient.disconnectQuietly();
-            throw new BapPublisherException(Messages.exception_failedToCreateClient(e.getLocalizedMessage()), e);            
         }
         return bapClient;
     }
@@ -497,10 +494,4 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     public String toString() {
         return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
     }
-
-    @Override
-    public Object readResolve() {
-        return super.readResolve();
-    }
-
 }
