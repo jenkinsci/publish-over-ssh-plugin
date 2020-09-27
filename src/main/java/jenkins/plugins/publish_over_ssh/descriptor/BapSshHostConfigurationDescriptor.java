@@ -84,10 +84,21 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
         return BPValidators.validateFileOnMaster(value);
     }
 
+    /***
+     * @deprecated Please use overloaded Method without response parameter
+     * @param request
+     * @param response
+     * @return
+     */
+    @Deprecated
     public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
+        return doTestConnection(request);
+    }
+
+    public FormValidation doTestConnection(final StaplerRequest request) {
         final BapSshPublisherPlugin.Descriptor pluginDescriptor = Jenkins.getInstance().getDescriptorByType(
                 BapSshPublisherPlugin.Descriptor.class);
-        return pluginDescriptor.doTestConnection(request, response);
+        return pluginDescriptor.doTestConnection(request);
     }
 
     public jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages getCommonFieldNames() {

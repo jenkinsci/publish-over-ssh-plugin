@@ -386,33 +386,15 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
             buildInfo.printIfVerbose(Messages.console_session_creating(username, hostname, port));
             Session session = ssh.getSession(username, hostname, port);
 
-            if (StringUtils.isNotEmpty(proxyType) && StringUtils.isNotEmpty(proxyHost)) {
-                if (StringUtils.equals(HTTP_PROXY_TYPE, proxyType)) {
-                    ProxyHTTP proxyHTTP = new ProxyHTTP(proxyHost, proxyPort);
-                    if (StringUtils.isNotEmpty(proxyUser) && StringUtils.isNotEmpty(proxyPassword)) {
-                        proxyHTTP.setUserPasswd(proxyUser, proxyPassword);
-                    } else {
-                        proxyHTTP.setUserPasswd(null, null);
-                    }
-                    session.setProxy(proxyHTTP);
-                } else if (StringUtils.equals(SOCKS_4_PROXY_TYPE, proxyType)) {
-                    ProxySOCKS4 proxySocks4 = new ProxySOCKS4(proxyHost, proxyPort);
-                    if (StringUtils.isNotEmpty(proxyUser) && StringUtils.isNotEmpty(proxyPassword)) {
-                        proxySocks4.setUserPasswd(proxyUser, proxyPassword);
-                    } else {
-                        proxySocks4.setUserPasswd(null, null);
-                    }
-                    session.setProxy(proxySocks4);
-                } else if (StringUtils.equals(SOCKS_5_PROXY_TYPE, proxyType)) {
-                    ProxySOCKS5 proxySocks5 = new ProxySOCKS5(proxyHost, proxyPort);
-                    if (StringUtils.isNotEmpty(proxyUser) && StringUtils.isNotEmpty(proxyPassword)) {
-                        proxySocks5.setUserPasswd(proxyUser, proxyPassword);
-                    } else {
-                        proxySocks5.setUserPasswd(null, null);
-                    }
-                    session.setProxy(proxySocks5);
-                }
-            }
+            BapSshSessionProxyBuilder proxy = new BapSshSessionProxyBuilder().
+                    withProxyHost(hostname).
+                    withProxyPort(port).
+                    withProxyType(proxyType).
+                    withUser(username, proxyPassword);
+
+           session.setProxy(proxy.build());
+
+
             return session;
         } catch (JSchException jse) {
             throw new BapPublisherException(Messages.exception_session_create(username, getHostnameTrimmed(), getPort(), jse.getLocalizedMessage()),
