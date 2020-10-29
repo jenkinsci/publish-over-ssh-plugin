@@ -85,8 +85,14 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
     }
 
     public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
-        final BapSshPublisherPlugin.Descriptor pluginDescriptor = Jenkins.getActiveInstance().getDescriptorByType(
-                BapSshPublisherPlugin.Descriptor.class);
+        final BapSshPublisherPlugin.Descriptor pluginDescriptor;
+        Jenkins j = Jenkins.getInstanceOrNull();
+        if(j != null) {
+            pluginDescriptor = j.getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+        }
+        else {
+            throw new NullPointerException("Jenkins is not ready on going to be offline...");
+        }
         return pluginDescriptor.doTestConnection(request, response);
     }
 

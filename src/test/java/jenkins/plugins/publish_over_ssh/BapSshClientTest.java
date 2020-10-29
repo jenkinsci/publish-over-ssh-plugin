@@ -132,7 +132,7 @@ public class BapSshClientTest {
         } });
     }
 
-    @Test public void testMakeDirectory() throws Exception {
+    @Test public void testMakeDirectory() throws SftpException {
         mockSftp.mkdir(DIRECTORY);
         assertMakeDirectory(true, DIRECTORY);
     }
@@ -145,7 +145,7 @@ public class BapSshClientTest {
         assertMakeDirectory(false, DIRECTORY_PATH_WIN);
     }
 
-    @Test public void testMakeDirectoryMkdirFails() throws Exception {
+    @Test public void testMakeDirectoryMkdirFails() throws SftpException {
         mockSftp.mkdir(DIRECTORY);
         expectLastCall().andThrow(new SftpException(1, "I'm sorry, Dave. I'm afraid I can't do that."));
         assertMakeDirectory(false, DIRECTORY);

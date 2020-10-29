@@ -24,23 +24,20 @@
 
 package jenkins.plugins.publish_over_ssh;
 
-import jenkins.plugins.publish_over.BapPublisherException;
-
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 public class BapSshUtil {
 
     public static final int EXTENSION_ORDINAL_POST_BUILD_WRAPPER = 10;
     public static final int EXTENSION_ORDINAL_PRE_BUILD_WRAPPER = EXTENSION_ORDINAL_POST_BUILD_WRAPPER + 1;
 
-    public static byte[] toBytes(final String string) {
-        if (string == null)
-            return null;
-        try {
-            return string.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException uee) {
-            throw new BapPublisherException("Really? Really? You don't know what UTF-8 is? Really? ...", uee);
-        }
-    }
+    private BapSshUtil() {}
 
+    public static byte[] toBytes(final String string) {
+        if (string == null) {
+            return new byte[]{};
+        } else {
+            return string.getBytes(StandardCharsets.UTF_8);
+        }
+   }
 }

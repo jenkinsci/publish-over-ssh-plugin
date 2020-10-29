@@ -33,11 +33,11 @@ import jenkins.model.Jenkins;
 public abstract class SshDefaults implements Describable<SshDefaults>, ExtensionPoint, SshOptions {
 
     public static DescriptorExtensionList<SshDefaults, SshDefaultsDescriptor> all() {
-        return Jenkins.getActiveInstance().getDescriptorList(SshDefaults.class);
+        return Jenkins.getInstance().getDescriptorList(SshDefaults.class);
     }
 
     public SshDefaultsDescriptor getDescriptor() {
-        return (SshDefaultsDescriptor) Jenkins.getActiveInstance().getDescriptor(getClass());
+        return (SshDefaultsDescriptor) Jenkins.getInstance().getDescriptor(getClass());
     }
 
     public abstract static class SshDefaultsDescriptor extends Descriptor<SshDefaults> {

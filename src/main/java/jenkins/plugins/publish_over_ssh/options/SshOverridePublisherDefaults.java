@@ -38,6 +38,7 @@ public class SshOverridePublisherDefaults implements PublisherOptions, Describab
     private final boolean useWorkspaceInPromotion;
     private final boolean usePromotionTimestamp;
     private final boolean verbose;
+    private final Jenkins j = Jenkins.getInstanceOrNull();
 
     @DataBoundConstructor
     public SshOverridePublisherDefaults(final String configName, final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp,
@@ -65,7 +66,12 @@ public class SshOverridePublisherDefaults implements PublisherOptions, Describab
     }
 
     public SshOverridePublisherDefaultsDescriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(SshOverridePublisherDefaultsDescriptor.class);
+        if(j != null) {
+            return j.getDescriptorByType(SshOverridePublisherDefaultsDescriptor.class);
+        }
+        else {
+            throw new NullPointerException("Jenkins is not ready on going to be offline...");
+        }
     }
 
     @Extension
