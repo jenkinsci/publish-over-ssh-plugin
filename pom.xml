@@ -29,18 +29,21 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>3.50</version>
+        <version>4.12</version>
     </parent>
 
     <artifactId>publish-over-ssh</artifactId>
     <packaging>hpi</packaging>
     <name>Publish Over SSH</name>
-    <version>1.21-SNAPSHOT</version>
+    <version>${revision}${changelist}</version>
     <description>Send build artifacts over SSH</description>
     <url>https://github.com/jenkinsci/publish-over-ssh-plugin</url>
 
     <properties>
-        <jenkins.version>2.60.3</jenkins.version>
+        <revision>1.21</revision>
+        <changelist>-SNAPSHOT</changelist>
+        <gitHubRepo>jenkinsci/publish-over-ssh-plugin</gitHubRepo>
+        <jenkins.version>2.235.1</jenkins.version>
         <java.level>8</java.level>
     </properties>
 
@@ -60,11 +63,22 @@
         </developer>
     </developers>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.jenkins.tools.bom</groupId>
+                <artifactId>bom-2.235.x</artifactId>
+                <version>16</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>jsch</artifactId>
-            <version>0.1.55.1</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
@@ -74,12 +88,10 @@
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>structs</artifactId>
-            <version>1.14</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>1.10.19</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -97,16 +109,15 @@
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-core</artifactId>
-            <version>2.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <scm>
-        <url>https://github.com/jenkinsci/publish-over-ssh-plugin</url>
-        <connection>scm:git:git://github.com/jenkinsci/publish-over-ssh-plugin.git</connection>
-        <developerConnection>scm:git:git@github.com:jenkinsci/publish-over-ssh-plugin.git</developerConnection>
-        <tag>HEAD</tag>
+        <url>https://github.com/${gitHubRepo}</url>
+        <connection>scm:git:git://github.com/${gitHubRepo}.git</connection>
+        <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
+        <tag>${scmTag}</tag>
     </scm>
 
     <issueManagement>

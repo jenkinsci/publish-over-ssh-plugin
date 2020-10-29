@@ -24,7 +24,8 @@
   ~ THE SOFTWARE.
   -->
 
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:s="/lib/publishoverssh">
 
     <j:set var="m" value="${descriptor.commonManageMessages}"/>
 
@@ -35,14 +36,14 @@
             <j:scope>
                 <j:set var="descriptor" value="${descriptor.hostConfigurationDescriptor}"/>
                 <f:repeatable var="instance" items="${instance.hostConfigurations}" header="${%hostconfig.dragAndDrop}">
-                    <table width="100%">
+                    <s:blockWrapper>
                         <st:include page="config.jelly" class="${descriptor.clazz}"/>
                         <f:entry title="">
                             <div align="right">
                                 <f:repeatableDeleteButton />
                             </div>
                         </f:entry>
-                    </table>
+                    </s:blockWrapper>
                 </f:repeatable>
             </j:scope>
         </f:entry>
