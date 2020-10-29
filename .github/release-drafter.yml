@@ -1,0 +1,2 @@
+_extends: .github
+tag-template: publish-over-ssh-$NEXT_MINOR_VERSION
