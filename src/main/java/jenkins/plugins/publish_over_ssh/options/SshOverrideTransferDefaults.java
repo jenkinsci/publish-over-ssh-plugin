@@ -110,7 +110,7 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
     }
 
     public SshOverrideTransferDefaultsDescriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(SshOverrideTransferDefaultsDescriptor.class);
+        return Jenkins.getInstance().getDescriptorByType(SshOverrideTransferDefaultsDescriptor.class);
     }
 
     public boolean isUsePty() {

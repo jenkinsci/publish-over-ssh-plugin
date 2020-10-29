@@ -30,7 +30,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Util;
@@ -66,7 +65,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
     /** null - prevent complaints from xstream */
     @SuppressFBWarnings(value = "URF_UNREAD_FIELD")
     private transient Class hostConfigClass;
-    private final CopyOnWriteList<BapSshHostConfiguration> hostConfigurations = new CopyOnWriteList<BapSshHostConfiguration>();
+    private final CopyOnWriteList<BapSshHostConfiguration> hostConfigurations = new CopyOnWriteList<>();
     private BapSshCommonConfiguration commonConfig;
     private SshDefaults defaults;
 
@@ -84,6 +83,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
         return defaults;
     }
 
+    @Override
     public String getDisplayName() {
         return Messages.descriptor_displayName();
     }
@@ -142,6 +142,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
         }
     }
 
+    @Override
     public boolean configure(final StaplerRequest request, final JSONObject formData) {
         final List<BapSshHostConfiguration> newConfigurations = request.bindJSONToList(BapSshHostConfiguration.class,
                                                                                                                 formData.get("instance"));
@@ -169,15 +170,15 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
     }
 
     public BapSshPublisherDescriptor getPublisherDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherDescriptor.class);
+        return Jenkins.getInstance().getDescriptorByType(BapSshPublisherDescriptor.class);
     }
 
     public BapSshHostConfigurationDescriptor getHostConfigurationDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(BapSshHostConfigurationDescriptor.class);
+        return Jenkins.getInstance().getDescriptorByType(BapSshHostConfigurationDescriptor.class);
     }
 
     public SshPluginDefaults.SshPluginDefaultsDescriptor getPluginDefaultsDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(SshPluginDefaults.SshPluginDefaultsDescriptor.class);
+        return Jenkins.getInstance().getDescriptorByType(SshPluginDefaults.SshPluginDefaultsDescriptor.class);
     }
 
     public jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages getCommonFieldNames() {
@@ -188,7 +189,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
         return new jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages();
     }
 
-    public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
+    public FormValidation doTestConnection(final StaplerRequest request) {
         final BapSshHostConfiguration hostConfig = request.bindParameters(BapSshHostConfiguration.class, "");
         hostConfig.setCommonConfig(request.bindParameters(BapSshCommonConfiguration.class, "common."));
         return validateConnection(hostConfig, createDummyBuildInfo());
@@ -216,7 +217,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
         return new BPBuildInfo(
             TaskListener.NULL,
             "",
-            Jenkins.getActiveInstance().getRootPath(),
+            Jenkins.getInstance().getRootPath(),
             null,
             null
         );

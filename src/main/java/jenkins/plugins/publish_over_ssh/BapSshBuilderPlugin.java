@@ -96,11 +96,12 @@ public class BapSshBuilderPlugin extends Builder {
         public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
             return !BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
         }
+        @Override
         public String getDisplayName() {
             return Messages.builder_descriptor_displayName();
         }
         public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+            return Jenkins.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
         }
     }
 

@@ -46,7 +46,7 @@ public class SshOverridePublisherLabelDefaults implements PublisherLabelOptions,
     }
 
     public SshOverridePublisherLabelDefaultsDescriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(SshOverridePublisherLabelDefaultsDescriptor.class);
+        return Jenkins.getInstance().getDescriptorByType(SshOverridePublisherLabelDefaultsDescriptor.class);
     }
 
     @Extension
@@ -61,6 +61,7 @@ public class SshOverridePublisherLabelDefaults implements PublisherLabelOptions,
             return new jenkins.plugins.publish_over.view_defaults.PublisherLabel.Messages();
         }
 
+        @Override
         public String getConfigPage() {
             return getViewPage(BapSshPublisherLabel.class, "config.jelly");
         }

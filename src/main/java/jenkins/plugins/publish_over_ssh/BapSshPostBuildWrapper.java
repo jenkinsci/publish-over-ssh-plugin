@@ -59,10 +59,12 @@ public class BapSshPostBuildWrapper extends BuildWrapper {
     }
 
     @SuppressWarnings("PMD.JUnit4TestShouldUseBeforeAnnotation")
+    @Override
     public Environment setUp(final AbstractBuild build, final Launcher launcher, final BuildListener listener)
                     throws IOException, InterruptedException {
         final Environment runPostBuild = new Environment() {
             @SuppressWarnings("PMD.JUnit4TestShouldUseAfterAnnotation")
+            @Override
             public boolean tearDown(final AbstractBuild build, final BuildListener listener) throws IOException, InterruptedException {
                 return postBuild.perform(build, listener);
             }
@@ -102,11 +104,12 @@ public class BapSshPostBuildWrapper extends BuildWrapper {
         public boolean isApplicable(final AbstractProject<?, ?> abstractProject) {
             return true;
         }
+        @Override
         public String getDisplayName() {
             return Messages.postBuild_descriptor_displayName();
         }
         public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+            return Jenkins.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
         }
     }
 

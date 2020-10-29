@@ -28,9 +28,9 @@ import jenkins.plugins.publish_over.options.TransferOptions;
 
 public interface SshTransferOptions extends TransferOptions {
 
-    int DEFAULT_EXEC_TIMEOUT = 120000;
-    boolean DEFAULT_USE_PTY = false;
-    boolean DEFAULT_USE_AGENT_FORWARDING = false;
+    static final int DEFAULT_EXEC_TIMEOUT = 120000;
+    static final boolean DEFAULT_USE_PTY = false;
+    static final boolean DEFAULT_USE_AGENT_FORWARDING = false;
 
     String getExecCommand();
 

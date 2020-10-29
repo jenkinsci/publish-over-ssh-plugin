@@ -121,6 +121,7 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
         return Jenkins.getInstance().getDescriptorByType(BapSshTransferDescriptor.class);
     }
 
+    @Override
     protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
         return super.addToHashCode(builder).append(execCommand).append(execTimeout).append(usePty).append(useAgentForwarding).append(useSftpForExec);
     }
@@ -134,6 +135,7 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
                 .append(useSftpForExec, that.useSftpForExec);
     }
 
+    @Override
     protected ToStringBuilder addToToString(final ToStringBuilder builder) {
         return super.addToToString(builder)
                 .append("execCommand", execCommand)

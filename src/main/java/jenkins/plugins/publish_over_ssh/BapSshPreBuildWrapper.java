@@ -59,6 +59,7 @@ public class BapSshPreBuildWrapper extends BuildWrapper {
     }
 
     @SuppressWarnings("PMD.JUnit4TestShouldUseBeforeAnnotation")
+    @Override
     public Environment setUp(final AbstractBuild build, final Launcher launcher, final BuildListener listener)
                     throws IOException, InterruptedException {
         return preBuild.perform(build, launcher, listener) ? new Environment() { } : null;
@@ -96,11 +97,12 @@ public class BapSshPreBuildWrapper extends BuildWrapper {
         public boolean isApplicable(final AbstractProject<?, ?> abstractProject) {
             return true;
         }
+        @Override
         public String getDisplayName() {
             return Messages.preBuild_descriptor_displayName();
         }
         public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+            return Jenkins.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
         }
     }
 

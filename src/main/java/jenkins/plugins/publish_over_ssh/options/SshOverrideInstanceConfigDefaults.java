@@ -58,7 +58,7 @@ public class SshOverrideInstanceConfigDefaults implements InstanceConfigOptions,
     }
 
     public SshOverrideInstanceConfigDefaultsDescriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(SshOverrideInstanceConfigDefaultsDescriptor.class);
+        return Jenkins.getInstance().getDescriptorByType(SshOverrideInstanceConfigDefaultsDescriptor.class);
     }
 
     @Extension
