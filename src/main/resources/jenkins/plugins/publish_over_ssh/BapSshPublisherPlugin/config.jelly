@@ -24,7 +24,7 @@
   ~ THE SOFTWARE.
   -->
 
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:f="/lib/form" xmlns:poj="/pojelly">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:f="/lib/form" xmlns:poj="/pojelly" xmlns:s="/lib/publishoverssh">
 
     <j:set var="defaults" value="${descriptor.defaults}"/>
 
@@ -46,14 +46,14 @@
         <j:scope>
             <j:set var="descriptor" value="${descriptor.publisherDescriptor}"/>
             <f:repeatable items="${instance.publishers}" var="instance" name="publishers" minimum="1" header="${%publisher.dragAndDropLabel}" add="${m.addPublisher()}">
-                <table width="100%" padding="0">
+                <s:blockWrapper>
                     <st:include page="config.jelly" class="${descriptor.clazz}"/>
                     <f:entry title="">
                         <div align="right" class="show-if-not-only">
                             <f:repeatableDeleteButton value="${m.deletePublisher()}"/>
                         </div>
                     </f:entry>
-                </table>
+                </s:blockWrapper>
             </f:repeatable>
         </j:scope>
 
