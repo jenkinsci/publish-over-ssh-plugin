@@ -66,7 +66,7 @@
         <j:scope>
             <j:set var="descriptor" value="${descriptor.transferDescriptor}"/>
             <f:repeatable items="${instance.transfers}" var="instance" name="transfers" minimum="1" header="${m.transfers_dragAndDropLabel()}" add="${m.addTransfer()}">
-                <s:blockWrapper> width="100%" padding="0" class="ssh-transfer">
+                <s:blockWrapper>
                     <st:include page="config.jelly" class="${descriptor.clazz}"/>
                     <f:entry title="">
                         <div align="right" class="show-if-not-only">
