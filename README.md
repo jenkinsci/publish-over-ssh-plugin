@@ -7,8 +7,7 @@ This plugins shares many configuration options with two similar plugins:
 * [Publish over CIFS](https://plugins.jenkins.io/publish-over-cifs/)
 * [Publish over FTP](https://plugins.jenkins.io/publish-over-ftp/)
 Please read [Publish
-Over](https://wiki.jenkins.io/display/JENKINS/Publish+Over) first to learn about teir  
-ommon configuration options. Only options specific to Publish over SSH are documented below.
+Over](https://wiki.jenkins.io/display/JENKINS/Publish+Over) first to learn about their common configuration options. Only options specific to Publish over SSH are documented below.
 
 ## Features
 
@@ -50,7 +49,7 @@ the job configuration
     This allows cleanup or shutdown of services started before or during
     the build  
     Use the publisher (Send build artifacts over SSH in Post-build
-    Actions) to publish build artifacts from succesful builds
+    Actions) to publish build artifacts from successful builds
 
 ## Global Configuration
 
