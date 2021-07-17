@@ -250,4 +250,6 @@ Promotions](https://wiki.jenkins.io/display/JENKINS/Publish+Over#PublishOver-pro
 
 ## Version History
 
-Please refer to the [changelog](CHANGELOG.md).
+Release notes are now recorded in [Github Releases](https://github.com/jenkinsci/publish-over-ssh-plugin/releases).
+
+For older versions, refer to [changelog](CHANGELOG.md).
