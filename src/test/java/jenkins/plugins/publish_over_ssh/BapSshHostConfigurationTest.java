@@ -368,8 +368,8 @@ public class BapSshHostConfigurationTest {
     public void testDontConnectSftpIfNoSourceFilesInAnyTransfers() throws Exception {
         final BapSshCommonConfiguration defaultKeyInfo = new BapSshCommonConfiguration(TEST_PASSPHRASE, null, null, false);
         hostConfig = createWithDefaultKeyInfo(mockJSch, defaultKeyInfo);
-        final BapSshTransfer transfer1 = new BapSshTransfer("", "", "", "", false, false, "ls -la", 10000, false, false, false, null);
-        final BapSshTransfer transfer2 = new BapSshTransfer("", "", "", "", false, false, "pwd", 10000, false, false, false, null);
+        final BapSshTransfer transfer1 = new BapSshTransfer("", "", "", "", false, false, "ls -la", 10000, false, false, false, false, null);
+        final BapSshTransfer transfer2 = new BapSshTransfer("", "", "", "", false, false, "pwd", 10000, false, false, false, false, null);
         final ArrayList<BapSshTransfer> transfers = new ArrayList<BapSshTransfer>();
         transfers.addAll(Arrays.asList(transfer1, transfer2));
         final BapSshPublisher publisher = new BapSshPublisher(getHostConfig().getName(), false, transfers, false, false, null, null, null);

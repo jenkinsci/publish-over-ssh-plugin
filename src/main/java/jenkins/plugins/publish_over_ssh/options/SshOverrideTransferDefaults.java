@@ -48,6 +48,7 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
     private final boolean cleanRemote;
     private final boolean usePty;
     private boolean useAgentForwarding;
+    private final boolean keepFilePermissions;
     private final boolean noDefaultExcludes;
     private final boolean makeEmptyDirs;
     private final String patternSeparator;
@@ -56,7 +57,8 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
     public SshOverrideTransferDefaults(final String sourceFiles, final String excludes, final String removePrefix,
                                        final String remoteDirectory, final boolean flatten, final boolean remoteDirectorySDF,
                                        final boolean cleanRemote, final String execCommand, final int execTimeout, final boolean usePty,
-                                       final boolean noDefaultExcludes, final boolean makeEmptyDirs, final String patternSeparator) {
+                                       final boolean keepFilePermissions, final boolean noDefaultExcludes, final boolean makeEmptyDirs,
+                                       final String patternSeparator) {
         this.cleanRemote = cleanRemote;
         this.excludes = excludes;
         this.execCommand = execCommand;
@@ -68,6 +70,7 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
         this.sourceFiles = sourceFiles;
         this.usePty = usePty;
         this.useAgentForwarding = false;
+        this.keepFilePermissions = keepFilePermissions;
         this.noDefaultExcludes = noDefaultExcludes;
         this.makeEmptyDirs = makeEmptyDirs;
         this.patternSeparator = patternSeparator;
@@ -125,6 +128,10 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
     @Restricted(value = NoExternalUse.class)
     public void setUseAgentForwarding(boolean value) {
         useAgentForwarding = value;
+    }
+
+    public boolean isKeepFilePermissions() {
+        return keepFilePermissions;
     }
 
     public boolean isNoDefaultExcludes() {

@@ -42,6 +42,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -179,10 +180,22 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     }
 
     public void transferFile(final BapSshTransfer bapSshTransfer, final FilePath filePath,
-                             final InputStream inputStream) throws SftpException {
-        buildInfo.printIfVerbose(Messages.console_put(filePath.getName()));
-        sftp.put(inputStream, filePath.getName());
+                             final InputStream inputStream) throws SftpException, IOException, InterruptedException {
+        String name = filePath.getName();
+
+        buildInfo.printIfVerbose(Messages.console_put(name));
+        sftp.put(inputStream, name);
         success();
+
+        if (bapSshTransfer.isKeepFilePermissions()) {
+            int mode = filePath.mode();
+
+            if (mode >= 0) {
+                buildInfo.printIfVerbose(Messages.console_chmod(Integer.toString(mode, 8), name));
+                sftp.chmod(mode, name);
+                success();
+            }
+        }
     }
 
     private void success() {
