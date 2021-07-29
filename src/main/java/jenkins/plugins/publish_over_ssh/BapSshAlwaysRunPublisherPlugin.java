@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_ssh;
 
+import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.Run;
@@ -53,7 +54,8 @@ public class BapSshAlwaysRunPublisherPlugin extends BapSshPublisherPlugin {
     }
 
     public boolean perform(final AbstractBuild<?, ?> build, final BuildListener listener) throws InterruptedException, IOException {
-        return perform(build, null, listener);
+        Launcher nullLauncher = null;
+        return perform(build, nullLauncher, listener);
     }
 
     public boolean equals(final Object that) {
