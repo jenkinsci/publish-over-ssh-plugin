@@ -54,7 +54,7 @@ public class SshOverrideRetryDefaults implements RetryOptions, Describable<SshOv
 	}
 
 	public SshOverrideRetryDefaultsDescriptor getDescriptor() {
-		return Jenkins.getActiveInstance().getDescriptorByType(SshOverrideRetryDefaultsDescriptor.class);
+		return Jenkins.get().getDescriptorByType(SshOverrideRetryDefaultsDescriptor.class);
 	}
 
 	@Extension

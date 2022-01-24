@@ -41,6 +41,7 @@ import org.kohsuke.stapler.DataBoundSetter;
 
 import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.CredentialsProvider;
+import com.cloudbees.plugins.credentials.common.UsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
 import com.jcraft.jsch.ChannelSftp;
@@ -106,7 +107,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 			final String remoteRootDir, final int port, final int timeout, final boolean overrideCredentials,
 			final boolean disableExec) {
 		// CSON: ParameterNumberCheck
-		// TODO: username is empty
+		// TODO: SWA, username is empty
 		super(name, hostname, "", null, remoteRootDir, port);
 		this.timeout = timeout;
 		this.overrideCredentials = overrideCredentials;
@@ -114,6 +115,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		this.disableExec = disableExec;
 		System.out.println("construct: " + credentialsId);
 		this.credentialsId = credentialsId;
+
 	}
 
 	@DataBoundSetter
@@ -273,9 +275,12 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	}
 
 	private LegacyBapSshKeyInfo getEffectiveKeyInfo(final BPBuildInfo buildInfo) {
-		final LegacyBapSshCredentials publisherCredentials = getPublisherOverrideCredentials(buildInfo);
-		if (publisherCredentials != null)
-			return publisherCredentials;
+		final String publisherCredentials = getPublisherOverrideCredentials(buildInfo);
+		if (publisherCredentials != null) {
+			// TODO: SWA: Hier das richtige zurueckgeben.
+			return null;
+//			return publisherCredentials;
+		}
 		return overrideCredentials ? legacyCredentialsId : getCommonConfig();
 	}
 
@@ -351,19 +356,22 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	private void configureAuthentication(final BPBuildInfo buildInfo, final JSch ssh, Session session) {
 		final LegacyBapSshKeyInfo keyInfo = getEffectiveKeyInfo(buildInfo);
 		final Properties sessionProperties = getSessionProperties();
+		if (this.credentialsId != null && "" != this.credentialsId.trim()) {
+			LOG.info("use credentials: " + this.credentialsId);
 
-		if (this.credentialsId != null && this.credentialsId != "") {
-			System.out.println("use credentials: " + this.credentialsId);
-			
-			UsernamePasswordCredentialsImpl credentials = getCredentials(this.credentialsId);
-			System.out.println(credentials);
-			System.out.println(credentials.getUsername());
-			System.out.println(credentials.getPassword().getPlainText());
-			
-			session.setPassword(credentials.getPassword().getPlainText());
-			sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "keyboard-interactive,password");
+			UsernamePasswordCredentials credentials = getCredentialsUserPassword(this.credentialsId);
+			if (credentials != null) {
+				System.out.println(credentials);
+				System.out.println(credentials.getUsername());
+				System.out.println(credentials.getPassword().getPlainText());
+
+				session.setPassword(credentials.getPassword().getPlainText());
+				sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "keyboard-interactive,password");
+			} else {
+				LOG.warn("cannot find credentials for id: " + this.credentialsId);
+			}
 		} else {
-
+			System.out.println("no credentials given");
 			if (keyInfo.useKey()) {
 				setKey(buildInfo, ssh, keyInfo);
 				sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "publickey");
@@ -371,8 +379,9 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 				session.setPassword(Util.fixNull(keyInfo.getPassphrase()));
 				sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "keyboard-interactive,password");
 			}
-			session.setConfig(sessionProperties);
 		}
+
+		session.setConfig(sessionProperties);
 	}
 
 	private void setupSftp(final BapSshClient bapClient) throws IOException {
@@ -461,8 +470,23 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	}
 
 	private Session createSession(final BPBuildInfo buildInfo, final JSch ssh, String hostname, int port) {
-		final LegacyBapSshCredentials overrideCreds = getPublisherOverrideCredentials(buildInfo);
-		final String username = overrideCreds == null ? getUsername() : overrideCreds.getUsername();
+		final String overrideCredsId = getPublisherOverrideCredentials(buildInfo);
+		System.out.println("override creds: " + overrideCredsId);
+
+		String overrideUserName = null;
+		if (overrideCredsId != null) {
+			UsernamePasswordCredentials overrideCredentials = getCredentialsUserPassword(overrideCredsId);
+			if (overrideCredentials != null) {
+				overrideUserName = overrideCredentials.getUsername();
+			} else {
+				// hier ist was faul
+			}
+		}
+
+		final String username = overrideUserName == null ? getUsername() : overrideUserName;
+		System.out.println("username: " + username);
+		System.out.println("credentials: " + this.credentialsId);
+
 		try {
 			buildInfo.printIfVerbose(Messages.console_session_creating(username, hostname, port));
 			Session session = ssh.getSession(username, hostname, port);
@@ -501,8 +525,8 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		}
 	}
 
-	private static LegacyBapSshCredentials getPublisherOverrideCredentials(final BPBuildInfo buildInfo) {
-		return (LegacyBapSshCredentials) buildInfo.get(BPBuildInfo.OVERRIDE_CREDENTIALS_CONTEXT_KEY);
+	private static String getPublisherOverrideCredentials(final BPBuildInfo buildInfo) {
+		return (String) buildInfo.get(BPBuildInfo.OVERRIDE_CREDENTIALS_CONTEXT_KEY);
 	}
 
 	protected JSch createJSch() {
@@ -557,9 +581,24 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
 	}
 
-	private UsernamePasswordCredentialsImpl getCredentials(final String pCredentialId) {
+	private UsernamePasswordCredentials getCredentialsUserPassword(final String pCredentialId) {
 		return CredentialsMatchers.firstOrNull(
-                CredentialsProvider.lookupCredentials(UsernamePasswordCredentialsImpl.class, Jenkins.getInstance(), ACL.SYSTEM, Collections.<DomainRequirement> emptyList()),
-                CredentialsMatchers.allOf(CredentialsMatchers.withId(pCredentialId)));
+				CredentialsProvider.lookupCredentials(UsernamePasswordCredentialsImpl.class, Jenkins.get(), ACL.SYSTEM,
+						Collections.<DomainRequirement>emptyList()),
+				CredentialsMatchers.allOf(CredentialsMatchers.withId(pCredentialId)));
 	}
+
+	@Override
+	public String getUsername() {
+		final String theCredentialId = this.getCredentialsId();
+		String retVal = super.getUsername();
+		if (theCredentialId != null && !"".equals(theCredentialId.trim())) {
+			UsernamePasswordCredentials theCrds = this.getCredentialsUserPassword(theCredentialId);
+			if (theCrds != null) {
+				retVal = theCrds.getUsername();
+			}
+		}
+		return retVal;
+	}
+
 }

@@ -47,7 +47,7 @@ public class SshOverridePublisherLabelDefaults
 	}
 
 	public SshOverridePublisherLabelDefaultsDescriptor getDescriptor() {
-		return Jenkins.getActiveInstance().getDescriptorByType(SshOverridePublisherLabelDefaultsDescriptor.class);
+		return Jenkins.get().getDescriptorByType(SshOverridePublisherLabelDefaultsDescriptor.class);
 	}
 
 	@Extension

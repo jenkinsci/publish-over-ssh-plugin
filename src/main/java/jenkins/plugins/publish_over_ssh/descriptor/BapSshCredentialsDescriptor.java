@@ -61,10 +61,8 @@ public class BapSshCredentialsDescriptor extends Descriptor<LegacyBapSshCredenti
 	public FormValidation doTestConnection(@QueryParameter final String configName,
 			@QueryParameter final String credentialsId) {
 
-		final LegacyBapSshCredentials legacyCredentials = null;
-
 		final BPBuildInfo buildInfo = BapSshPublisherPluginDescriptor.createDummyBuildInfo();
-		buildInfo.put(BPBuildInfo.OVERRIDE_CREDENTIALS_CONTEXT_KEY, legacyCredentials);
+		buildInfo.put(BPBuildInfo.OVERRIDE_CREDENTIALS_CONTEXT_KEY, credentialsId);
 		Jenkins j = Jenkins.getInstanceOrNull();
 		final BapSshPublisherPlugin.Descriptor pluginDescriptor;
 		if (j != null) {

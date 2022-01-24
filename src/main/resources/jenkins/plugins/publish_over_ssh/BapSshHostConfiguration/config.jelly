@@ -42,7 +42,7 @@
     <f:advanced>
 
         <f:optionalBlock inline="true" title="${%override.default.key}" field="overrideKey">
-            <f:entry title="${%Credentials}" field="credentialsId">
+            <f:entry title="${%OverrideCredentialsId}" field="overrideCredentialsId">
         		<c:select/>
     		</f:entry>
         </f:optionalBlock>
@@ -85,5 +85,5 @@
     </f:advanced>
 
     <f:validateButton title="${m.test_title()}" progress="${m.test_progress()}" method="testConnection"
-                      with="name,hostname,username,encryptedPassword,remoteRootDir,jumpHost,port,timeout,keyPath,key,overrideKey,common.encryptedPassphrase,common.key,common.keyPath,proxyType,proxyHost,proxyPort,proxyUser,proxyPassword"/>
+                      with="name,hostname,overrideCredentialsId,remoteRootDir,jumpHost,port,timeout,overrideKey,common.credentialsId,proxyType,proxyHost,proxyPort,proxyUser,proxyPassword"/>
 </j:jelly>

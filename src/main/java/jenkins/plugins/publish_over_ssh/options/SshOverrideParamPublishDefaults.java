@@ -47,7 +47,7 @@ public class SshOverrideParamPublishDefaults
 	}
 
 	public SshOverrideParamPublishDefaultsDescriptor getDescriptor() {
-		return Jenkins.getActiveInstance().getDescriptorByType(SshOverrideParamPublishDefaultsDescriptor.class);
+		return Jenkins.get().getDescriptorByType(SshOverrideParamPublishDefaultsDescriptor.class);
 	}
 
 	@Extension

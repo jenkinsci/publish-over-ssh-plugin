@@ -57,7 +57,7 @@ public class BapSshTransferDescriptor extends Descriptor<BapSshTransfer> {
 	public FormValidation doCheckSourceFiles(@QueryParameter final String configName,
 			@QueryParameter final String sourceFiles, @QueryParameter final String execCommand) {
 		if (Util.fixEmptyAndTrim(configName) != null) {
-			final BapSshPublisherPlugin.Descriptor pluginDescriptor = Jenkins.getActiveInstance()
+			final BapSshPublisherPlugin.Descriptor pluginDescriptor = Jenkins.get()
 					.getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
 			final BapSshHostConfiguration hostConfig = pluginDescriptor.getConfiguration(configName);
 			if (hostConfig == null)
