@@ -360,7 +360,6 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 			System.out.println(credentials.getUsername());
 			System.out.println(credentials.getPassword().getPlainText());
 			
-			setKey(buildInfo, ssh, keyInfo);
 			session.setPassword(credentials.getPassword().getPlainText());
 			sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "keyboard-interactive,password");
 		} else {
@@ -511,7 +510,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	}
 
 	public BapSshHostConfigurationDescriptor getDescriptor() {
-		return Jenkins.getInstance().getDescriptorByType(BapSshHostConfigurationDescriptor.class);
+		return Jenkins.get().getDescriptorByType(BapSshHostConfigurationDescriptor.class);
 	}
 
 	protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshHostConfiguration that) {

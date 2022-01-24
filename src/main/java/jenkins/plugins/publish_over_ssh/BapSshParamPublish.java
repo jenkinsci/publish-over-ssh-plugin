@@ -45,7 +45,7 @@ public class BapSshParamPublish extends ParamPublish implements Describable<BapS
 	}
 
 	public BapSshParamPublishDescriptor getDescriptor() {
-		return Jenkins.getInstance().getDescriptorByType(BapSshParamPublishDescriptor.class);
+		return Jenkins.get().getDescriptorByType(BapSshParamPublishDescriptor.class);
 	}
 
 	public boolean equals(final Object that) {

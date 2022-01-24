@@ -51,7 +51,7 @@ public class LegacyBapSshCredentials extends LegacyBapSshKeyInfo implements Cred
 	}
 
 	public LegacyBapSshCredentialsDescriptor getDescriptor() {
-		return Jenkins.getInstance().getDescriptorByType(LegacyBapSshCredentialsDescriptor.class);
+		return Jenkins.get().getDescriptorByType(LegacyBapSshCredentialsDescriptor.class);
 	}
 
 	protected EqualsBuilder addToEquals(final EqualsBuilder builder, final LegacyBapSshCredentials that) {

@@ -74,7 +74,7 @@ public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Des
 	}
 
 	public BapSshPublisherDescriptor getDescriptor() {
-		return Jenkins.getInstance().getDescriptorByType(BapSshPublisherDescriptor.class);
+		return Jenkins.get().getDescriptorByType(BapSshPublisherDescriptor.class);
 	}
 
 	public boolean equals(final Object that) {

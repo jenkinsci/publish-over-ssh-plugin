@@ -59,13 +59,13 @@ public class LegacyBapSshCredentialsDescriptor extends Descriptor<LegacyBapSshCr
 	public FormValidation doCheckKeyPath(@QueryParameter final String value) {
 		AccessControlled subject = Stapler.getCurrentRequest().findAncestorObject(AbstractProject.class);
 		if (subject == null) {
-			subject = Jenkins.getInstance();
+			subject = Jenkins.get();
 		}
 		if (!subject.hasPermission(Item.CONFIGURE) && subject.hasPermission(Item.EXTENDED_READ)) {
 			return FormValidation.ok();
 		}
 		try {
-			return Jenkins.getInstance().getRootPath().validateRelativePath(value, true, true);
+			return Jenkins.get().getRootPath().validateRelativePath(value, true, true);
 		} catch (final IOException ioe) {
 			return FormValidation.error(ioe, "");
 		} catch (final NullPointerException npe) {

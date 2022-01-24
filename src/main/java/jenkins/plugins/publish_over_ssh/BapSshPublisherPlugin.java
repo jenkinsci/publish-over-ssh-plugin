@@ -134,7 +134,7 @@ public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClien
 
 	@Override
 	public Descriptor getDescriptor() {
-		return Jenkins.getInstance().getDescriptorByType(Descriptor.class);
+		return Jenkins.get().getDescriptorByType(Descriptor.class);
 	}
 
 	public BapSshHostConfiguration getConfiguration(final String name) {

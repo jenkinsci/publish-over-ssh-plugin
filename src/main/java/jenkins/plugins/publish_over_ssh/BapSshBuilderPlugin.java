@@ -106,7 +106,7 @@ public class BapSshBuilderPlugin extends Builder {
 		}
 
 		public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
-			return Jenkins.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+			return Jenkins.get().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
 		}
 	}
 
