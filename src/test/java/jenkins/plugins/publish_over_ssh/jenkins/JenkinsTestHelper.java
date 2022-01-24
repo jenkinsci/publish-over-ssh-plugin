@@ -38,70 +38,77 @@ import java.security.PrivilegedExceptionAction;
 
 public class JenkinsTestHelper {
 
-    public static BapSshHostConfiguration fill(final BapSshHostConfiguration toFill, final String name, final String hostname, final String username, final String encryptedPassword,
-                                               final String remoteRootDir, final String jumpHost, final int port, final int timeout, final boolean overrideKey,
-                                               final String keyPath, final String key, final boolean disableExec) {
-        toFill.setName(name);
-        toFill.setHostname(hostname);
-        toFill.setUsername(username);
-        toFill.setEncryptedPassword(encryptedPassword);
-        toFill.setRemoteRootDir(remoteRootDir);
-        toFill.setJumpHost(jumpHost);
-        toFill.setPort(port);
-        toFill.setTimeout(timeout);
-        toFill.setOverrideKey(overrideKey);
-        toFill.setKeyPath(keyPath);
-        toFill.setKey(key);
-        toFill.setDisableExec(disableExec);
-        return toFill;
-    }
+	public static BapSshHostConfiguration fill(final BapSshHostConfiguration toFill, final String name,
+			final String hostname, final String username, final String encryptedPassword, final String remoteRootDir,
+			final String jumpHost, final int port, final int timeout, final boolean overrideKey, final String keyPath,
+			final String key, final boolean disableExec) {
+		toFill.setName(name);
+		toFill.setHostname(hostname);
+		toFill.setUsername(username);
+		toFill.setEncryptedPassword(encryptedPassword);
+		toFill.setRemoteRootDir(remoteRootDir);
+		toFill.setJumpHost(jumpHost);
+		toFill.setPort(port);
+		toFill.setTimeout(timeout);
+		toFill.setOverrideKey(overrideKey);
+		toFill.setKeyPath(keyPath);
+		toFill.setKey(key);
+		toFill.setDisableExec(disableExec);
+		return toFill;
+	}
 
-    public static BapSshHostConfiguration fillProxySettings(final BapSshHostConfiguration toFill, final String proxyType, final String proxyHost, final int proxyPort, final String proxyUser, final String proxyPassword) {
-        toFill.setProxyType(proxyType);
-        toFill.setProxyHost(proxyHost);
-        toFill.setProxyPort(proxyPort);
-        toFill.setProxyUser(proxyUser);
-        toFill.setProxyPassword(proxyPassword);
-        return toFill;
-    }
+	public static BapSshHostConfiguration fillProxySettings(final BapSshHostConfiguration toFill,
+			final String proxyType, final String proxyHost, final int proxyPort, final String proxyCredentialsId) {
+		toFill.setProxyType(proxyType);
+		toFill.setProxyHost(proxyHost);
+		toFill.setProxyPort(proxyPort);
+		toFill.setProxyCredentialsId(proxyCredentialsId);
+		return toFill;
+	}
 
-    public static BapSshHostConfiguration prepare(final String name, final String hostname, final String username, final String encryptedPassword,
-                                                  final String remoteRootDir, final String jumpHost, final int port, final int timeout, final boolean overrideKey,
-                                                  final String keyPath, final String key, final boolean disableExec) {
-        BapSshHostConfiguration bapSshHostConfiguration = new BapSshHostConfiguration();
-        return fill(bapSshHostConfiguration, name, hostname, username, encryptedPassword, remoteRootDir, jumpHost, port, timeout, overrideKey, keyPath, key, disableExec);
-    }
+	public static BapSshHostConfiguration prepare(final String name, final String hostname, final String username,
+			final String encryptedPassword, final String remoteRootDir, final String jumpHost, final int port,
+			final int timeout, final boolean overrideKey, final String keyPath, final String key,
+			final boolean disableExec) {
+		BapSshHostConfiguration bapSshHostConfiguration = new BapSshHostConfiguration();
+		return fill(bapSshHostConfiguration, name, hostname, username, encryptedPassword, remoteRootDir, jumpHost, port,
+				timeout, overrideKey, keyPath, key, disableExec);
+	}
 
+	public void setGlobalConfig(final BapSshCommonConfiguration commonConfig,
+			final BapSshHostConfiguration... newHostConfigurations)
+			throws NoSuchFieldException, IllegalAccessException {
+		for (BapSshHostConfiguration hostConfig : newHostConfigurations) {
+			hostConfig.setCommonConfig(commonConfig);
+		}
+		final CopyOnWriteList<BapSshHostConfiguration> hostConfigurations = getHostConfigurations();
+		hostConfigurations.replaceBy(newHostConfigurations);
+		Jenkins.get().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class).setCommonConfig(commonConfig);
+	}
 
-    public void setGlobalConfig(final BapSshCommonConfiguration commonConfig, final BapSshHostConfiguration... newHostConfigurations)
-                                                                                throws NoSuchFieldException, IllegalAccessException {
-        for (BapSshHostConfiguration hostConfig : newHostConfigurations) {
-            hostConfig.setCommonConfig(commonConfig);
-        }
-        final CopyOnWriteList<BapSshHostConfiguration> hostConfigurations = getHostConfigurations();
-        hostConfigurations.replaceBy(newHostConfigurations);
-        Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class).setCommonConfig(commonConfig);
-    }
+	public CopyOnWriteList<BapSshHostConfiguration> getHostConfigurations()
+			throws NoSuchFieldException, IllegalAccessException {
+		final Field hostConfigurations = BapSshPublisherPluginDescriptor.class.getDeclaredField("hostConfigurations");
+		try {
+			return AccessController.doPrivileged(new GetMeTheHostConfigurations(hostConfigurations));
+		} catch (PrivilegedActionException pae) {
+			throw (IllegalAccessException) pae.getException();
+		}
+	}
 
-    public CopyOnWriteList<BapSshHostConfiguration> getHostConfigurations() throws NoSuchFieldException, IllegalAccessException {
-        final Field hostConfigurations = BapSshPublisherPluginDescriptor.class.getDeclaredField("hostConfigurations");
-        try {
-            return AccessController.doPrivileged(new GetMeTheHostConfigurations(hostConfigurations));
-        } catch (PrivilegedActionException pae) {
-            throw (IllegalAccessException) pae.getException();
-        }
-    }
+	private static final class GetMeTheHostConfigurations
+			implements PrivilegedExceptionAction<CopyOnWriteList<BapSshHostConfiguration>> {
+		private final Field hostConfigurations;
 
-    private static final class GetMeTheHostConfigurations implements PrivilegedExceptionAction<CopyOnWriteList<BapSshHostConfiguration>> {
-        private final Field hostConfigurations;
-        protected GetMeTheHostConfigurations(final Field hostConfigurations) {
-            this.hostConfigurations = hostConfigurations;
-        }
-        public CopyOnWriteList<BapSshHostConfiguration> run() throws IllegalAccessException {
-            hostConfigurations.setAccessible(true);
-            return (CopyOnWriteList) hostConfigurations.get(Jenkins.getActiveInstance().getDescriptorByType(
-                                                            BapSshPublisherPlugin.Descriptor.class));
-        }
-    }
+		protected GetMeTheHostConfigurations(final Field hostConfigurations) {
+			this.hostConfigurations = hostConfigurations;
+		}
+
+		public CopyOnWriteList<BapSshHostConfiguration> run() throws IllegalAccessException {
+			hostConfigurations.setAccessible(true);
+			return (CopyOnWriteList) hostConfigurations
+					.get(Jenkins.get().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class));
+		}
+	}
 
 }

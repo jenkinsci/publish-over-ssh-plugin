@@ -89,9 +89,8 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	private String proxyType;
 	private String proxyHost;
 	private int proxyPort;
-	private String proxyUser;
-	private String proxyPassword;
-
+	private String proxyCredentialsId;
+	
 	public BapSshHostConfiguration() {
 		// use this constructor instead of the default w/o parameters because there is
 		// some
@@ -237,12 +236,8 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		return proxyPort;
 	}
 
-	public String getProxyUser() {
-		return proxyUser;
-	}
-
-	public String getProxyPassword() {
-		return proxyPassword;
+	public String getProxyCredentialsId() {
+		return proxyCredentialsId;
 	}
 
 	@DataBoundSetter
@@ -261,13 +256,8 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	}
 
 	@DataBoundSetter
-	public void setProxyUser(String proxyUser) {
-		this.proxyUser = proxyUser;
-	}
-
-	@DataBoundSetter
-	public void setProxyPassword(String proxyPassword) {
-		this.proxyPassword = proxyPassword;
+	public void setProxyCredentialsId(String proxyCredentialsId) {
+		this.proxyCredentialsId = proxyCredentialsId;
 	}
 
 	public boolean isEffectiveDisableExec() {
@@ -494,24 +484,27 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 			if (StringUtils.isNotEmpty(proxyType) && StringUtils.isNotEmpty(proxyHost)) {
 				if (StringUtils.equals(HTTP_PROXY_TYPE, proxyType)) {
 					ProxyHTTP proxyHTTP = new ProxyHTTP(proxyHost, proxyPort);
-					if (StringUtils.isNotEmpty(proxyUser) && StringUtils.isNotEmpty(proxyPassword)) {
-						proxyHTTP.setUserPasswd(proxyUser, proxyPassword);
+					if (StringUtils.isNotEmpty(proxyCredentialsId)) {
+						UsernamePasswordCredentials proxyCreds = getCredentialsUserPassword(proxyCredentialsId);
+						proxyHTTP.setUserPasswd(proxyCreds.getUsername(), proxyCreds.getPassword().getPlainText());
 					} else {
 						proxyHTTP.setUserPasswd(null, null);
 					}
 					session.setProxy(proxyHTTP);
 				} else if (StringUtils.equals(SOCKS_4_PROXY_TYPE, proxyType)) {
 					ProxySOCKS4 proxySocks4 = new ProxySOCKS4(proxyHost, proxyPort);
-					if (StringUtils.isNotEmpty(proxyUser) && StringUtils.isNotEmpty(proxyPassword)) {
-						proxySocks4.setUserPasswd(proxyUser, proxyPassword);
+					if (StringUtils.isNotEmpty(proxyCredentialsId)) {
+						UsernamePasswordCredentials proxyCreds = getCredentialsUserPassword(proxyCredentialsId);
+						proxySocks4.setUserPasswd(proxyCreds.getUsername(), proxyCreds.getPassword().getPlainText());
 					} else {
 						proxySocks4.setUserPasswd(null, null);
 					}
 					session.setProxy(proxySocks4);
 				} else if (StringUtils.equals(SOCKS_5_PROXY_TYPE, proxyType)) {
 					ProxySOCKS5 proxySocks5 = new ProxySOCKS5(proxyHost, proxyPort);
-					if (StringUtils.isNotEmpty(proxyUser) && StringUtils.isNotEmpty(proxyPassword)) {
-						proxySocks5.setUserPasswd(proxyUser, proxyPassword);
+					if (StringUtils.isNotEmpty(proxyCredentialsId)) {
+						UsernamePasswordCredentials proxyCreds = getCredentialsUserPassword(proxyCredentialsId);
+						proxySocks5.setUserPasswd(proxyCreds.getUsername(), proxyCreds.getPassword().getPlainText());
 					} else {
 						proxySocks5.setUserPasswd(null, null);
 					}
@@ -541,15 +534,14 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		return super.addToEquals(builder, that).append(legacyCredentialsId, that.legacyCredentialsId)
 				.append(timeout, that.timeout).append(overrideCredentials, that.overrideCredentials)
 				.append(jumpHost, that.jumpHost).append(disableExec, that.disableExec).append(proxyType, that.proxyType)
-				.append(proxyHost, that.proxyHost).append(proxyPort, that.proxyPort).append(proxyUser, that.proxyUser)
-				.append(proxyPassword, that.proxyPassword);
+				.append(proxyHost, that.proxyHost).append(proxyPort, that.proxyPort).append(proxyCredentialsId, that.proxyCredentialsId);
 	}
 
 	@Override
 	protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
 		return super.addToHashCode(builder).append(legacyCredentialsId).append(timeout).append(overrideCredentials)
 				.append(jumpHost).append(disableExec).append(proxyType).append(proxyHost).append(proxyPort)
-				.append(proxyUser).append(proxyPassword);
+				.append(proxyCredentialsId);
 	}
 
 	@Override
@@ -557,7 +549,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		return super.addToToString(builder).append("keyInfo", legacyCredentialsId).append("timeout", timeout)
 				.append("overrideKey", overrideCredentials).append("jumpHost", jumpHost)
 				.append("disableExec", disableExec).append("proxyType", proxyType).append("proxyHost", proxyHost)
-				.append("proxyPort", proxyPort).append("proxyUser", proxyUser).append("proxyPassword", proxyPassword);
+				.append("proxyPort", proxyPort).append("proxyCredentialsId", proxyCredentialsId);
 	}
 
 	@Override
@@ -596,7 +588,11 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 			UsernamePasswordCredentials theCrds = this.getCredentialsUserPassword(theCredentialId);
 			if (theCrds != null) {
 				retVal = theCrds.getUsername();
+			} else {
+				System.out.println("ohoh1");
 			}
+		} else {
+			System.out.println("ohoh2");
 		}
 		return retVal;
 	}

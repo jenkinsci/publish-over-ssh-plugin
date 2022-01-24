@@ -75,12 +75,10 @@
         <f:entry title="${%proxyPort}" field="proxyPort">
             <f:textbox clazz="number" />
         </f:entry>
-        <f:entry title="${%proxyUser}" field="proxyUser">
-            <f:textbox/>
-        </f:entry>
-        <f:entry title="${%proxyPassword}" field="proxyPassword">
-            <f:password/>
-        </f:entry>
+        
+        <f:entry title="${%proxyCredentialsId}" field="proxyCredentialsId">
+        	<c:select/>
+    	</f:entry>
         
     </f:advanced>
 
