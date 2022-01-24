@@ -67,12 +67,14 @@ import jenkins.plugins.publish_over_ssh.descriptor.BapSshHostConfigurationDescri
 public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, BapSshCommonConfiguration>
 		implements Describable<BapSshHostConfiguration> {
 
+	public static final String CONFIG_KEY_PREFERRED_AUTHENTICATIONS = "PreferredAuthentications";
+	private static final Log LOG = LogFactory.getLog(BapSshHostConfiguration.class);
+	
 	static final String LOCALHOST = "127.0.0.1";
 	private static final long serialVersionUID = 1L;
 	public static final int DEFAULT_PORT = 22;
 	public static final int DEFAULT_TIMEOUT = 300000;
-	public static final String CONFIG_KEY_PREFERRED_AUTHENTICATIONS = "PreferredAuthentications";
-	private static final Log LOG = LogFactory.getLog(BapSshHostConfiguration.class);
+
 	public static final String DEFAULT_JUMP_HOST = "";
 	public static final String HTTP_PROXY_TYPE = "http";
 	public static final String SOCKS_4_PROXY_TYPE = "socks4";
