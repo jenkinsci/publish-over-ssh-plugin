@@ -120,4 +120,8 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
 
 		return retVal;
 	}
+	
+	public ListBoxModel doFillOverrideCredentialsIdItems(@AncestorInPath Item pItem) {
+		return doFillCredentialsIdItems(pItem);
+	}
 }
