@@ -111,7 +111,7 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
 		return new jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages();
 	}
 
-	public ListBoxModel doFillCredentialsIdItems(@AncestorInPath Item pItem) {
+	public ListBoxModel doFillHostCredentialsIdItems(@AncestorInPath Item pItem) {
 		final ListBoxModel retVal;
 
 		retVal = new StandardListBoxModel().includeEmptyValue().includeMatchingAs(ACL.SYSTEM, pItem,

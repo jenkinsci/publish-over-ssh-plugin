@@ -60,7 +60,7 @@ public class BapSshCommonConfigurationDescriptor extends Descriptor<BapSshCommon
 		return BPValidators.validateFileOnMaster(value);
 	}
 
-	public ListBoxModel doFillCredentialsIdItems(@AncestorInPath Item pItem) {
+	public ListBoxModel doFillGeneralCredentialsIdItems(@AncestorInPath Item pItem) {
 		final ListBoxModel retVal;
 
 		retVal = new StandardListBoxModel().includeEmptyValue().includeMatchingAs(ACL.SYSTEM, pItem,

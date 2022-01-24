@@ -45,6 +45,7 @@
         <gitHubRepo>jenkinsci/publish-over-ssh-plugin</gitHubRepo>
         <jenkins.version>2.263.1</jenkins.version>
         <java.level>8</java.level>
+        
     </properties>
 
     <licenses>
@@ -111,6 +112,8 @@
             <artifactId>hamcrest-core</artifactId>
             <scope>test</scope>
         </dependency>
+        
+        
     </dependencies>
 
     <scm>

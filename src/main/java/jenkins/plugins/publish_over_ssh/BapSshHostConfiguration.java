@@ -53,9 +53,10 @@ import com.jcraft.jsch.ProxySOCKS5;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpException;
 
-import hudson.Util;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import hudson.model.Describable;
 import hudson.security.ACL;
+import hudson.util.Secret;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPHostConfiguration;
@@ -69,7 +70,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
 	public static final String CONFIG_KEY_PREFERRED_AUTHENTICATIONS = "PreferredAuthentications";
 	private static final Log LOG = LogFactory.getLog(BapSshHostConfiguration.class);
-	
+
 	static final String LOCALHOST = "127.0.0.1";
 	private static final long serialVersionUID = 1L;
 	public static final int DEFAULT_PORT = 22;
@@ -84,39 +85,36 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	private boolean overrideCredentials;
 	private boolean disableExec;
 
-	private final LegacyBapSshKeyInfo legacyCredentialsId;
-	private String credentialsId;
+	private String hostCredentialsId;
 	private String jumpHost;
 
 	private String proxyType;
 	private String proxyHost;
 	private int proxyPort;
 	private String proxyCredentialsId;
-	
+
 	public BapSshHostConfiguration() {
 		// use this constructor instead of the default w/o parameters because there is
 		// some
 		// business logic in there...
 		super(null, null, null, null, null, 0);
-		this.legacyCredentialsId = new LegacyBapSshKeyInfo(null, null, null);
+		this.hostCredentialsId = null;
 	}
 
 	// CSOFF: ParameterNumberCheck
 	@SuppressWarnings("PMD.ExcessiveParameterList") // DBC for you!
 	@DataBoundConstructor
-	public BapSshHostConfiguration(final String name, final String hostname, final String credentialsId,
+	public BapSshHostConfiguration(final String name, final String hostname, final String hostCredentialsId,
 			final String remoteRootDir, final int port, final int timeout, final boolean overrideCredentials,
 			final boolean disableExec) {
-		// CSON: ParameterNumberCheck
 		// TODO: SWA, username is empty
+
+		// CSON: ParameterNumberCheck
 		super(name, hostname, "", null, remoteRootDir, port);
 		this.timeout = timeout;
 		this.overrideCredentials = overrideCredentials;
-		this.legacyCredentialsId = null;
+		this.hostCredentialsId = hostCredentialsId;
 		this.disableExec = disableExec;
-		System.out.println("construct: " + credentialsId);
-		this.credentialsId = credentialsId;
-
 	}
 
 	@DataBoundSetter
@@ -159,53 +157,6 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	@DataBoundSetter
 	public void setTimeout(final int timeout) {
 		this.timeout = timeout;
-	}
-
-	@Override
-	protected final String getPassword() {
-		return legacyCredentialsId.getPassphrase();
-	}
-
-	@Override
-	public final void setPassword(final String password) {
-		legacyCredentialsId.setPassphrase(password);
-	}
-
-	@Override
-	public final String getEncryptedPassword() {
-		return legacyCredentialsId.getEncryptedPassphrase();
-	}
-
-	@DataBoundSetter
-	public void setEncryptedPassword(final String encryptedPassword) {
-		this.legacyCredentialsId.setPassphrase(encryptedPassword);
-	}
-
-	public String getCredentialsId() {
-		return credentialsId;
-	}
-
-	@DataBoundSetter
-	public void setCredentialsId(String credentialsId) {
-		this.credentialsId = credentialsId;
-	}
-
-	public String getKeyPath() {
-		return legacyCredentialsId.getKeyPath();
-	}
-
-	@DataBoundSetter
-	public void setKeyPath(final String keyPath) {
-		legacyCredentialsId.setKeyPath(keyPath);
-	}
-
-	public String getKey() {
-		return legacyCredentialsId.getKey();
-	}
-
-	@DataBoundSetter
-	public void setKey(final String key) {
-		legacyCredentialsId.setKey(key);
 	}
 
 	public boolean isOverrideKey() {
@@ -266,14 +217,27 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		return getCommonConfig().isDisableAllExec() || disableExec;
 	}
 
-	private LegacyBapSshKeyInfo getEffectiveKeyInfo(final BPBuildInfo buildInfo) {
-		final String publisherCredentials = getPublisherOverrideCredentials(buildInfo);
-		if (publisherCredentials != null) {
-			// TODO: SWA: Hier das richtige zurueckgeben.
-			return null;
-//			return publisherCredentials;
+	private String getEffectiveCredentialsId(final BPBuildInfo buildInfo) {
+		if (buildInfo != null) {
+			final String publisherCredentials = getPublisherOverrideCredentials(buildInfo);
+			if (StringUtils.isNotEmpty(publisherCredentials)) {
+				// this is configured in a specific job
+				return publisherCredentials;
+			}
 		}
-		return overrideCredentials ? legacyCredentialsId : getCommonConfig();
+
+		// either general credentials or host specific credentials
+		return overrideCredentials ? hostCredentialsId : getCommonConfig().getGeneralCredentialsId();
+	}
+
+	private UsernamePasswordCredentials getEffectiveCredentials(@Nullable final BPBuildInfo buildInfo) {
+		final String effectiveCredentials = getEffectiveCredentialsId(buildInfo);
+		if (StringUtils.isEmpty(effectiveCredentials)) {
+			// this is configured in a specific job
+			return null;
+		}
+
+		return this.getCredentialsUserPasswordOrNull(effectiveCredentials);
 	}
 
 	@Override
@@ -346,32 +310,26 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	}
 
 	private void configureAuthentication(final BPBuildInfo buildInfo, final JSch ssh, Session session) {
-		final LegacyBapSshKeyInfo keyInfo = getEffectiveKeyInfo(buildInfo);
-		final Properties sessionProperties = getSessionProperties();
-		if (this.credentialsId != null && "" != this.credentialsId.trim()) {
-			LOG.info("use credentials: " + this.credentialsId);
+		final UsernamePasswordCredentials credentials = getEffectiveCredentials(buildInfo);
 
-			UsernamePasswordCredentials credentials = getCredentialsUserPassword(this.credentialsId);
-			if (credentials != null) {
-				System.out.println(credentials);
-				System.out.println(credentials.getUsername());
-				System.out.println(credentials.getPassword().getPlainText());
-
-				session.setPassword(credentials.getPassword().getPlainText());
-				sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "keyboard-interactive,password");
-			} else {
-				LOG.warn("cannot find credentials for id: " + this.credentialsId);
-			}
-		} else {
-			System.out.println("no credentials given");
-			if (keyInfo.useKey()) {
-				setKey(buildInfo, ssh, keyInfo);
-				sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "publickey");
-			} else {
-				session.setPassword(Util.fixNull(keyInfo.getPassphrase()));
-				sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "keyboard-interactive,password");
-			}
+		if (credentials == null) {
+			System.out.println("General Credentials: " + this.getCommonConfig().getGeneralCredentialsId());
+			System.out.println("Host Credentials: " + this.hostCredentialsId);
+			throw new IllegalArgumentException("failed to detect credentials");
 		}
+
+		final Properties sessionProperties = getSessionProperties();
+		session.setPassword(credentials.getPassword().getPlainText());
+		sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "keyboard-interactive,password");
+
+//			System.out.println("no credentials given");
+//			if (keyInfo.useKey()) {
+//				setKey(buildInfo, ssh, keyInfo);
+//				sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "publickey");
+//			} else {
+//				session.setPassword(Util.fixNull(keyInfo.getPassphrase()));
+//				sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "keyboard-interactive,password");
+//			}
 
 		session.setConfig(sessionProperties);
 	}
@@ -467,7 +425,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
 		String overrideUserName = null;
 		if (overrideCredsId != null) {
-			UsernamePasswordCredentials overrideCredentials = getCredentialsUserPassword(overrideCredsId);
+			UsernamePasswordCredentials overrideCredentials = getCredentialsUserPasswordOrNull(overrideCredsId);
 			if (overrideCredentials != null) {
 				overrideUserName = overrideCredentials.getUsername();
 			} else {
@@ -476,8 +434,6 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		}
 
 		final String username = overrideUserName == null ? getUsername() : overrideUserName;
-		System.out.println("username: " + username);
-		System.out.println("credentials: " + this.credentialsId);
 
 		try {
 			buildInfo.printIfVerbose(Messages.console_session_creating(username, hostname, port));
@@ -487,7 +443,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 				if (StringUtils.equals(HTTP_PROXY_TYPE, proxyType)) {
 					ProxyHTTP proxyHTTP = new ProxyHTTP(proxyHost, proxyPort);
 					if (StringUtils.isNotEmpty(proxyCredentialsId)) {
-						UsernamePasswordCredentials proxyCreds = getCredentialsUserPassword(proxyCredentialsId);
+						UsernamePasswordCredentials proxyCreds = getCredentialsUserPasswordOrNull(proxyCredentialsId);
 						proxyHTTP.setUserPasswd(proxyCreds.getUsername(), proxyCreds.getPassword().getPlainText());
 					} else {
 						proxyHTTP.setUserPasswd(null, null);
@@ -496,7 +452,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 				} else if (StringUtils.equals(SOCKS_4_PROXY_TYPE, proxyType)) {
 					ProxySOCKS4 proxySocks4 = new ProxySOCKS4(proxyHost, proxyPort);
 					if (StringUtils.isNotEmpty(proxyCredentialsId)) {
-						UsernamePasswordCredentials proxyCreds = getCredentialsUserPassword(proxyCredentialsId);
+						UsernamePasswordCredentials proxyCreds = getCredentialsUserPasswordOrNull(proxyCredentialsId);
 						proxySocks4.setUserPasswd(proxyCreds.getUsername(), proxyCreds.getPassword().getPlainText());
 					} else {
 						proxySocks4.setUserPasswd(null, null);
@@ -505,7 +461,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 				} else if (StringUtils.equals(SOCKS_5_PROXY_TYPE, proxyType)) {
 					ProxySOCKS5 proxySocks5 = new ProxySOCKS5(proxyHost, proxyPort);
 					if (StringUtils.isNotEmpty(proxyCredentialsId)) {
-						UsernamePasswordCredentials proxyCreds = getCredentialsUserPassword(proxyCredentialsId);
+						UsernamePasswordCredentials proxyCreds = getCredentialsUserPasswordOrNull(proxyCredentialsId);
 						proxySocks5.setUserPasswd(proxyCreds.getUsername(), proxyCreds.getPassword().getPlainText());
 					} else {
 						proxySocks5.setUserPasswd(null, null);
@@ -533,22 +489,23 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	}
 
 	protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshHostConfiguration that) {
-		return super.addToEquals(builder, that).append(legacyCredentialsId, that.legacyCredentialsId)
+		return super.addToEquals(builder, that).append(hostCredentialsId, that.hostCredentialsId)
 				.append(timeout, that.timeout).append(overrideCredentials, that.overrideCredentials)
 				.append(jumpHost, that.jumpHost).append(disableExec, that.disableExec).append(proxyType, that.proxyType)
-				.append(proxyHost, that.proxyHost).append(proxyPort, that.proxyPort).append(proxyCredentialsId, that.proxyCredentialsId);
+				.append(proxyHost, that.proxyHost).append(proxyPort, that.proxyPort)
+				.append(proxyCredentialsId, that.proxyCredentialsId);
 	}
 
 	@Override
 	protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
-		return super.addToHashCode(builder).append(legacyCredentialsId).append(timeout).append(overrideCredentials)
+		return super.addToHashCode(builder).append(hostCredentialsId).append(timeout).append(overrideCredentials)
 				.append(jumpHost).append(disableExec).append(proxyType).append(proxyHost).append(proxyPort)
 				.append(proxyCredentialsId);
 	}
 
 	@Override
 	protected ToStringBuilder addToToString(final ToStringBuilder builder) {
-		return super.addToToString(builder).append("keyInfo", legacyCredentialsId).append("timeout", timeout)
+		return super.addToToString(builder).append("keyInfo", hostCredentialsId).append("timeout", timeout)
 				.append("overrideKey", overrideCredentials).append("jumpHost", jumpHost)
 				.append("disableExec", disableExec).append("proxyType", proxyType).append("proxyHost", proxyHost)
 				.append("proxyPort", proxyPort).append("proxyCredentialsId", proxyCredentialsId);
@@ -575,7 +532,10 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
 	}
 
-	private UsernamePasswordCredentials getCredentialsUserPassword(final String pCredentialId) {
+	private UsernamePasswordCredentials getCredentialsUserPasswordOrNull(final String pCredentialId) {
+		if (pCredentialId == null) {
+			return null;
+		}
 		return CredentialsMatchers.firstOrNull(
 				CredentialsProvider.lookupCredentials(UsernamePasswordCredentialsImpl.class, Jenkins.get(), ACL.SYSTEM,
 						Collections.<DomainRequirement>emptyList()),
@@ -584,19 +544,37 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
 	@Override
 	public String getUsername() {
-		final String theCredentialId = this.getCredentialsId();
-		String retVal = super.getUsername();
-		if (theCredentialId != null && !"".equals(theCredentialId.trim())) {
-			UsernamePasswordCredentials theCrds = this.getCredentialsUserPassword(theCredentialId);
-			if (theCrds != null) {
-				retVal = theCrds.getUsername();
-			} else {
-				System.out.println("ohoh1");
-			}
-		} else {
-			System.out.println("ohoh2");
-		}
-		return retVal;
+		return getEffectiveCredentials(null).getUsername();
+	}
+
+	public String getHostCredentialsId() {
+		return hostCredentialsId;
+	}
+
+	@DataBoundSetter
+	public void setHostCredentialsId(String hostCredentialsId) {
+		this.hostCredentialsId = hostCredentialsId;
+	}
+
+	public void setUsername(final String username) {
+		LOG.warn("no credentials should be stored with this method: setUsername");
+	}
+
+	@Override
+	public String getPassword() {
+		LOG.warn("no credentials should be received with this method: getPassword");
+		return "";
+	}
+
+	@Override
+	public void setPassword(final String password) {
+		LOG.warn("no credentials should be stored with this method: setPassword");
+	}
+
+	@Override
+	public String getEncryptedPassword() {
+		LOG.warn("no credentials should be received with this method: getEncryptedPassword");
+		return "";
 	}
 
 }

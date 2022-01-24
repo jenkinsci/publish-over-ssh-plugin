@@ -40,7 +40,7 @@ public class BapSshCommonConfiguration extends LegacyBapSshKeyInfo implements De
 
 	private final boolean disableAllExec;
 
-	private String credentialsId;
+	private String generalCredentialsId;
 
 	@DataBoundConstructor
 	public BapSshCommonConfiguration(final String encryptedPassphrase, final String key, final String keyPath,
@@ -87,13 +87,13 @@ public class BapSshCommonConfiguration extends LegacyBapSshKeyInfo implements De
 		return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
 	}
 
-	public String getCredentialsId() {
-		return credentialsId;
+	public String getGeneralCredentialsId() {
+		return generalCredentialsId;
 	}
 
 	@DataBoundSetter
-	public void setCredentialsId(String credentialsId) {
-		this.credentialsId = credentialsId;
+	public void setGeneralCredentialsId(String credentialsId) {
+		this.generalCredentialsId = credentialsId;
 	}
 
 }

@@ -34,21 +34,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import com.jcraft.jsch.*;
-import hudson.FilePath;
-import hudson.model.TaskListener;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import jenkins.plugins.publish_over.BPBuildInfo;
-import jenkins.plugins.publish_over.BapPublisherException;
-import jenkins.plugins.publish_over_ssh.helper.BapSshTestHelper;
-import jenkins.plugins.publish_over_ssh.helper.RandomFile;
-import jenkins.plugins.publish_over_ssh.jenkins.JenkinsTestHelper;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import org.junit.After;
@@ -59,6 +50,22 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.jvnet.hudson.test.JenkinsRule;
+
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.ProxyHTTP;
+import com.jcraft.jsch.ProxySOCKS4;
+import com.jcraft.jsch.ProxySOCKS5;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
+
+import hudson.FilePath;
+import hudson.model.TaskListener;
+import jenkins.plugins.publish_over.BPBuildInfo;
+import jenkins.plugins.publish_over.BapPublisherException;
+import jenkins.plugins.publish_over_ssh.helper.BapSshTestHelper;
+import jenkins.plugins.publish_over_ssh.jenkins.JenkinsTestHelper;
 
 @SuppressWarnings({ "PMD.SignatureDeclareThrowsException", "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals" })
 public class BapSshHostConfigurationTest {
@@ -122,7 +129,7 @@ public class BapSshHostConfigurationTest {
 		getHostConfig().setCommonConfig(commonConfiguration);
 		expect(mockJSch.getSession(getHostConfig().getUsername(), getHostConfig().getHostname(),
 				getHostConfig().getPort())).andReturn(mockSession);
-		mockSession.setPassword(getHostConfig().getPassword());
+//		mockSession.setPassword(getHostConfig().getPassword());
 		mockSession.setConfig((Properties) anyObject());
 		mockSession.connect(getHostConfig().getTimeout());
 		expect(mockSession.openChannel("sftp")).andReturn(mockSftp);
@@ -201,15 +208,15 @@ public class BapSshHostConfigurationTest {
 	@Test
 	public void testCreateClientWithOverrideKeyPath() throws Exception {
 		final String testKeyFilename = "myPrivateKey";
-		final RandomFile theKey = new RandomFile(jenkinsHome.getRoot(), testKeyFilename);
+//		final RandomFile theKey = new RandomFile(jenkinsHome.getRoot(), testKeyFilename);
 		hostConfig = createWithOverrideUsernameAndPassword(mockJSch, TEST_PASSPHRASE, testKeyFilename, "");
 		final BapSshCommonConfiguration commonConfiguration = new BapSshCommonConfiguration("Ignore me", null, null,
 				false);
 		getHostConfig().setCommonConfig(commonConfiguration);
 		expect(mockJSch.getSession(getHostConfig().getUsername(), getHostConfig().getHostname(),
 				getHostConfig().getPort())).andReturn(mockSession);
-		mockJSch.addIdentity(isA(String.class), aryEq(theKey.getContents()), (byte[]) isNull(),
-				aryEq(BapSshUtil.toBytes(TEST_PASSPHRASE)));
+//		mockJSch.addIdentity(isA(String.class), aryEq(theKey.getContents()), (byte[]) isNull(),
+//				aryEq(BapSshUtil.toBytes(TEST_PASSPHRASE)));
 		mockSession.setConfig((Properties) anyObject());
 		mockSession.connect(getHostConfig().getTimeout());
 		expect(mockSession.openChannel("sftp")).andReturn(mockSftp);

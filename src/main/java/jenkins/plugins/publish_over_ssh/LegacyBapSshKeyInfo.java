@@ -31,6 +31,8 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.Serializable;
 
@@ -38,7 +40,8 @@ import java.io.Serializable;
 public class LegacyBapSshKeyInfo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	private static final Log LOG = LogFactory.getLog(LegacyBapSshKeyInfo.class);
+	
 	private String passphrase;
 	private Secret secretPassphrase;
 	private String key;
@@ -50,34 +53,46 @@ public class LegacyBapSshKeyInfo implements Serializable {
 		this.keyPath = keyPath;
 	}
 
+	@Deprecated
 	protected final String getPassphrase() {
-		return Secret.toString(secretPassphrase);
+		LOG.warn("no credentials should be received with this method: getPassphrase");
+		return "";
 	}
 
+	@Deprecated
 	public final void setPassphrase(final String passphrase) {
-		secretPassphrase = Secret.fromString(passphrase);
+		LOG.warn("no credentials should be stored with this method: setPassphrase");
 	}
 
+	@Deprecated
 	public final String getEncryptedPassphrase() {
-		return (secretPassphrase == null) ? null : secretPassphrase.getEncryptedValue();
+		LOG.warn("no credentials should be received with this method: getEncryptedPassphrase");
+		return "";
 	}
 
+	@Deprecated
 	public String getKey() {
-		return key;
+		LOG.warn("no credentials should be received with this method: getKey");
+		return "";
 	}
 
+	@Deprecated
 	public void setKey(final String key) {
-		this.key = key;
+		LOG.warn("no credentials should be stored with this method: setKey");
 	}
 
+	@Deprecated
 	public String getKeyPath() {
-		return keyPath;
+		LOG.warn("no credentials should be received with this method: getKeyPath");
+		return "";
 	}
 
+	@Deprecated
 	public void setKeyPath(final String keyPath) {
-		this.keyPath = keyPath;
+		LOG.warn("no credentials should be stored with this method: setKeyPath");
 	}
-
+	
+	@Deprecated
 	public byte[] getEffectiveKey(final BPBuildInfo buildInfo) {
 		if (hasKey())
 			return BapSshUtil.toBytes(key);

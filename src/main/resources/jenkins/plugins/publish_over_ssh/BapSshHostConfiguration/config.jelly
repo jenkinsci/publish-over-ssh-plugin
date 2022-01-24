@@ -42,7 +42,7 @@
     <f:advanced>
 
         <f:optionalBlock inline="true" title="${%override.default.key}" field="overrideKey">
-            <f:entry title="${%CredentialsId}" field="credentialsId">
+            <f:entry title="${%CredentialsId}" field="hostCredentialsId">
         		<c:select/>
     		</f:entry>
         </f:optionalBlock>
