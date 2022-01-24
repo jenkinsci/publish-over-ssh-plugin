@@ -24,23 +24,15 @@
   ~ THE SOFTWARE.
   -->
 
-<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:poj="/pojelly">
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:poj="/pojelly" xmlns:c="/lib/credentials">
 
     <poj:defaultMessages/>
     
-    <f:entry title="${%username}" field="username">
-        <f:textbox/>
+   	<f:entry title="${%Credentials}" field="credentialsId">
+        <c:select/>
     </f:entry>
-    <f:entry title="${%passphrase}" field="encryptedPassphrase">
-        <f:password/>
-    </f:entry>
-    <f:entry title="${%keyPath}" field="keyPath">
-        <f:textbox/>
-    </f:entry>
-    <f:entry title="${%key}" field="key">
-        <f:textarea/>
-    </f:entry>
+    
     <f:validateButton title="${m.test_title()}" progress="${m.test_progress()}" method="testConnection"
-                            with="configName,username,encryptedPassphrase,keyPath,key"/>
+                            with="configName,credentialsId"/>
 
 </j:jelly>

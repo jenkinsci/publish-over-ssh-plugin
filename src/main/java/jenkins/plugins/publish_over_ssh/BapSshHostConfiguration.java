@@ -61,10 +61,10 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	public static final String SOCKS_5_PROXY_TYPE = "socks5";
 
 	private int timeout;
-	private boolean overrideKey;
+	private boolean overrideCredentials;
 	private boolean disableExec;
 
-	private final BapSshKeyInfo keyInfo;
+	private final LegacyBapSshKeyInfo credentialsId;
 	private String jumpHost;
 
 	private String proxyType;
@@ -78,20 +78,21 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		// some
 		// business logic in there...
 		super(null, null, null, null, null, 0);
-		this.keyInfo = new BapSshKeyInfo(null, null, null);
+		this.credentialsId = new LegacyBapSshKeyInfo(null, null, null);
 	}
 
 	// CSOFF: ParameterNumberCheck
 	@SuppressWarnings("PMD.ExcessiveParameterList") // DBC for you!
 	@DataBoundConstructor
-	public BapSshHostConfiguration(final String name, final String hostname, final String username,
-			final String encryptedPassword, final String remoteRootDir, final int port, final int timeout,
-			final boolean overrideKey, final String keyPath, final String key, final boolean disableExec) {
+	public BapSshHostConfiguration(final String name, final String hostname, final String credentialsId,
+			 final String remoteRootDir, final int port, final int timeout,
+			final boolean overrideCredentials, final boolean disableExec) {
 		// CSON: ParameterNumberCheck
-		super(name, hostname, username, null, remoteRootDir, port);
+		// TODO: username is empty
+		super(name, hostname, "", null, remoteRootDir, port);
 		this.timeout = timeout;
-		this.overrideKey = overrideKey;
-		this.keyInfo = new BapSshKeyInfo(encryptedPassword, key, keyPath);
+		this.overrideCredentials = overrideCredentials;
+		this.credentialsId = null; 
 		this.disableExec = disableExec;
 	}
 
@@ -139,49 +140,49 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
 	@Override
 	protected final String getPassword() {
-		return keyInfo.getPassphrase();
+		return credentialsId.getPassphrase();
 	}
 
 	@Override
 	public final void setPassword(final String password) {
-		keyInfo.setPassphrase(password);
+		credentialsId.setPassphrase(password);
 	}
 
 	@Override
 	public final String getEncryptedPassword() {
-		return keyInfo.getEncryptedPassphrase();
+		return credentialsId.getEncryptedPassphrase();
 	}
 
 	@DataBoundSetter
 	public void setEncryptedPassword(final String encryptedPassword) {
-		this.keyInfo.setPassphrase(encryptedPassword);
+		this.credentialsId.setPassphrase(encryptedPassword);
 	}
 
 	public String getKeyPath() {
-		return keyInfo.getKeyPath();
+		return credentialsId.getKeyPath();
 	}
 
 	@DataBoundSetter
 	public void setKeyPath(final String keyPath) {
-		keyInfo.setKeyPath(keyPath);
+		credentialsId.setKeyPath(keyPath);
 	}
 
 	public String getKey() {
-		return keyInfo.getKey();
+		return credentialsId.getKey();
 	}
 
 	@DataBoundSetter
 	public void setKey(final String key) {
-		keyInfo.setKey(key);
+		credentialsId.setKey(key);
 	}
 
 	public boolean isOverrideKey() {
-		return overrideKey;
+		return overrideCredentials;
 	}
 
 	@DataBoundSetter
 	public void setOverrideKey(final boolean overrideKey) {
-		this.overrideKey = overrideKey;
+		this.overrideCredentials = overrideKey;
 	}
 
 	public boolean isDisableExec() {
@@ -242,11 +243,11 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		return getCommonConfig().isDisableAllExec() || disableExec;
 	}
 
-	private BapSshKeyInfo getEffectiveKeyInfo(final BPBuildInfo buildInfo) {
-		final BapSshCredentials publisherCredentials = getPublisherOverrideCredentials(buildInfo);
+	private LegacyBapSshKeyInfo getEffectiveKeyInfo(final BPBuildInfo buildInfo) {
+		final LegacyBapSshCredentials publisherCredentials = getPublisherOverrideCredentials(buildInfo);
 		if (publisherCredentials != null)
 			return publisherCredentials;
-		return overrideKey ? keyInfo : getCommonConfig();
+		return overrideCredentials ? credentialsId : getCommonConfig();
 	}
 
 	@Override
@@ -319,7 +320,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	}
 
 	private void configureAuthentication(final BPBuildInfo buildInfo, final JSch ssh, Session session) {
-		final BapSshKeyInfo keyInfo = getEffectiveKeyInfo(buildInfo);
+		final LegacyBapSshKeyInfo keyInfo = getEffectiveKeyInfo(buildInfo);
 		final Properties sessionProperties = getSessionProperties();
 		if (keyInfo.useKey()) {
 			setKey(buildInfo, ssh, keyInfo);
@@ -340,7 +341,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		setRootDirectoryInClient(bapClient, sftp);
 	}
 
-	private void setKey(final BPBuildInfo buildInfo, final JSch ssh, final BapSshKeyInfo keyInfo) {
+	private void setKey(final BPBuildInfo buildInfo, final JSch ssh, final LegacyBapSshKeyInfo keyInfo) {
 		try {
 			ssh.addIdentity("TheKey", keyInfo.getEffectiveKey(buildInfo), null,
 					BapSshUtil.toBytes(keyInfo.getPassphrase()));
@@ -417,7 +418,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	}
 
 	private Session createSession(final BPBuildInfo buildInfo, final JSch ssh, String hostname, int port) {
-		final BapSshCredentials overrideCreds = getPublisherOverrideCredentials(buildInfo);
+		final LegacyBapSshCredentials overrideCreds = getPublisherOverrideCredentials(buildInfo);
 		final String username = overrideCreds == null ? getUsername() : overrideCreds.getUsername();
 		try {
 			buildInfo.printIfVerbose(Messages.console_session_creating(username, hostname, port));
@@ -457,8 +458,8 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		}
 	}
 
-	private static BapSshCredentials getPublisherOverrideCredentials(final BPBuildInfo buildInfo) {
-		return (BapSshCredentials) buildInfo.get(BPBuildInfo.OVERRIDE_CREDENTIALS_CONTEXT_KEY);
+	private static LegacyBapSshCredentials getPublisherOverrideCredentials(final BPBuildInfo buildInfo) {
+		return (LegacyBapSshCredentials) buildInfo.get(BPBuildInfo.OVERRIDE_CREDENTIALS_CONTEXT_KEY);
 	}
 
 	protected JSch createJSch() {
@@ -470,8 +471,8 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	}
 
 	protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshHostConfiguration that) {
-		return super.addToEquals(builder, that).append(keyInfo, that.keyInfo).append(timeout, that.timeout)
-				.append(overrideKey, that.overrideKey).append(jumpHost, that.jumpHost)
+		return super.addToEquals(builder, that).append(credentialsId, that.credentialsId).append(timeout, that.timeout)
+				.append(overrideCredentials, that.overrideCredentials).append(jumpHost, that.jumpHost)
 				.append(disableExec, that.disableExec).append(proxyType, that.proxyType)
 				.append(proxyHost, that.proxyHost).append(proxyPort, that.proxyPort).append(proxyUser, that.proxyUser)
 				.append(proxyPassword, that.proxyPassword);
@@ -479,15 +480,15 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
 	@Override
 	protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
-		return super.addToHashCode(builder).append(keyInfo).append(timeout).append(overrideKey).append(jumpHost)
+		return super.addToHashCode(builder).append(credentialsId).append(timeout).append(overrideCredentials).append(jumpHost)
 				.append(disableExec).append(proxyType).append(proxyHost).append(proxyPort).append(proxyUser)
 				.append(proxyPassword);
 	}
 
 	@Override
 	protected ToStringBuilder addToToString(final ToStringBuilder builder) {
-		return super.addToToString(builder).append("keyInfo", keyInfo).append("timeout", timeout)
-				.append("overrideKey", overrideKey).append("jumpHost", jumpHost).append("disableExec", disableExec)
+		return super.addToToString(builder).append("keyInfo", credentialsId).append("timeout", timeout)
+				.append("overrideKey", overrideCredentials).append("jumpHost", jumpHost).append("disableExec", disableExec)
 				.append("proxyType", proxyType).append("proxyHost", proxyHost).append("proxyPort", proxyPort)
 				.append("proxyUser", proxyUser).append("proxyPassword", proxyPassword);
 	}

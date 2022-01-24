@@ -26,11 +26,23 @@ package jenkins.plugins.publish_over_ssh.descriptor;
 
 import hudson.Extension;
 import hudson.model.Descriptor;
+import hudson.model.Item;
+import hudson.security.ACL;
 import hudson.util.FormValidation;
+import hudson.util.ListBoxModel;
 import jenkins.plugins.publish_over.BPValidators;
 import jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration;
 import jenkins.plugins.publish_over_ssh.Messages;
+
+import java.util.Collections;
+
+import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.QueryParameter;
+
+import com.cloudbees.plugins.credentials.CredentialsMatchers;
+import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
+import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
+import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 
 @Extension
 public class BapSshCommonConfigurationDescriptor extends Descriptor<BapSshCommonConfiguration> {
@@ -48,4 +60,15 @@ public class BapSshCommonConfigurationDescriptor extends Descriptor<BapSshCommon
 		return BPValidators.validateFileOnMaster(value);
 	}
 
+	public ListBoxModel doFillCredentialsIdItems(@AncestorInPath Item pItem) {
+		final ListBoxModel retVal;
+
+		retVal = new StandardListBoxModel().includeEmptyValue().includeMatchingAs(ACL.SYSTEM, pItem,
+				StandardUsernamePasswordCredentials.class, Collections.<DomainRequirement>emptyList(),
+				CredentialsMatchers.instanceOf(StandardUsernamePasswordCredentials.class));
+
+		return retVal;
+	}
+	
+	
 }

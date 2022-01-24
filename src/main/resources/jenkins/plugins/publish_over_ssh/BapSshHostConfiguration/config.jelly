@@ -24,7 +24,7 @@
   ~ THE SOFTWARE.
   -->
 
-<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:poj="/pojelly">
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:poj="/pojelly" xmlns:c="/lib/credentials">
 
     <poj:defaultMessages/>
 
@@ -34,9 +34,7 @@
     <f:entry title="${m.hostname()}" field="hostname">
         <f:textbox/>
     </f:entry>
-    <f:entry title="${m.username()}" field="username">
-        <f:textbox/>
-    </f:entry>
+
     <f:entry title="${m.remotePath()}" field="remoteRootDir">
         <f:textbox/>
     </f:entry>
@@ -44,15 +42,9 @@
     <f:advanced>
 
         <f:optionalBlock inline="true" title="${%override.default.key}" field="overrideKey">
-            <f:entry title="${%password}" field="encryptedPassword">
-                <f:password/>
-            </f:entry>
-            <f:entry title="${%keyPath}" field="keyPath">
-                <f:textbox/>
-            </f:entry>
-            <f:entry title="${%key}" field="key">
-                <f:textarea/>
-            </f:entry>
+            <f:entry title="${%Credentials}" field="credentialsId">
+        		<c:select/>
+    		</f:entry>
         </f:optionalBlock>
 
         <f:entry title="${%jumpHost}" field="jumpHost">

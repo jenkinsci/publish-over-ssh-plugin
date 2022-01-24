@@ -24,18 +24,12 @@
   ~ THE SOFTWARE.
   -->
 
-<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:c="/lib/credentials">
 
-    <!-- need to add names for the validate button to get the common config, and for binding on the server when button clicked -->
-    <f:entry title="${%passphrase}" field="encryptedPassphrase">
-        <f:password name="common.encryptedPassphrase"/>
+	<f:entry title="${%Credentials}" field="credentialsId">
+        <c:select/>
     </f:entry>
-    <f:entry title="${%keyPath}" field="keyPath">
-        <f:textbox name="common.keyPath"/>
-    </f:entry>
-    <f:entry title="${%key}" field="key">
-        <f:textarea name="common.key"/>
-    </f:entry>
+    
     <f:entry title="${%disableAllExec}" field="disableAllExec">
         <f:checkbox name="common.disableAllExec"/>
     </f:entry>

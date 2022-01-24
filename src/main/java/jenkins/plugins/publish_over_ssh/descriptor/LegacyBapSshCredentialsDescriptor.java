@@ -32,7 +32,7 @@ import hudson.security.AccessControlled;
 import hudson.util.FormValidation;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.BPBuildInfo;
-import jenkins.plugins.publish_over_ssh.BapSshCredentials;
+import jenkins.plugins.publish_over_ssh.LegacyBapSshCredentials;
 import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import org.kohsuke.stapler.QueryParameter;
@@ -41,10 +41,10 @@ import org.kohsuke.stapler.Stapler;
 import java.io.IOException;
 
 @Extension
-public class BapSshCredentialsDescriptor extends Descriptor<BapSshCredentials> {
+public class LegacyBapSshCredentialsDescriptor extends Descriptor<LegacyBapSshCredentials> {
 
-	public BapSshCredentialsDescriptor() {
-		super(BapSshCredentials.class);
+	public LegacyBapSshCredentialsDescriptor() {
+		super(LegacyBapSshCredentials.class);
 	}
 
 	@Override
@@ -74,11 +74,12 @@ public class BapSshCredentialsDescriptor extends Descriptor<BapSshCredentials> {
 	}
 
 	public FormValidation doTestConnection(@QueryParameter final String configName,
-			@QueryParameter final String username, @QueryParameter final String encryptedPassphrase,
-			@QueryParameter final String key, @QueryParameter final String keyPath) {
-		final BapSshCredentials credentials = new BapSshCredentials(username, encryptedPassphrase, key, keyPath);
+			@QueryParameter final String username, @QueryParameter final String credentialsId,
+			@QueryParameter final String encryptedPassphrase, @QueryParameter final String key,
+			@QueryParameter final String keyPath) {
+		final LegacyBapSshCredentials legacyCredentials = new LegacyBapSshCredentials(username, encryptedPassphrase, key, keyPath);
 		final BPBuildInfo buildInfo = BapSshPublisherPluginDescriptor.createDummyBuildInfo();
-		buildInfo.put(BPBuildInfo.OVERRIDE_CREDENTIALS_CONTEXT_KEY, credentials);
+		buildInfo.put(BPBuildInfo.OVERRIDE_CREDENTIALS_CONTEXT_KEY, legacyCredentials);
 		Jenkins j = Jenkins.getInstanceOrNull();
 		final BapSshPublisherPlugin.Descriptor pluginDescriptor;
 		if (j != null) {

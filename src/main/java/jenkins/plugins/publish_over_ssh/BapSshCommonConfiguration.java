@@ -33,7 +33,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-public class BapSshCommonConfiguration extends BapSshKeyInfo implements Describable<BapSshCommonConfiguration> {
+public class BapSshCommonConfiguration extends LegacyBapSshKeyInfo implements Describable<BapSshCommonConfiguration> {
 
 	private static final long serialVersionUID = 1L;
 

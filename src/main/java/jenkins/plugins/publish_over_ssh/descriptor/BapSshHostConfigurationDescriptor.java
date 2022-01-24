@@ -24,17 +24,29 @@
 
 package jenkins.plugins.publish_over_ssh.descriptor;
 
+import java.util.Collections;
+
+import org.kohsuke.stapler.AncestorInPath;
+import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
+
+import com.cloudbees.plugins.credentials.CredentialsMatchers;
+import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
+import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
+import com.cloudbees.plugins.credentials.domains.DomainRequirement;
+
 import hudson.Extension;
 import hudson.model.Descriptor;
+import hudson.model.Item;
+import hudson.security.ACL;
 import hudson.util.FormValidation;
+import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.BPValidators;
 import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import jenkins.plugins.publish_over_ssh.Messages;
-import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
 
 @Extension
 public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConfiguration> {
@@ -99,4 +111,13 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
 		return new jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages();
 	}
 
+	public ListBoxModel doFillCredentialsIdItems(@AncestorInPath Item pItem) {
+		final ListBoxModel retVal;
+
+		retVal = new StandardListBoxModel().includeEmptyValue().includeMatchingAs(ACL.SYSTEM, pItem,
+				StandardUsernamePasswordCredentials.class, Collections.<DomainRequirement>emptyList(),
+				CredentialsMatchers.instanceOf(StandardUsernamePasswordCredentials.class));
+
+		return retVal;
+	}
 }

@@ -26,21 +26,21 @@ package jenkins.plugins.publish_over_ssh;
 
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.Credentials;
-import jenkins.plugins.publish_over_ssh.descriptor.BapSshCredentialsDescriptor;
+import jenkins.plugins.publish_over_ssh.descriptor.LegacyBapSshCredentialsDescriptor;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-public class BapSshCredentials extends BapSshKeyInfo implements Credentials<BapSshCredentials> {
+public class LegacyBapSshCredentials extends LegacyBapSshKeyInfo implements Credentials<LegacyBapSshCredentials> {
 
 	private static final long serialVersionUID = 1L;
 
 	private final String username;
 
 	@DataBoundConstructor
-	public BapSshCredentials(final String username, final String encryptedPassphrase, final String key,
+	public LegacyBapSshCredentials(final String username, final String encryptedPassphrase, final String key,
 			final String keyPath) {
 		super(encryptedPassphrase, key, keyPath);
 		this.username = username;
@@ -50,11 +50,11 @@ public class BapSshCredentials extends BapSshKeyInfo implements Credentials<BapS
 		return username;
 	}
 
-	public BapSshCredentialsDescriptor getDescriptor() {
-		return Jenkins.getInstance().getDescriptorByType(BapSshCredentialsDescriptor.class);
+	public LegacyBapSshCredentialsDescriptor getDescriptor() {
+		return Jenkins.getInstance().getDescriptorByType(LegacyBapSshCredentialsDescriptor.class);
 	}
 
-	protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshCredentials that) {
+	protected EqualsBuilder addToEquals(final EqualsBuilder builder, final LegacyBapSshCredentials that) {
 		return super.addToEquals(builder, that).append(username, that.username);
 	}
 
@@ -72,7 +72,7 @@ public class BapSshCredentials extends BapSshKeyInfo implements Credentials<BapS
 		if (that == null || getClass() != that.getClass())
 			return false;
 
-		return addToEquals(new EqualsBuilder(), (BapSshCredentials) that).isEquals();
+		return addToEquals(new EqualsBuilder(), (LegacyBapSshCredentials) that).isEquals();
 	}
 
 	public int hashCode() {

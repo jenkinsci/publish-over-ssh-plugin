@@ -35,7 +35,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import java.io.Serializable;
 
 @SuppressWarnings("PMD.TooManyMethods")
-public class BapSshKeyInfo implements Serializable {
+public class LegacyBapSshKeyInfo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -44,7 +44,7 @@ public class BapSshKeyInfo implements Serializable {
 	private String key;
 	private String keyPath;
 
-	public BapSshKeyInfo(final String encryptedPassphrase, final String key, final String keyPath) {
+	public LegacyBapSshKeyInfo(final String encryptedPassphrase, final String key, final String keyPath) {
 		secretPassphrase = Secret.fromString(encryptedPassphrase);
 		this.key = key;
 		this.keyPath = keyPath;
@@ -101,7 +101,7 @@ public class BapSshKeyInfo implements Serializable {
 		return builder.append(secretPassphrase).append(key).append(keyPath);
 	}
 
-	protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshKeyInfo that) {
+	protected EqualsBuilder addToEquals(final EqualsBuilder builder, final LegacyBapSshKeyInfo that) {
 		return builder.append(secretPassphrase, that.secretPassphrase).append(key, that.key).append(keyPath,
 				that.keyPath);
 	}
@@ -116,7 +116,7 @@ public class BapSshKeyInfo implements Serializable {
 		if (that == null || getClass() != that.getClass())
 			return false;
 
-		return addToEquals(new EqualsBuilder(), (BapSshKeyInfo) that).isEquals();
+		return addToEquals(new EqualsBuilder(), (LegacyBapSshKeyInfo) that).isEquals();
 	}
 
 	public int hashCode() {
