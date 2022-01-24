@@ -32,6 +32,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
 public class BapSshCommonConfiguration extends LegacyBapSshKeyInfo implements Describable<BapSshCommonConfiguration> {
 
@@ -39,11 +40,14 @@ public class BapSshCommonConfiguration extends LegacyBapSshKeyInfo implements De
 
 	private final boolean disableAllExec;
 
+	private String credentialsId;
+
 	@DataBoundConstructor
 	public BapSshCommonConfiguration(final String encryptedPassphrase, final String key, final String keyPath,
 			final boolean disableAllExec) {
 		super(encryptedPassphrase, key, keyPath);
 		this.disableAllExec = disableAllExec;
+//		this.credentialsId = credentialsId;
 	}
 
 	public boolean isDisableAllExec() {
@@ -51,7 +55,7 @@ public class BapSshCommonConfiguration extends LegacyBapSshKeyInfo implements De
 	}
 
 	public BapSshCommonConfigurationDescriptor getDescriptor() {
-		return Jenkins.getInstance().getDescriptorByType(BapSshCommonConfigurationDescriptor.class);
+		return Jenkins.get().getDescriptorByType(BapSshCommonConfigurationDescriptor.class);
 	}
 
 	protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshCommonConfiguration that) {
@@ -81,6 +85,15 @@ public class BapSshCommonConfiguration extends LegacyBapSshKeyInfo implements De
 
 	public String toString() {
 		return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+	}
+
+	public String getCredentialsId() {
+		return credentialsId;
+	}
+
+	@DataBoundSetter
+	public void setCredentialsId(String credentialsId) {
+		this.credentialsId = credentialsId;
 	}
 
 }

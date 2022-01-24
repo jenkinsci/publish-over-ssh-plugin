@@ -46,11 +46,11 @@ public class BapSshPublisherDescriptor extends Descriptor<BapSshPublisher> {
 	}
 
 	public BapSshPublisherPlugin.Descriptor getPublisherPluginDescriptor() {
-		return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+		return Jenkins.get().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
 	}
 
 	public BapSshTransferDescriptor getTransferDescriptor() {
-		return Jenkins.getActiveInstance().getDescriptorByType(BapSshTransferDescriptor.class);
+		return Jenkins.get().getDescriptorByType(BapSshTransferDescriptor.class);
 	}
 
 	public jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages getCommonFieldNames() {

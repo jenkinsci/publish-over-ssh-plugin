@@ -177,15 +177,15 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 	}
 
 	public BapSshPublisherDescriptor getPublisherDescriptor() {
-		return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherDescriptor.class);
+		return Jenkins.get().getDescriptorByType(BapSshPublisherDescriptor.class);
 	}
 
 	public BapSshHostConfigurationDescriptor getHostConfigurationDescriptor() {
-		return Jenkins.getActiveInstance().getDescriptorByType(BapSshHostConfigurationDescriptor.class);
+		return Jenkins.get().getDescriptorByType(BapSshHostConfigurationDescriptor.class);
 	}
 
 	public SshPluginDefaults.SshPluginDefaultsDescriptor getPluginDefaultsDescriptor() {
-		return Jenkins.getActiveInstance().getDescriptorByType(SshPluginDefaults.SshPluginDefaultsDescriptor.class);
+		return Jenkins.get().getDescriptorByType(SshPluginDefaults.SshPluginDefaultsDescriptor.class);
 	}
 
 	public jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages getCommonFieldNames() {
@@ -220,7 +220,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 	}
 
 	public static BPBuildInfo createDummyBuildInfo() {
-		return new BPBuildInfo(TaskListener.NULL, "", Jenkins.getActiveInstance().getRootPath(), null, null);
+		return new BPBuildInfo(TaskListener.NULL, "", Jenkins.get().getRootPath(), null, null);
 	}
 
 	public Object readResolve() {

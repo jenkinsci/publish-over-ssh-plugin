@@ -24,17 +24,11 @@
 
 package jenkins.plugins.publish_over_ssh;
 
-import com.jcraft.jsch.*;
-import hudson.Util;
-import hudson.model.Describable;
-
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Properties;
 
-import jenkins.model.Jenkins;
-import jenkins.plugins.publish_over.*;
-import jenkins.plugins.publish_over_ssh.descriptor.BapSshHostConfigurationDescriptor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -44,6 +38,29 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+
+import com.cloudbees.plugins.credentials.CredentialsMatchers;
+import com.cloudbees.plugins.credentials.CredentialsProvider;
+import com.cloudbees.plugins.credentials.domains.DomainRequirement;
+import com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.ProxyHTTP;
+import com.jcraft.jsch.ProxySOCKS4;
+import com.jcraft.jsch.ProxySOCKS5;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpException;
+
+import hudson.Util;
+import hudson.model.Describable;
+import hudson.security.ACL;
+import jenkins.model.Jenkins;
+import jenkins.plugins.publish_over.BPBuildInfo;
+import jenkins.plugins.publish_over.BPHostConfiguration;
+import jenkins.plugins.publish_over.BapPublisher;
+import jenkins.plugins.publish_over.BapPublisherException;
+import jenkins.plugins.publish_over_ssh.descriptor.BapSshHostConfigurationDescriptor;
 
 @SuppressWarnings("PMD.TooManyMethods")
 public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, BapSshCommonConfiguration>
@@ -64,7 +81,8 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	private boolean overrideCredentials;
 	private boolean disableExec;
 
-	private final LegacyBapSshKeyInfo credentialsId;
+	private final LegacyBapSshKeyInfo legacyCredentialsId;
+	private String credentialsId;
 	private String jumpHost;
 
 	private String proxyType;
@@ -78,22 +96,24 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		// some
 		// business logic in there...
 		super(null, null, null, null, null, 0);
-		this.credentialsId = new LegacyBapSshKeyInfo(null, null, null);
+		this.legacyCredentialsId = new LegacyBapSshKeyInfo(null, null, null);
 	}
 
 	// CSOFF: ParameterNumberCheck
 	@SuppressWarnings("PMD.ExcessiveParameterList") // DBC for you!
 	@DataBoundConstructor
 	public BapSshHostConfiguration(final String name, final String hostname, final String credentialsId,
-			 final String remoteRootDir, final int port, final int timeout,
-			final boolean overrideCredentials, final boolean disableExec) {
+			final String remoteRootDir, final int port, final int timeout, final boolean overrideCredentials,
+			final boolean disableExec) {
 		// CSON: ParameterNumberCheck
 		// TODO: username is empty
 		super(name, hostname, "", null, remoteRootDir, port);
 		this.timeout = timeout;
 		this.overrideCredentials = overrideCredentials;
-		this.credentialsId = null; 
+		this.legacyCredentialsId = null;
 		this.disableExec = disableExec;
+		System.out.println("construct: " + credentialsId);
+		this.credentialsId = credentialsId;
 	}
 
 	@DataBoundSetter
@@ -140,40 +160,49 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
 	@Override
 	protected final String getPassword() {
-		return credentialsId.getPassphrase();
+		return legacyCredentialsId.getPassphrase();
 	}
 
 	@Override
 	public final void setPassword(final String password) {
-		credentialsId.setPassphrase(password);
+		legacyCredentialsId.setPassphrase(password);
 	}
 
 	@Override
 	public final String getEncryptedPassword() {
-		return credentialsId.getEncryptedPassphrase();
+		return legacyCredentialsId.getEncryptedPassphrase();
 	}
 
 	@DataBoundSetter
 	public void setEncryptedPassword(final String encryptedPassword) {
-		this.credentialsId.setPassphrase(encryptedPassword);
+		this.legacyCredentialsId.setPassphrase(encryptedPassword);
+	}
+
+	public String getCredentialsId() {
+		return credentialsId;
+	}
+
+	@DataBoundSetter
+	public void setCredentialsId(String credentialsId) {
+		this.credentialsId = credentialsId;
 	}
 
 	public String getKeyPath() {
-		return credentialsId.getKeyPath();
+		return legacyCredentialsId.getKeyPath();
 	}
 
 	@DataBoundSetter
 	public void setKeyPath(final String keyPath) {
-		credentialsId.setKeyPath(keyPath);
+		legacyCredentialsId.setKeyPath(keyPath);
 	}
 
 	public String getKey() {
-		return credentialsId.getKey();
+		return legacyCredentialsId.getKey();
 	}
 
 	@DataBoundSetter
 	public void setKey(final String key) {
-		credentialsId.setKey(key);
+		legacyCredentialsId.setKey(key);
 	}
 
 	public boolean isOverrideKey() {
@@ -247,7 +276,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		final LegacyBapSshCredentials publisherCredentials = getPublisherOverrideCredentials(buildInfo);
 		if (publisherCredentials != null)
 			return publisherCredentials;
-		return overrideCredentials ? credentialsId : getCommonConfig();
+		return overrideCredentials ? legacyCredentialsId : getCommonConfig();
 	}
 
 	@Override
@@ -322,14 +351,29 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	private void configureAuthentication(final BPBuildInfo buildInfo, final JSch ssh, Session session) {
 		final LegacyBapSshKeyInfo keyInfo = getEffectiveKeyInfo(buildInfo);
 		final Properties sessionProperties = getSessionProperties();
-		if (keyInfo.useKey()) {
+
+		if (this.credentialsId != null && this.credentialsId != "") {
+			System.out.println("use credentials: " + this.credentialsId);
+			
+			UsernamePasswordCredentialsImpl credentials = getCredentials(this.credentialsId);
+			System.out.println(credentials);
+			System.out.println(credentials.getUsername());
+			System.out.println(credentials.getPassword().getPlainText());
+			
 			setKey(buildInfo, ssh, keyInfo);
-			sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "publickey");
-		} else {
-			session.setPassword(Util.fixNull(keyInfo.getPassphrase()));
+			session.setPassword(credentials.getPassword().getPlainText());
 			sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "keyboard-interactive,password");
+		} else {
+
+			if (keyInfo.useKey()) {
+				setKey(buildInfo, ssh, keyInfo);
+				sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "publickey");
+			} else {
+				session.setPassword(Util.fixNull(keyInfo.getPassphrase()));
+				sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "keyboard-interactive,password");
+			}
+			session.setConfig(sessionProperties);
 		}
-		session.setConfig(sessionProperties);
 	}
 
 	private void setupSftp(final BapSshClient bapClient) throws IOException {
@@ -471,26 +515,26 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	}
 
 	protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshHostConfiguration that) {
-		return super.addToEquals(builder, that).append(credentialsId, that.credentialsId).append(timeout, that.timeout)
-				.append(overrideCredentials, that.overrideCredentials).append(jumpHost, that.jumpHost)
-				.append(disableExec, that.disableExec).append(proxyType, that.proxyType)
+		return super.addToEquals(builder, that).append(legacyCredentialsId, that.legacyCredentialsId)
+				.append(timeout, that.timeout).append(overrideCredentials, that.overrideCredentials)
+				.append(jumpHost, that.jumpHost).append(disableExec, that.disableExec).append(proxyType, that.proxyType)
 				.append(proxyHost, that.proxyHost).append(proxyPort, that.proxyPort).append(proxyUser, that.proxyUser)
 				.append(proxyPassword, that.proxyPassword);
 	}
 
 	@Override
 	protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
-		return super.addToHashCode(builder).append(credentialsId).append(timeout).append(overrideCredentials).append(jumpHost)
-				.append(disableExec).append(proxyType).append(proxyHost).append(proxyPort).append(proxyUser)
-				.append(proxyPassword);
+		return super.addToHashCode(builder).append(legacyCredentialsId).append(timeout).append(overrideCredentials)
+				.append(jumpHost).append(disableExec).append(proxyType).append(proxyHost).append(proxyPort)
+				.append(proxyUser).append(proxyPassword);
 	}
 
 	@Override
 	protected ToStringBuilder addToToString(final ToStringBuilder builder) {
-		return super.addToToString(builder).append("keyInfo", credentialsId).append("timeout", timeout)
-				.append("overrideKey", overrideCredentials).append("jumpHost", jumpHost).append("disableExec", disableExec)
-				.append("proxyType", proxyType).append("proxyHost", proxyHost).append("proxyPort", proxyPort)
-				.append("proxyUser", proxyUser).append("proxyPassword", proxyPassword);
+		return super.addToToString(builder).append("keyInfo", legacyCredentialsId).append("timeout", timeout)
+				.append("overrideKey", overrideCredentials).append("jumpHost", jumpHost)
+				.append("disableExec", disableExec).append("proxyType", proxyType).append("proxyHost", proxyHost)
+				.append("proxyPort", proxyPort).append("proxyUser", proxyUser).append("proxyPassword", proxyPassword);
 	}
 
 	@Override
@@ -514,4 +558,9 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
 	}
 
+	private UsernamePasswordCredentialsImpl getCredentials(final String pCredentialId) {
+		return CredentialsMatchers.firstOrNull(
+                CredentialsProvider.lookupCredentials(UsernamePasswordCredentialsImpl.class, Jenkins.getInstance(), ACL.SYSTEM, Collections.<DomainRequirement> emptyList()),
+                CredentialsMatchers.allOf(CredentialsMatchers.withId(pCredentialId)));
+	}
 }
