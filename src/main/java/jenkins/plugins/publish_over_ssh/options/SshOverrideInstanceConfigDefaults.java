@@ -31,48 +31,50 @@ import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.options.InstanceConfigOptions;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-public class SshOverrideInstanceConfigDefaults implements InstanceConfigOptions, Describable<SshOverrideInstanceConfigDefaults> {
+public class SshOverrideInstanceConfigDefaults
+		implements InstanceConfigOptions, Describable<SshOverrideInstanceConfigDefaults> {
 
-    private final boolean continueOnError;
-    private final boolean failOnError;
-    private final boolean alwaysPublishFromMaster;
+	private final boolean continueOnError;
+	private final boolean failOnError;
+	private final boolean alwaysPublishFromMaster;
 
-    @DataBoundConstructor
-    public SshOverrideInstanceConfigDefaults(final boolean alwaysPublishFromMaster, final boolean continueOnError,
-                                             final boolean failOnError) {
-        this.alwaysPublishFromMaster = alwaysPublishFromMaster;
-        this.continueOnError = continueOnError;
-        this.failOnError = failOnError;
-    }
+	@DataBoundConstructor
+	public SshOverrideInstanceConfigDefaults(final boolean alwaysPublishFromMaster, final boolean continueOnError,
+			final boolean failOnError) {
+		this.alwaysPublishFromMaster = alwaysPublishFromMaster;
+		this.continueOnError = continueOnError;
+		this.failOnError = failOnError;
+	}
 
-    public boolean isContinueOnError() {
-        return continueOnError;
-    }
+	public boolean isContinueOnError() {
+		return continueOnError;
+	}
 
-    public boolean isFailOnError() {
-        return failOnError;
-    }
+	public boolean isFailOnError() {
+		return failOnError;
+	}
 
-    public boolean isAlwaysPublishFromMaster() {
-        return alwaysPublishFromMaster;
-    }
+	public boolean isAlwaysPublishFromMaster() {
+		return alwaysPublishFromMaster;
+	}
 
-    public SshOverrideInstanceConfigDefaultsDescriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(SshOverrideInstanceConfigDefaultsDescriptor.class);
-    }
+	public SshOverrideInstanceConfigDefaultsDescriptor getDescriptor() {
+		return Jenkins.getActiveInstance().getDescriptorByType(SshOverrideInstanceConfigDefaultsDescriptor.class);
+	}
 
-    @Extension
-    public static class SshOverrideInstanceConfigDefaultsDescriptor extends Descriptor<SshOverrideInstanceConfigDefaults> {
+	@Extension
+	public static class SshOverrideInstanceConfigDefaultsDescriptor
+			extends Descriptor<SshOverrideInstanceConfigDefaults> {
 
-        @Override
-        public String getDisplayName() {
-            return "SshOverrideInstanceConfigDefaultsDescriptor - not visible ...";
-        }
+		@Override
+		public String getDisplayName() {
+			return "SshOverrideInstanceConfigDefaultsDescriptor - not visible ...";
+		}
 
-        public jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages getCommonFieldNames() {
-            return new jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages();
-        }
+		public jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages getCommonFieldNames() {
+			return new jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages();
+		}
 
-    }
+	}
 
 }

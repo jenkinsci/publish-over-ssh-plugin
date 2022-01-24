@@ -35,52 +35,52 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class BapSshCredentials extends BapSshKeyInfo implements Credentials<BapSshCredentials> {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private final String username;
+	private final String username;
 
-    @DataBoundConstructor
-    public BapSshCredentials(final String username, final String encryptedPassphrase, final String key, final String keyPath) {
-        super(encryptedPassphrase, key, keyPath);
-        this.username = username;
-    }
+	@DataBoundConstructor
+	public BapSshCredentials(final String username, final String encryptedPassphrase, final String key,
+			final String keyPath) {
+		super(encryptedPassphrase, key, keyPath);
+		this.username = username;
+	}
 
-    public String getUsername() {
-        return username;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public BapSshCredentialsDescriptor getDescriptor() {
-        return Jenkins.getInstance().getDescriptorByType(BapSshCredentialsDescriptor.class);
-    }
+	public BapSshCredentialsDescriptor getDescriptor() {
+		return Jenkins.getInstance().getDescriptorByType(BapSshCredentialsDescriptor.class);
+	}
 
-    protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshCredentials that) {
-        return super.addToEquals(builder, that)
-            .append(username, that.username);
-    }
+	protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshCredentials that) {
+		return super.addToEquals(builder, that).append(username, that.username);
+	}
 
-    protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
-        return super.addToHashCode(builder)
-            .append(username);
-    }
+	protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
+		return super.addToHashCode(builder).append(username);
+	}
 
-    protected ToStringBuilder addToToString(final ToStringBuilder builder) {
-        return super.addToToString(builder)
-            .append("username", username);
-    }
+	protected ToStringBuilder addToToString(final ToStringBuilder builder) {
+		return super.addToToString(builder).append("username", username);
+	}
 
-    public boolean equals(final Object that) {
-        if (this == that) return true;
-        if (that == null || getClass() != that.getClass()) return false;
+	public boolean equals(final Object that) {
+		if (this == that)
+			return true;
+		if (that == null || getClass() != that.getClass())
+			return false;
 
-        return addToEquals(new EqualsBuilder(), (BapSshCredentials) that).isEquals();
-    }
+		return addToEquals(new EqualsBuilder(), (BapSshCredentials) that).isEquals();
+	}
 
-    public int hashCode() {
-        return addToHashCode(new HashCodeBuilder()).toHashCode();
-    }
+	public int hashCode() {
+		return addToHashCode(new HashCodeBuilder()).toHashCode();
+	}
 
-    public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
-    }
+	public String toString() {
+		return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+	}
 
 }

@@ -43,57 +43,56 @@ import java.io.IOException;
 @Extension
 public class BapSshCredentialsDescriptor extends Descriptor<BapSshCredentials> {
 
-    public BapSshCredentialsDescriptor() {
-        super(BapSshCredentials.class);
-    }
+	public BapSshCredentialsDescriptor() {
+		super(BapSshCredentials.class);
+	}
 
-    @Override
-    public String getDisplayName() {
-        return "not seen";
-    }
+	@Override
+	public String getDisplayName() {
+		return "not seen";
+	}
 
-    public FormValidation doCheckUsername(@QueryParameter final String value) {
-        return FormValidation.validateRequired(value);
-    }
+	public FormValidation doCheckUsername(@QueryParameter final String value) {
+		return FormValidation.validateRequired(value);
+	}
 
-    public FormValidation doCheckKeyPath(@QueryParameter final String value) {
-        AccessControlled subject = Stapler.getCurrentRequest().findAncestorObject(AbstractProject.class);
-        if (subject == null) {
-            subject = Jenkins.getInstance();
-        }
-        if (!subject.hasPermission(Item.CONFIGURE)&&subject.hasPermission(Item.EXTENDED_READ)) {
-            return FormValidation.ok();
-        }
-        try {
-            return Jenkins.getInstance().getRootPath().validateRelativePath(value, true, true);
-        } catch (final IOException ioe) {
-            return FormValidation.error(ioe, "");
-        } catch (final NullPointerException npe) {
-            return FormValidation.error(npe, "");
-        }
-    }
+	public FormValidation doCheckKeyPath(@QueryParameter final String value) {
+		AccessControlled subject = Stapler.getCurrentRequest().findAncestorObject(AbstractProject.class);
+		if (subject == null) {
+			subject = Jenkins.getInstance();
+		}
+		if (!subject.hasPermission(Item.CONFIGURE) && subject.hasPermission(Item.EXTENDED_READ)) {
+			return FormValidation.ok();
+		}
+		try {
+			return Jenkins.getInstance().getRootPath().validateRelativePath(value, true, true);
+		} catch (final IOException ioe) {
+			return FormValidation.error(ioe, "");
+		} catch (final NullPointerException npe) {
+			return FormValidation.error(npe, "");
+		}
+	}
 
-    public FormValidation doTestConnection(@QueryParameter final String configName, @QueryParameter final String username,
-                                           @QueryParameter final String encryptedPassphrase, @QueryParameter final String key,
-                                           @QueryParameter final String keyPath) {
-        final BapSshCredentials credentials = new BapSshCredentials(username, encryptedPassphrase, key, keyPath);
-        final BPBuildInfo buildInfo = BapSshPublisherPluginDescriptor.createDummyBuildInfo();
-        buildInfo.put(BPBuildInfo.OVERRIDE_CREDENTIALS_CONTEXT_KEY, credentials);
-        Jenkins j = Jenkins.getInstanceOrNull();
-        final BapSshPublisherPlugin.Descriptor pluginDescriptor;
-        if(j != null) {
-            pluginDescriptor = j.getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
-        }
-        else {
-            throw new NullPointerException("Jenkins is not ready on going to be offline...");
-        }
+	public FormValidation doTestConnection(@QueryParameter final String configName,
+			@QueryParameter final String username, @QueryParameter final String encryptedPassphrase,
+			@QueryParameter final String key, @QueryParameter final String keyPath) {
+		final BapSshCredentials credentials = new BapSshCredentials(username, encryptedPassphrase, key, keyPath);
+		final BPBuildInfo buildInfo = BapSshPublisherPluginDescriptor.createDummyBuildInfo();
+		buildInfo.put(BPBuildInfo.OVERRIDE_CREDENTIALS_CONTEXT_KEY, credentials);
+		Jenkins j = Jenkins.getInstanceOrNull();
+		final BapSshPublisherPlugin.Descriptor pluginDescriptor;
+		if (j != null) {
+			pluginDescriptor = j.getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+		} else {
+			throw new NullPointerException("Jenkins is not ready on going to be offline...");
+		}
 
-        final BapSshHostConfiguration hostConfig = pluginDescriptor.getConfiguration(configName);
-        return BapSshPublisherPluginDescriptor.validateConnection(hostConfig, buildInfo);
-    }
+		final BapSshHostConfiguration hostConfig = pluginDescriptor.getConfiguration(configName);
+		return BapSshPublisherPluginDescriptor.validateConnection(hostConfig, buildInfo);
+	}
 
-    public jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages getCommonFieldNames() {
-        return new jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages();
-    }
+	public jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages getCommonFieldNames() {
+		return new jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages();
+	}
 
 }

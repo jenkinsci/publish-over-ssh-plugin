@@ -40,7 +40,7 @@
     <url>https://github.com/jenkinsci/publish-over-ssh-plugin</url>
 
     <properties>
-        <revision>1.23</revision>
+        <revision>2.0</revision>
         <changelist>-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/publish-over-ssh-plugin</gitHubRepo>
         <jenkins.version>2.263.1</jenkins.version>

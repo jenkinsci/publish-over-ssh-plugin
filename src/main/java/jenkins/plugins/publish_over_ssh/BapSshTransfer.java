@@ -38,126 +38,132 @@ import org.kohsuke.stapler.DataBoundSetter;
 
 public class BapSshTransfer extends BPTransfer implements Describable<BapSshTransfer> {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private String execCommand;
-    private int execTimeout;
-    private boolean usePty;
-    private boolean useAgentForwarding;
-    private boolean useSftpForExec;
+	private String execCommand;
+	private int execTimeout;
+	private boolean usePty;
+	private boolean useAgentForwarding;
+	private boolean useSftpForExec;
 
-    BapSshTransfer(final String sourceFiles, final String remoteDirectory, final String removePrefix,
-                   final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout) {
-        this(sourceFiles, null, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, execCommand, execTimeout, false, false, false, null);
-    }
+	BapSshTransfer(final String sourceFiles, final String remoteDirectory, final String removePrefix,
+			final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout) {
+		this(sourceFiles, null, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, execCommand, execTimeout,
+				false, false, false, null);
+	}
 
-    public BapSshTransfer(final String sourceFiles, final String excludes, final String remoteDirectory, final String removePrefix,
-                          final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout,
-                          final boolean usePty, final boolean noDefaultExcludes, final boolean makeEmptyDirs, final String patternSeparator) {
-        super(sourceFiles, excludes, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, false, noDefaultExcludes, makeEmptyDirs, patternSeparator);
-        this.execCommand = execCommand;
-        this.execTimeout = execTimeout;
-        this.usePty = usePty;
-        this.useAgentForwarding = false;
-    }
+	public BapSshTransfer(final String sourceFiles, final String excludes, final String remoteDirectory,
+			final String removePrefix, final boolean remoteDirectorySDF, final boolean flatten,
+			final String execCommand, final int execTimeout, final boolean usePty, final boolean noDefaultExcludes,
+			final boolean makeEmptyDirs, final String patternSeparator) {
+		super(sourceFiles, excludes, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, false,
+				noDefaultExcludes, makeEmptyDirs, patternSeparator);
+		this.execCommand = execCommand;
+		this.execTimeout = execTimeout;
+		this.usePty = usePty;
+		this.useAgentForwarding = false;
+	}
 
-    @DataBoundConstructor
-    public BapSshTransfer(final String sourceFiles, final String excludes, final String remoteDirectory, final String removePrefix,
-                          final boolean remoteDirectorySDF, final boolean flatten, final boolean cleanRemote, final String execCommand, final int execTimeout,
-                          final boolean usePty, final boolean noDefaultExcludes, final boolean makeEmptyDirs, final String patternSeparator) {
-        super(sourceFiles, excludes, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, cleanRemote, noDefaultExcludes, makeEmptyDirs, patternSeparator);
-        this.execCommand = execCommand;
-        this.execTimeout = execTimeout;
-        this.usePty = usePty;
-        this.useAgentForwarding = false;
-    }
+	@DataBoundConstructor
+	public BapSshTransfer(final String sourceFiles, final String excludes, final String remoteDirectory,
+			final String removePrefix, final boolean remoteDirectorySDF, final boolean flatten,
+			final boolean cleanRemote, final String execCommand, final int execTimeout, final boolean usePty,
+			final boolean noDefaultExcludes, final boolean makeEmptyDirs, final String patternSeparator) {
+		super(sourceFiles, excludes, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, cleanRemote,
+				noDefaultExcludes, makeEmptyDirs, patternSeparator);
+		this.execCommand = execCommand;
+		this.execTimeout = execTimeout;
+		this.usePty = usePty;
+		this.useAgentForwarding = false;
+	}
 
-    public String getExecCommand() { return execCommand; }
+	public String getExecCommand() {
+		return execCommand;
+	}
 
-    @DataBoundSetter
-    public void setExecCommand(String execCommand) {
-        this.execCommand = execCommand;
-    }
+	@DataBoundSetter
+	public void setExecCommand(String execCommand) {
+		this.execCommand = execCommand;
+	}
 
-    public int getExecTimeout() { return execTimeout; }
+	public int getExecTimeout() {
+		return execTimeout;
+	}
 
-    @DataBoundSetter
-    public void setExecTimeout(int execTimeout) {
-        this.execTimeout = execTimeout;
-    }
+	@DataBoundSetter
+	public void setExecTimeout(int execTimeout) {
+		this.execTimeout = execTimeout;
+	}
 
-    public boolean hasExecCommand() {
-        return Util.fixEmptyAndTrim(getExecCommand()) != null;
-    }
+	public boolean hasExecCommand() {
+		return Util.fixEmptyAndTrim(getExecCommand()) != null;
+	}
 
-    public boolean isUsePty() {
-        return usePty;
-    }
+	public boolean isUsePty() {
+		return usePty;
+	}
 
-    @DataBoundSetter
-    public void setUsePty(boolean usePty) {
-        this.usePty = usePty;
-    }
+	@DataBoundSetter
+	public void setUsePty(boolean usePty) {
+		this.usePty = usePty;
+	}
 
-    public boolean isUseSftpForExec() {
-        return useSftpForExec;
-    }
+	public boolean isUseSftpForExec() {
+		return useSftpForExec;
+	}
 
-    @DataBoundSetter
-    public void setUseSftpForExec(boolean useSftpForExec) {
-        this.useSftpForExec = useSftpForExec;
-    }
+	@DataBoundSetter
+	public void setUseSftpForExec(boolean useSftpForExec) {
+		this.useSftpForExec = useSftpForExec;
+	}
 
-    public boolean isUseAgentForwarding() {
-        return useAgentForwarding;
-    }
+	public boolean isUseAgentForwarding() {
+		return useAgentForwarding;
+	}
 
-    @DataBoundSetter
-    public void setUseAgentForwarding(boolean value) {
-        useAgentForwarding = value;
-    }
+	@DataBoundSetter
+	public void setUseAgentForwarding(boolean value) {
+		useAgentForwarding = value;
+	}
 
-    public BapSshTransferDescriptor getDescriptor() {
-        return Jenkins.getInstance().getDescriptorByType(BapSshTransferDescriptor.class);
-    }
+	public BapSshTransferDescriptor getDescriptor() {
+		return Jenkins.getInstance().getDescriptorByType(BapSshTransferDescriptor.class);
+	}
 
-    @Override
-    protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
-        return super.addToHashCode(builder).append(execCommand).append(execTimeout).append(usePty).append(useAgentForwarding).append(useSftpForExec);
-    }
+	@Override
+	protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
+		return super.addToHashCode(builder).append(execCommand).append(execTimeout).append(usePty)
+				.append(useAgentForwarding).append(useSftpForExec);
+	}
 
-    protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshTransfer that) {
-        return super.addToEquals(builder, that)
-                .append(execCommand, that.execCommand)
-                .append(execTimeout, that.execTimeout)
-                .append(usePty, that.usePty)
-                .append(useAgentForwarding, that.useAgentForwarding)
-                .append(useSftpForExec, that.useSftpForExec);
-    }
+	protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshTransfer that) {
+		return super.addToEquals(builder, that).append(execCommand, that.execCommand)
+				.append(execTimeout, that.execTimeout).append(usePty, that.usePty)
+				.append(useAgentForwarding, that.useAgentForwarding).append(useSftpForExec, that.useSftpForExec);
+	}
 
-    @Override
-    protected ToStringBuilder addToToString(final ToStringBuilder builder) {
-        return super.addToToString(builder)
-                .append("execCommand", execCommand)
-                .append("execTimeout", execTimeout)
-                .append("pseudoTty", usePty)
-                .append("agentForwarding", useAgentForwarding)
-                .append("useSftpForExec", useSftpForExec);
-    }
+	@Override
+	protected ToStringBuilder addToToString(final ToStringBuilder builder) {
+		return super.addToToString(builder).append("execCommand", execCommand).append("execTimeout", execTimeout)
+				.append("pseudoTty", usePty).append("agentForwarding", useAgentForwarding)
+				.append("useSftpForExec", useSftpForExec);
+	}
 
-    public boolean equals(final Object that) {
-        if (this == that) return true;
-        if (that == null || getClass() != that.getClass()) return false;
+	public boolean equals(final Object that) {
+		if (this == that)
+			return true;
+		if (that == null || getClass() != that.getClass())
+			return false;
 
-        return addToEquals(new EqualsBuilder(), (BapSshTransfer) that).isEquals();
-    }
+		return addToEquals(new EqualsBuilder(), (BapSshTransfer) that).isEquals();
+	}
 
-    public int hashCode() {
-        return addToHashCode(new HashCodeBuilder()).toHashCode();
-    }
+	public int hashCode() {
+		return addToHashCode(new HashCodeBuilder()).toHashCode();
+	}
 
-    public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
-    }
+	public String toString() {
+		return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+	}
 
 }

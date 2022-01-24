@@ -32,39 +32,41 @@ import jenkins.plugins.publish_over.options.PublisherLabelOptions;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherLabel;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-public class SshOverridePublisherLabelDefaults implements PublisherLabelOptions, Describable<SshOverridePublisherLabelDefaults> {
+public class SshOverridePublisherLabelDefaults
+		implements PublisherLabelOptions, Describable<SshOverridePublisherLabelDefaults> {
 
-    private final String label;
+	private final String label;
 
-    @DataBoundConstructor
-    public SshOverridePublisherLabelDefaults(final String label) {
-        this.label = label;
-    }
+	@DataBoundConstructor
+	public SshOverridePublisherLabelDefaults(final String label) {
+		this.label = label;
+	}
 
-    public String getLabel() {
-        return label;
-    }
+	public String getLabel() {
+		return label;
+	}
 
-    public SshOverridePublisherLabelDefaultsDescriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(SshOverridePublisherLabelDefaultsDescriptor.class);
-    }
+	public SshOverridePublisherLabelDefaultsDescriptor getDescriptor() {
+		return Jenkins.getActiveInstance().getDescriptorByType(SshOverridePublisherLabelDefaultsDescriptor.class);
+	}
 
-    @Extension
-    public static class SshOverridePublisherLabelDefaultsDescriptor extends Descriptor<SshOverridePublisherLabelDefaults> {
+	@Extension
+	public static class SshOverridePublisherLabelDefaultsDescriptor
+			extends Descriptor<SshOverridePublisherLabelDefaults> {
 
-        @Override
-        public String getDisplayName() {
-            return "SshOverridePublisherLabelDefaultsDescriptor - not visible ...";
-        }
+		@Override
+		public String getDisplayName() {
+			return "SshOverridePublisherLabelDefaultsDescriptor - not visible ...";
+		}
 
-        public jenkins.plugins.publish_over.view_defaults.PublisherLabel.Messages getCommonFieldNames() {
-            return new jenkins.plugins.publish_over.view_defaults.PublisherLabel.Messages();
-        }
+		public jenkins.plugins.publish_over.view_defaults.PublisherLabel.Messages getCommonFieldNames() {
+			return new jenkins.plugins.publish_over.view_defaults.PublisherLabel.Messages();
+		}
 
-        public String getConfigPage() {
-            return getViewPage(BapSshPublisherLabel.class, "config.jelly");
-        }
+		public String getConfigPage() {
+			return getViewPage(BapSshPublisherLabel.class, "config.jelly");
+		}
 
-    }
+	}
 
 }

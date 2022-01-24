@@ -28,16 +28,17 @@ import java.nio.charset.StandardCharsets;
 
 public class BapSshUtil {
 
-    public static final int EXTENSION_ORDINAL_POST_BUILD_WRAPPER = 10;
-    public static final int EXTENSION_ORDINAL_PRE_BUILD_WRAPPER = EXTENSION_ORDINAL_POST_BUILD_WRAPPER + 1;
+	public static final int EXTENSION_ORDINAL_POST_BUILD_WRAPPER = 10;
+	public static final int EXTENSION_ORDINAL_PRE_BUILD_WRAPPER = EXTENSION_ORDINAL_POST_BUILD_WRAPPER + 1;
 
-    private BapSshUtil() {}
+	private BapSshUtil() {
+	}
 
-    public static byte[] toBytes(final String string) {
-        if (string == null) {
-            return new byte[]{};
-        } else {
-            return string.getBytes(StandardCharsets.UTF_8);
-        }
-   }
+	public static byte[] toBytes(final String string) {
+		if (string == null) {
+			return new byte[] {};
+		} else {
+			return string.getBytes(StandardCharsets.UTF_8);
+		}
+	}
 }

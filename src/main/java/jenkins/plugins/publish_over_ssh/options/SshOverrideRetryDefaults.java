@@ -36,51 +36,51 @@ import org.kohsuke.stapler.QueryParameter;
 
 public class SshOverrideRetryDefaults implements RetryOptions, Describable<SshOverrideRetryDefaults> {
 
-    private final int retries;
-    private final long retryDelay;
+	private final int retries;
+	private final long retryDelay;
 
-    @DataBoundConstructor
-    public SshOverrideRetryDefaults(final int retries, final long retryDelay) {
-        this.retries = retries;
-        this.retryDelay = retryDelay;
-    }
+	@DataBoundConstructor
+	public SshOverrideRetryDefaults(final int retries, final long retryDelay) {
+		this.retries = retries;
+		this.retryDelay = retryDelay;
+	}
 
-    public int getRetries() {
-        return retries;
-    }
+	public int getRetries() {
+		return retries;
+	}
 
-    public long getRetryDelay() {
-        return retryDelay;
-    }
+	public long getRetryDelay() {
+		return retryDelay;
+	}
 
-    public SshOverrideRetryDefaultsDescriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(SshOverrideRetryDefaultsDescriptor.class);
-    }
+	public SshOverrideRetryDefaultsDescriptor getDescriptor() {
+		return Jenkins.getActiveInstance().getDescriptorByType(SshOverrideRetryDefaultsDescriptor.class);
+	}
 
-    @Extension
-    public static class SshOverrideRetryDefaultsDescriptor extends Descriptor<SshOverrideRetryDefaults> {
+	@Extension
+	public static class SshOverrideRetryDefaultsDescriptor extends Descriptor<SshOverrideRetryDefaults> {
 
-        @Override
-        public String getDisplayName() {
-            return "SshOverrideRetryDefaultsDescriptor - not visible ...";
-        }
+		@Override
+		public String getDisplayName() {
+			return "SshOverrideRetryDefaultsDescriptor - not visible ...";
+		}
 
-        public FormValidation doCheckRetries(@QueryParameter final String value) {
-            return FormValidation.validateNonNegativeInteger(value);
-        }
+		public FormValidation doCheckRetries(@QueryParameter final String value) {
+			return FormValidation.validateNonNegativeInteger(value);
+		}
 
-        public FormValidation doCheckRetryDelay(@QueryParameter final String value) {
-            return FormValidation.validatePositiveInteger(value);
-        }
+		public FormValidation doCheckRetryDelay(@QueryParameter final String value) {
+			return FormValidation.validatePositiveInteger(value);
+		}
 
-        public jenkins.plugins.publish_over.view_defaults.Retry.Messages getCommonFieldNames() {
-            return new jenkins.plugins.publish_over.view_defaults.Retry.Messages();
-        }
+		public jenkins.plugins.publish_over.view_defaults.Retry.Messages getCommonFieldNames() {
+			return new jenkins.plugins.publish_over.view_defaults.Retry.Messages();
+		}
 
-        public String getConfigPage() {
-            return getViewPage(BapSshRetry.class, "config.jelly");
-        }
+		public String getConfigPage() {
+			return getViewPage(BapSshRetry.class, "config.jelly");
+		}
 
-    }
+	}
 
 }

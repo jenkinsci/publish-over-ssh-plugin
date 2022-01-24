@@ -41,118 +41,120 @@ import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-
 @SuppressWarnings({ "PMD.TooManyMethods", "PMD.LooseCoupling" })
 public class BapSshPublisherPlugin extends BPPlugin<BapSshPublisher, BapSshClient, BapSshCommonConfiguration> {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public BapSshPublisherPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
-                                 final boolean alwaysPublishFromMaster, final String masterNodeName,
-                                 final BapSshParamPublish paramPublish) {
-        super(Messages.console_message_prefix(), publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName,
-                paramPublish);
-    }
+	public BapSshPublisherPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError,
+			final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName,
+			final BapSshParamPublish paramPublish) {
+		super(Messages.console_message_prefix(), publishers, continueOnError, failOnError, alwaysPublishFromMaster,
+				masterNodeName, paramPublish);
+	}
 
-    @DataBoundConstructor
-    public BapSshPublisherPlugin() {
-        super(Messages.console_message_prefix());
-    }
+	@DataBoundConstructor
+	public BapSshPublisherPlugin() {
+		super(Messages.console_message_prefix());
+	}
 
-    public BapSshParamPublish getParamPublish() {
-        return (BapSshParamPublish) getDelegate().getParamPublish();
-    }
+	public BapSshParamPublish getParamPublish() {
+		return (BapSshParamPublish) getDelegate().getParamPublish();
+	}
 
-    @DataBoundSetter
-    public void setParamPublish(final BapSshParamPublish paramPublish) {
-        this.getDelegate().setParamPublish(paramPublish);
-    }
+	@DataBoundSetter
+	public void setParamPublish(final BapSshParamPublish paramPublish) {
+		this.getDelegate().setParamPublish(paramPublish);
+	}
 
-    public List<BapSshPublisher> getPublishers() {
-        return this.getDelegate().getPublishers();
-    }
+	public List<BapSshPublisher> getPublishers() {
+		return this.getDelegate().getPublishers();
+	}
 
-    @DataBoundSetter
-    public void setPublishers(final ArrayList<BapSshPublisher> publishers) {
-        this.getDelegate().setPublishers(publishers);
-    }
+	@DataBoundSetter
+	public void setPublishers(final ArrayList<BapSshPublisher> publishers) {
+		this.getDelegate().setPublishers(publishers);
+	}
 
-    public boolean isContinueOnError() {
-        return this.getDelegate().isContinueOnError();
-    }
+	public boolean isContinueOnError() {
+		return this.getDelegate().isContinueOnError();
+	}
 
-    @DataBoundSetter
-    public void setContinueOnError(final boolean continueOnError) {
-        this.getDelegate().setContinueOnError(continueOnError);
-    }
+	@DataBoundSetter
+	public void setContinueOnError(final boolean continueOnError) {
+		this.getDelegate().setContinueOnError(continueOnError);
+	}
 
-    public boolean isFailOnError() {
-        return this.getDelegate().isFailOnError();
-    }
+	public boolean isFailOnError() {
+		return this.getDelegate().isFailOnError();
+	}
 
-    @DataBoundSetter
-    public void setFailOnError(final boolean failOnError) {
-        this.getDelegate().setFailOnError(failOnError);
-    }
+	@DataBoundSetter
+	public void setFailOnError(final boolean failOnError) {
+		this.getDelegate().setFailOnError(failOnError);
+	}
 
-    public boolean isAlwaysPublishFromMaster() {
-        return this.getDelegate().isAlwaysPublishFromMaster();
-    }
+	public boolean isAlwaysPublishFromMaster() {
+		return this.getDelegate().isAlwaysPublishFromMaster();
+	}
 
-    @DataBoundSetter
-    public void setAlwaysPublishFromMaster(final boolean alwaysPublishFromMaster) {
-        this.getDelegate().setAlwaysPublishFromMaster(alwaysPublishFromMaster);
-    }
+	@DataBoundSetter
+	public void setAlwaysPublishFromMaster(final boolean alwaysPublishFromMaster) {
+		this.getDelegate().setAlwaysPublishFromMaster(alwaysPublishFromMaster);
+	}
 
-    public String getMasterNodeName() {
-        return this.getDelegate().getMasterNodeName();
-    }
+	public String getMasterNodeName() {
+		return this.getDelegate().getMasterNodeName();
+	}
 
-    @DataBoundSetter
-    public void setMasterNodeName(final String masterNodeName) {
-        this.getDelegate().setMasterNodeName(masterNodeName);
-    }
+	@DataBoundSetter
+	public void setMasterNodeName(final String masterNodeName) {
+		this.getDelegate().setMasterNodeName(masterNodeName);
+	}
 
-    @Override
-    public boolean equals(final Object that) {
-        if (this == that) return true;
-        if (that == null || getClass() != that.getClass()) return false;
+	@Override
+	public boolean equals(final Object that) {
+		if (this == that)
+			return true;
+		if (that == null || getClass() != that.getClass())
+			return false;
 
-        return addToEquals(new EqualsBuilder(), (BapSshPublisherPlugin) that).isEquals();
-    }
+		return addToEquals(new EqualsBuilder(), (BapSshPublisherPlugin) that).isEquals();
+	}
 
-    @Override
-    public int hashCode() {
-        return addToHashCode(new HashCodeBuilder()).toHashCode();
-    }
+	@Override
+	public int hashCode() {
+		return addToHashCode(new HashCodeBuilder()).toHashCode();
+	}
 
-    @Override
-    public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
-    }
+	@Override
+	public String toString() {
+		return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+	}
 
-    @Override
-    public Descriptor getDescriptor() {
-        return Jenkins.getInstance().getDescriptorByType(Descriptor.class);
-    }
+	@Override
+	public Descriptor getDescriptor() {
+		return Jenkins.getInstance().getDescriptorByType(Descriptor.class);
+	}
 
-    public BapSshHostConfiguration getConfiguration(final String name) {
-        return getDescriptor().getConfiguration(name);
-    }
+	public BapSshHostConfiguration getConfiguration(final String name) {
+		return getDescriptor().getConfiguration(name);
+	}
 
-    @Extension @Symbol("sshPublisher")
-    public static class Descriptor extends BapSshPublisherPluginDescriptor {
-        @Override
-        public Object readResolve() {
-            return super.readResolve();
-        }
-    }
+	@Extension
+	@Symbol("sshPublisher")
+	public static class Descriptor extends BapSshPublisherPluginDescriptor {
+		@Override
+		public Object readResolve() {
+			return super.readResolve();
+		}
+	}
 
-    /**
-     * @deprecated
-     * prevent xstream noise
-     * */
-    @Deprecated
-    public static class DescriptorMessages implements BPPluginDescriptor.BPDescriptorMessages { }
+	/**
+	 * @deprecated prevent xstream noise
+	 */
+	@Deprecated
+	public static class DescriptorMessages implements BPPluginDescriptor.BPDescriptorMessages {
+	}
 
 }

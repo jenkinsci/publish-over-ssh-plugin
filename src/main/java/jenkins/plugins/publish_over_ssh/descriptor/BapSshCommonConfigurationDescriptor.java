@@ -35,17 +35,17 @@ import org.kohsuke.stapler.QueryParameter;
 @Extension
 public class BapSshCommonConfigurationDescriptor extends Descriptor<BapSshCommonConfiguration> {
 
-    public BapSshCommonConfigurationDescriptor() {
-        super(BapSshCommonConfiguration.class);
-    }
+	public BapSshCommonConfigurationDescriptor() {
+		super(BapSshCommonConfiguration.class);
+	}
 
-    @Override
-    public String getDisplayName() {
-        return Messages.global_common_descriptor();
-    }
+	@Override
+	public String getDisplayName() {
+		return Messages.global_common_descriptor();
+	}
 
-    public FormValidation doCheckKeyPath(@QueryParameter final String value) {
-        return BPValidators.validateFileOnMaster(value);
-    }
+	public FormValidation doCheckKeyPath(@QueryParameter final String value) {
+		return BPValidators.validateFileOnMaster(value);
+	}
 
 }

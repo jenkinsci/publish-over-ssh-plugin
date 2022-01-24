@@ -37,89 +37,101 @@ import java.io.Serializable;
 @SuppressWarnings("PMD.TooManyMethods")
 public class BapSshKeyInfo implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private String passphrase;
-    private Secret secretPassphrase;
-    private String key;
-    private String keyPath;
+	private String passphrase;
+	private Secret secretPassphrase;
+	private String key;
+	private String keyPath;
 
-    public BapSshKeyInfo(final String encryptedPassphrase, final String key, final String keyPath) {
-        secretPassphrase = Secret.fromString(encryptedPassphrase);
-        this.key = key;
-        this.keyPath = keyPath;
-    }
+	public BapSshKeyInfo(final String encryptedPassphrase, final String key, final String keyPath) {
+		secretPassphrase = Secret.fromString(encryptedPassphrase);
+		this.key = key;
+		this.keyPath = keyPath;
+	}
 
-    protected final String getPassphrase() { return Secret.toString(secretPassphrase); }
-    public final void setPassphrase(final String passphrase) { secretPassphrase = Secret.fromString(passphrase); }
+	protected final String getPassphrase() {
+		return Secret.toString(secretPassphrase);
+	}
 
-    public final String getEncryptedPassphrase() {
-        return (secretPassphrase == null) ? null : secretPassphrase.getEncryptedValue();
-    }
+	public final void setPassphrase(final String passphrase) {
+		secretPassphrase = Secret.fromString(passphrase);
+	}
 
-    public String getKey() { return key; }
-    public void setKey(final String key) { this.key = key; }
+	public final String getEncryptedPassphrase() {
+		return (secretPassphrase == null) ? null : secretPassphrase.getEncryptedValue();
+	}
 
-    public String getKeyPath() { return keyPath; }
-    public void setKeyPath(final String keyPath) { this.keyPath = keyPath; }
+	public String getKey() {
+		return key;
+	}
 
-    public byte[] getEffectiveKey(final BPBuildInfo buildInfo) {
-        if (hasKey())
-            return BapSshUtil.toBytes(key);
-        keyPath = Util.replaceMacro(keyPath, buildInfo.getEnvVars());
-        return buildInfo.readFileFromMaster(keyPath.trim());
-    }
+	public void setKey(final String key) {
+		this.key = key;
+	}
 
-    public boolean useKey() {
-        return hasKey() || hasKeyPath();
-    }
+	public String getKeyPath() {
+		return keyPath;
+	}
 
-    private boolean hasKey() {
-        return Util.fixEmptyAndTrim(key) != null;
-    }
+	public void setKeyPath(final String keyPath) {
+		this.keyPath = keyPath;
+	}
 
-    private boolean hasKeyPath() {
-        return Util.fixEmptyAndTrim(keyPath) != null;
-    }
+	public byte[] getEffectiveKey(final BPBuildInfo buildInfo) {
+		if (hasKey())
+			return BapSshUtil.toBytes(key);
+		keyPath = Util.replaceMacro(keyPath, buildInfo.getEnvVars());
+		return buildInfo.readFileFromMaster(keyPath.trim());
+	}
 
-    protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
-        return builder.append(secretPassphrase)
-            .append(key)
-            .append(keyPath);
-    }
+	public boolean useKey() {
+		return hasKey() || hasKeyPath();
+	}
 
-    protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshKeyInfo that) {
-        return builder.append(secretPassphrase, that.secretPassphrase)
-            .append(key, that.key)
-            .append(keyPath, that.keyPath);
-    }
+	private boolean hasKey() {
+		return Util.fixEmptyAndTrim(key) != null;
+	}
 
-    protected ToStringBuilder addToToString(final ToStringBuilder builder) {
-        return builder.append("passphrase", "***")
-            .append("key", "***")
-            .append("keyPath", keyPath);
-    }
+	private boolean hasKeyPath() {
+		return Util.fixEmptyAndTrim(keyPath) != null;
+	}
 
-    public boolean equals(final Object that) {
-        if (this == that) return true;
-        if (that == null || getClass() != that.getClass()) return false;
+	protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
+		return builder.append(secretPassphrase).append(key).append(keyPath);
+	}
 
-        return addToEquals(new EqualsBuilder(), (BapSshKeyInfo) that).isEquals();
-    }
+	protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshKeyInfo that) {
+		return builder.append(secretPassphrase, that.secretPassphrase).append(key, that.key).append(keyPath,
+				that.keyPath);
+	}
 
-    public int hashCode() {
-        return addToHashCode(new HashCodeBuilder()).toHashCode();
-    }
+	protected ToStringBuilder addToToString(final ToStringBuilder builder) {
+		return builder.append("passphrase", "***").append("key", "***").append("keyPath", keyPath);
+	}
 
-    public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
-    }
+	public boolean equals(final Object that) {
+		if (this == that)
+			return true;
+		if (that == null || getClass() != that.getClass())
+			return false;
 
-    public Object readResolve() {
-        if (secretPassphrase == null)
-            secretPassphrase = Secret.fromString(passphrase);
-        passphrase = null;
-        return this;
-    }
+		return addToEquals(new EqualsBuilder(), (BapSshKeyInfo) that).isEquals();
+	}
+
+	public int hashCode() {
+		return addToHashCode(new HashCodeBuilder()).toHashCode();
+	}
+
+	public String toString() {
+		return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+	}
+
+	public Object readResolve() {
+		if (secretPassphrase == null)
+			secretPassphrase = Secret.fromString(passphrase);
+		passphrase = null;
+		return this;
+	}
 
 }

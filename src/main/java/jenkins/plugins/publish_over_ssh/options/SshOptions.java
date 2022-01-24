@@ -32,11 +32,16 @@ import jenkins.plugins.publish_over.options.RetryOptions;
 
 public interface SshOptions {
 
-    InstanceConfigOptions getInstanceConfig();
-    ParamPublishOptions getParamPublish();
-    PublisherOptions getPublisher();
-    PublisherLabelOptions getPublisherLabel();
-    RetryOptions getRetry();
-    SshTransferOptions getTransfer();
+	InstanceConfigOptions getInstanceConfig();
+
+	ParamPublishOptions getParamPublish();
+
+	PublisherOptions getPublisher();
+
+	PublisherLabelOptions getPublisherLabel();
+
+	RetryOptions getRetry();
+
+	SshTransferOptions getTransfer();
 
 }

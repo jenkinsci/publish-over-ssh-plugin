@@ -34,62 +34,61 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class SshOverridePublisherDefaults implements PublisherOptions, Describable<SshOverridePublisherDefaults> {
 
-    private final String configName;
-    private final boolean useWorkspaceInPromotion;
-    private final boolean usePromotionTimestamp;
-    private final boolean verbose;
-    private final Jenkins j = Jenkins.getInstanceOrNull();
+	private final String configName;
+	private final boolean useWorkspaceInPromotion;
+	private final boolean usePromotionTimestamp;
+	private final boolean verbose;
+	private final Jenkins j = Jenkins.getInstanceOrNull();
 
-    @DataBoundConstructor
-    public SshOverridePublisherDefaults(final String configName, final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp,
-                                        final boolean verbose) {
-        this.configName = configName;
-        this.usePromotionTimestamp = usePromotionTimestamp;
-        this.useWorkspaceInPromotion = useWorkspaceInPromotion;
-        this.verbose = verbose;
-    }
+	@DataBoundConstructor
+	public SshOverridePublisherDefaults(final String configName, final boolean useWorkspaceInPromotion,
+			final boolean usePromotionTimestamp, final boolean verbose) {
+		this.configName = configName;
+		this.usePromotionTimestamp = usePromotionTimestamp;
+		this.useWorkspaceInPromotion = useWorkspaceInPromotion;
+		this.verbose = verbose;
+	}
 
-    public String getConfigName() {
-        return configName;
-    }
+	public String getConfigName() {
+		return configName;
+	}
 
-    public boolean isUseWorkspaceInPromotion() {
-        return useWorkspaceInPromotion;
-    }
+	public boolean isUseWorkspaceInPromotion() {
+		return useWorkspaceInPromotion;
+	}
 
-    public boolean isUsePromotionTimestamp() {
-        return usePromotionTimestamp;
-    }
+	public boolean isUsePromotionTimestamp() {
+		return usePromotionTimestamp;
+	}
 
-    public boolean isVerbose() {
-        return verbose;
-    }
+	public boolean isVerbose() {
+		return verbose;
+	}
 
-    public SshOverridePublisherDefaultsDescriptor getDescriptor() {
-        if(j != null) {
-            return j.getDescriptorByType(SshOverridePublisherDefaultsDescriptor.class);
-        }
-        else {
-            throw new NullPointerException("Jenkins is not ready on going to be offline...");
-        }
-    }
+	public SshOverridePublisherDefaultsDescriptor getDescriptor() {
+		if (j != null) {
+			return j.getDescriptorByType(SshOverridePublisherDefaultsDescriptor.class);
+		} else {
+			throw new NullPointerException("Jenkins is not ready on going to be offline...");
+		}
+	}
 
-    @Extension
-    public static class SshOverridePublisherDefaultsDescriptor extends Descriptor<SshOverridePublisherDefaults> {
+	@Extension
+	public static class SshOverridePublisherDefaultsDescriptor extends Descriptor<SshOverridePublisherDefaults> {
 
-        @Override
-        public String getDisplayName() {
-            return "SshOverridePublisherDefaultsDescriptor - not visible ...";
-        }
+		@Override
+		public String getDisplayName() {
+			return "SshOverridePublisherDefaultsDescriptor - not visible ...";
+		}
 
-        public BapSshPublisherPlugin.Descriptor getPublisherPluginDescriptor() {
-            return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
-        }
+		public BapSshPublisherPlugin.Descriptor getPublisherPluginDescriptor() {
+			return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+		}
 
-        public jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages getCommonFieldNames() {
-            return new jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages();
-        }
+		public jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages getCommonFieldNames() {
+			return new jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages();
+		}
 
-    }
+	}
 
 }

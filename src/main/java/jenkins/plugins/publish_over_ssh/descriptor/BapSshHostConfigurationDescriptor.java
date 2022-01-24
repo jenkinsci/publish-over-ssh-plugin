@@ -39,65 +39,64 @@ import org.kohsuke.stapler.StaplerResponse;
 @Extension
 public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConfiguration> {
 
-    public BapSshHostConfigurationDescriptor() {
-        super(BapSshHostConfiguration.class);
-    }
+	public BapSshHostConfigurationDescriptor() {
+		super(BapSshHostConfiguration.class);
+	}
 
-    @Override
-    public String getDisplayName() {
-        return Messages.global_common_descriptor();
-    }
+	@Override
+	public String getDisplayName() {
+		return Messages.global_common_descriptor();
+	}
 
-    public String getDefaultJumpHost() {
-        return BapSshHostConfiguration.DEFAULT_JUMP_HOST;
-    }
+	public String getDefaultJumpHost() {
+		return BapSshHostConfiguration.DEFAULT_JUMP_HOST;
+	}
 
-    public int getDefaultPort() {
-        return BapSshHostConfiguration.DEFAULT_PORT;
-    }
+	public int getDefaultPort() {
+		return BapSshHostConfiguration.DEFAULT_PORT;
+	}
 
-    public int getDefaultTimeout() {
-        return BapSshHostConfiguration.DEFAULT_TIMEOUT;
-    }
+	public int getDefaultTimeout() {
+		return BapSshHostConfiguration.DEFAULT_TIMEOUT;
+	}
 
-    public FormValidation doCheckName(@QueryParameter final String value) {
-        return BPValidators.validateName(value);
-    }
+	public FormValidation doCheckName(@QueryParameter final String value) {
+		return BPValidators.validateName(value);
+	}
 
-    public FormValidation doCheckHostname(@QueryParameter final String value) {
-        return FormValidation.validateRequired(value);
-    }
+	public FormValidation doCheckHostname(@QueryParameter final String value) {
+		return FormValidation.validateRequired(value);
+	}
 
-    public FormValidation doCheckUsername(@QueryParameter final String value) {
-        return FormValidation.validateRequired(value);
-    }
+	public FormValidation doCheckUsername(@QueryParameter final String value) {
+		return FormValidation.validateRequired(value);
+	}
 
-    public FormValidation doCheckPort(@QueryParameter final String value) {
-        return FormValidation.validatePositiveInteger(value);
-    }
+	public FormValidation doCheckPort(@QueryParameter final String value) {
+		return FormValidation.validatePositiveInteger(value);
+	}
 
-    public FormValidation doCheckTimeout(@QueryParameter final String value) {
-        return FormValidation.validateNonNegativeInteger(value);
-    }
+	public FormValidation doCheckTimeout(@QueryParameter final String value) {
+		return FormValidation.validateNonNegativeInteger(value);
+	}
 
-    public FormValidation doCheckKeyPath(@QueryParameter final String value) {
-        return BPValidators.validateFileOnMaster(value);
-    }
+	public FormValidation doCheckKeyPath(@QueryParameter final String value) {
+		return BPValidators.validateFileOnMaster(value);
+	}
 
-    public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
-        final BapSshPublisherPlugin.Descriptor pluginDescriptor;
-        Jenkins j = Jenkins.getInstanceOrNull();
-        if(j != null) {
-            pluginDescriptor = j.getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
-        }
-        else {
-            throw new NullPointerException("Jenkins is not ready on going to be offline...");
-        }
-        return pluginDescriptor.doTestConnection(request, response);
-    }
+	public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
+		final BapSshPublisherPlugin.Descriptor pluginDescriptor;
+		Jenkins j = Jenkins.getInstanceOrNull();
+		if (j != null) {
+			pluginDescriptor = j.getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+		} else {
+			throw new NullPointerException("Jenkins is not ready on going to be offline...");
+		}
+		return pluginDescriptor.doTestConnection(request, response);
+	}
 
-    public jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages getCommonFieldNames() {
-        return new jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages();
-    }
+	public jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages getCommonFieldNames() {
+		return new jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages();
+	}
 
 }

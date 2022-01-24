@@ -32,40 +32,41 @@ import jenkins.plugins.publish_over.options.ParamPublishOptions;
 import jenkins.plugins.publish_over_ssh.BapSshParamPublish;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-public class SshOverrideParamPublishDefaults implements ParamPublishOptions, Describable<SshOverrideParamPublishDefaults> {
+public class SshOverrideParamPublishDefaults
+		implements ParamPublishOptions, Describable<SshOverrideParamPublishDefaults> {
 
-    private final String parameterName;
+	private final String parameterName;
 
-    @DataBoundConstructor
-    public SshOverrideParamPublishDefaults(final String parameterName) {
-        this.parameterName = parameterName;
-    }
+	@DataBoundConstructor
+	public SshOverrideParamPublishDefaults(final String parameterName) {
+		this.parameterName = parameterName;
+	}
 
-    public String getParameterName() {
-        return parameterName;
-    }
+	public String getParameterName() {
+		return parameterName;
+	}
 
-    public SshOverrideParamPublishDefaultsDescriptor getDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(SshOverrideParamPublishDefaultsDescriptor.class);
-    }
+	public SshOverrideParamPublishDefaultsDescriptor getDescriptor() {
+		return Jenkins.getActiveInstance().getDescriptorByType(SshOverrideParamPublishDefaultsDescriptor.class);
+	}
 
-    @Extension
-    public static class SshOverrideParamPublishDefaultsDescriptor extends Descriptor<SshOverrideParamPublishDefaults> {
+	@Extension
+	public static class SshOverrideParamPublishDefaultsDescriptor extends Descriptor<SshOverrideParamPublishDefaults> {
 
-        @Override
-        public String getDisplayName() {
-            return "SshOverrideParamPublishDefaultsDescriptor - not visible ...";
-        }
+		@Override
+		public String getDisplayName() {
+			return "SshOverrideParamPublishDefaultsDescriptor - not visible ...";
+		}
 
-        public jenkins.plugins.publish_over.view_defaults.ParamPublish.Messages getCommonFieldNames() {
-            return new jenkins.plugins.publish_over.view_defaults.ParamPublish.Messages();
-        }
+		public jenkins.plugins.publish_over.view_defaults.ParamPublish.Messages getCommonFieldNames() {
+			return new jenkins.plugins.publish_over.view_defaults.ParamPublish.Messages();
+		}
 
-        @Override
-        public String getConfigPage() {
-            return getViewPage(BapSshParamPublish.class, "config.jelly");
-        }
+		@Override
+		public String getConfigPage() {
+			return getViewPage(BapSshParamPublish.class, "config.jelly");
+		}
 
-    }
+	}
 
 }

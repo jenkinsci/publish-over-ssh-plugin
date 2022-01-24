@@ -37,58 +37,60 @@ import jenkins.plugins.publish_over_ssh.Messages;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.QueryParameter;
 
-@Extension @Symbol("sshTransfer")
+@Extension
+@Symbol("sshTransfer")
 public class BapSshTransferDescriptor extends Descriptor<BapSshTransfer> {
 
-    public BapSshTransferDescriptor() {
-        super(BapSshTransfer.class);
-    }
+	public BapSshTransferDescriptor() {
+		super(BapSshTransfer.class);
+	}
 
-    @Override
-    public String getDisplayName() {
-        return Messages.transfer_descriptor_displayName();
-    }
+	@Override
+	public String getDisplayName() {
+		return Messages.transfer_descriptor_displayName();
+	}
 
-    public FormValidation doCheckExecTimeout(@QueryParameter final String value) {
-        return FormValidation.validateNonNegativeInteger(value);
-    }
+	public FormValidation doCheckExecTimeout(@QueryParameter final String value) {
+		return FormValidation.validateNonNegativeInteger(value);
+	}
 
-    public FormValidation doCheckSourceFiles(@QueryParameter final String configName, @QueryParameter final String sourceFiles,
-                                             @QueryParameter final String execCommand) {
-        if (Util.fixEmptyAndTrim(configName) != null) {
-            final BapSshPublisherPlugin.Descriptor pluginDescriptor = Jenkins.getActiveInstance().getDescriptorByType(
-                    BapSshPublisherPlugin.Descriptor.class);
-            final BapSshHostConfiguration hostConfig = pluginDescriptor.getConfiguration(configName);
-            if (hostConfig == null)
-                return FormValidation.error(Messages.descriptor_sourceFiles_check_configNotFound(configName));
-            if (hostConfig.isEffectiveDisableExec())
-                return FormValidation.validateRequired(sourceFiles);
-        }
-        return checkTransferSet(sourceFiles, execCommand);
-    }
+	public FormValidation doCheckSourceFiles(@QueryParameter final String configName,
+			@QueryParameter final String sourceFiles, @QueryParameter final String execCommand) {
+		if (Util.fixEmptyAndTrim(configName) != null) {
+			final BapSshPublisherPlugin.Descriptor pluginDescriptor = Jenkins.getActiveInstance()
+					.getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+			final BapSshHostConfiguration hostConfig = pluginDescriptor.getConfiguration(configName);
+			if (hostConfig == null)
+				return FormValidation.error(Messages.descriptor_sourceFiles_check_configNotFound(configName));
+			if (hostConfig.isEffectiveDisableExec())
+				return FormValidation.validateRequired(sourceFiles);
+		}
+		return checkTransferSet(sourceFiles, execCommand);
+	}
 
-    public FormValidation doCheckPatternSeparator(@QueryParameter final String value) {
-        return BPValidators.validateRegularExpression(value);
-    }
+	public FormValidation doCheckPatternSeparator(@QueryParameter final String value) {
+		return BPValidators.validateRegularExpression(value);
+	}
 
-    public FormValidation doCheckExecCommand(@QueryParameter final String sourceFiles, @QueryParameter final String execCommand) {
-        return checkTransferSet(sourceFiles, execCommand);
-    }
+	public FormValidation doCheckExecCommand(@QueryParameter final String sourceFiles,
+			@QueryParameter final String execCommand) {
+		return checkTransferSet(sourceFiles, execCommand);
+	}
 
-    private FormValidation checkTransferSet(final String sourceFiles, final String execCommand) {
-        return haveAtLeastOne(sourceFiles, execCommand) ? FormValidation.ok()
-                : FormValidation.error(Messages.descriptor_sourceOrExec());
-    }
+	private FormValidation checkTransferSet(final String sourceFiles, final String execCommand) {
+		return haveAtLeastOne(sourceFiles, execCommand) ? FormValidation.ok()
+				: FormValidation.error(Messages.descriptor_sourceOrExec());
+	}
 
-    private boolean haveAtLeastOne(final String... values) {
-        for (String value : values)
-            if (Util.fixEmptyAndTrim(value) != null)
-                return true;
-        return false;
-    }
+	private boolean haveAtLeastOne(final String... values) {
+		for (String value : values)
+			if (Util.fixEmptyAndTrim(value) != null)
+				return true;
+		return false;
+	}
 
-    public jenkins.plugins.publish_over.view_defaults.BPTransfer.Messages getCommonFieldNames() {
-        return new jenkins.plugins.publish_over.view_defaults.BPTransfer.Messages();
-    }
+	public jenkins.plugins.publish_over.view_defaults.BPTransfer.Messages getCommonFieldNames() {
+		return new jenkins.plugins.publish_over.view_defaults.BPTransfer.Messages();
+	}
 
 }

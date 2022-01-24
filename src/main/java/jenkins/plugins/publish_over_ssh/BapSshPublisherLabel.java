@@ -37,44 +37,46 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class BapSshPublisherLabel extends PublisherLabel implements Describable<BapSshPublisherLabel> {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @DataBoundConstructor
-    public BapSshPublisherLabel(final String label) {
-        super(label);
-    }
+	@DataBoundConstructor
+	public BapSshPublisherLabel(final String label) {
+		super(label);
+	}
 
-    public BapSshPublisherLabelDescriptor getDescriptor() {
-        return Jenkins.getInstance().getDescriptorByType(BapSshPublisherLabelDescriptor.class);
-    }
+	public BapSshPublisherLabelDescriptor getDescriptor() {
+		return Jenkins.getInstance().getDescriptorByType(BapSshPublisherLabelDescriptor.class);
+	}
 
-    public boolean equals(final Object that) {
-        if (this == that) return true;
-        if (that == null || getClass() != that.getClass()) return false;
+	public boolean equals(final Object that) {
+		if (this == that)
+			return true;
+		if (that == null || getClass() != that.getClass())
+			return false;
 
-        return addToEquals(new EqualsBuilder(), (BapSshPublisherLabel) that).isEquals();
-    }
+		return addToEquals(new EqualsBuilder(), (BapSshPublisherLabel) that).isEquals();
+	}
 
-    public int hashCode() {
-        return addToHashCode(new HashCodeBuilder()).toHashCode();
-    }
+	public int hashCode() {
+		return addToHashCode(new HashCodeBuilder()).toHashCode();
+	}
 
-    public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
-    }
+	public String toString() {
+		return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+	}
 
-    @Extension
-    public static class BapSshPublisherLabelDescriptor extends Descriptor<BapSshPublisherLabel> {
+	@Extension
+	public static class BapSshPublisherLabelDescriptor extends Descriptor<BapSshPublisherLabel> {
 
-        @Override
-        public String getDisplayName() {
-            return Messages.publisherLabel_descriptor_displayName();
-        }
+		@Override
+		public String getDisplayName() {
+			return Messages.publisherLabel_descriptor_displayName();
+		}
 
-        public jenkins.plugins.publish_over.view_defaults.PublisherLabel.Messages getCommonFieldNames() {
-            return new jenkins.plugins.publish_over.view_defaults.PublisherLabel.Messages();
-        }
+		public jenkins.plugins.publish_over.view_defaults.PublisherLabel.Messages getCommonFieldNames() {
+			return new jenkins.plugins.publish_over.view_defaults.PublisherLabel.Messages();
+		}
 
-    }
+	}
 
 }

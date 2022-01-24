@@ -35,91 +35,91 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class SshOverrideDefaults extends SshDefaults {
 
-    private final SshOverrideInstanceConfigDefaults overrideInstanceConfig;
-    private final SshOverrideParamPublishDefaults overrideParamPublish;
-    private final SshOverridePublisherDefaults overridePublisher;
-    private final SshOverridePublisherLabelDefaults overridePublisherLabel;
-    private final SshOverrideRetryDefaults overrideRetry;
-    private final SshOverrideTransferDefaults overrideTransfer;
+	private final SshOverrideInstanceConfigDefaults overrideInstanceConfig;
+	private final SshOverrideParamPublishDefaults overrideParamPublish;
+	private final SshOverridePublisherDefaults overridePublisher;
+	private final SshOverridePublisherLabelDefaults overridePublisherLabel;
+	private final SshOverrideRetryDefaults overrideRetry;
+	private final SshOverrideTransferDefaults overrideTransfer;
 
-    @DataBoundConstructor
-    public SshOverrideDefaults(final SshOverrideInstanceConfigDefaults overrideInstanceConfig,
-                               final SshOverrideParamPublishDefaults overrideParamPublish,
-                               final SshOverridePublisherDefaults overridePublisher,
-                               final SshOverridePublisherLabelDefaults overridePublisherLabel,
-                               final SshOverrideRetryDefaults overrideRetry,
-                               final SshOverrideTransferDefaults overrideTransfer) {
-        this.overrideInstanceConfig = overrideInstanceConfig;
-        this.overrideParamPublish = overrideParamPublish;
-        this.overridePublisher = overridePublisher;
-        this.overridePublisherLabel = overridePublisherLabel;
-        this.overrideRetry = overrideRetry;
-        this.overrideTransfer = overrideTransfer;
-    }
+	@DataBoundConstructor
+	public SshOverrideDefaults(final SshOverrideInstanceConfigDefaults overrideInstanceConfig,
+			final SshOverrideParamPublishDefaults overrideParamPublish,
+			final SshOverridePublisherDefaults overridePublisher,
+			final SshOverridePublisherLabelDefaults overridePublisherLabel,
+			final SshOverrideRetryDefaults overrideRetry, final SshOverrideTransferDefaults overrideTransfer) {
+		this.overrideInstanceConfig = overrideInstanceConfig;
+		this.overrideParamPublish = overrideParamPublish;
+		this.overridePublisher = overridePublisher;
+		this.overridePublisherLabel = overridePublisherLabel;
+		this.overrideRetry = overrideRetry;
+		this.overrideTransfer = overrideTransfer;
+	}
 
-    // prevent the property type being clobbered in the descriptor map by using different names from the IF
-    public SshOverrideInstanceConfigDefaults getOverrideInstanceConfig() {
-        return overrideInstanceConfig;
-    }
+	// prevent the property type being clobbered in the descriptor map by using
+	// different names from the IF
+	public SshOverrideInstanceConfigDefaults getOverrideInstanceConfig() {
+		return overrideInstanceConfig;
+	}
 
-    public SshOverrideParamPublishDefaults getOverrideParamPublish() {
-        return overrideParamPublish;
-    }
+	public SshOverrideParamPublishDefaults getOverrideParamPublish() {
+		return overrideParamPublish;
+	}
 
-    public SshOverridePublisherDefaults getOverridePublisher() {
-        return overridePublisher;
-    }
+	public SshOverridePublisherDefaults getOverridePublisher() {
+		return overridePublisher;
+	}
 
-    public SshOverridePublisherLabelDefaults getOverridePublisherLabel() {
-        return overridePublisherLabel;
-    }
+	public SshOverridePublisherLabelDefaults getOverridePublisherLabel() {
+		return overridePublisherLabel;
+	}
 
-    public SshOverrideRetryDefaults getOverrideRetry() {
-        return overrideRetry;
-    }
+	public SshOverrideRetryDefaults getOverrideRetry() {
+		return overrideRetry;
+	}
 
-    public SshOverrideTransferDefaults getOverrideTransfer() {
-        return overrideTransfer;
-    }
+	public SshOverrideTransferDefaults getOverrideTransfer() {
+		return overrideTransfer;
+	}
 
-    public InstanceConfigOptions getInstanceConfig() {
-        return overrideInstanceConfig;
-    }
+	public InstanceConfigOptions getInstanceConfig() {
+		return overrideInstanceConfig;
+	}
 
-    public ParamPublishOptions getParamPublish() {
-        return overrideParamPublish;
-    }
+	public ParamPublishOptions getParamPublish() {
+		return overrideParamPublish;
+	}
 
-    public PublisherOptions getPublisher() {
-        return overridePublisher;
-    }
+	public PublisherOptions getPublisher() {
+		return overridePublisher;
+	}
 
-    public PublisherLabelOptions getPublisherLabel() {
-        return overridePublisherLabel;
-    }
+	public PublisherLabelOptions getPublisherLabel() {
+		return overridePublisherLabel;
+	}
 
-    public RetryOptions getRetry() {
-        return overrideRetry;
-    }
+	public RetryOptions getRetry() {
+		return overrideRetry;
+	}
 
-    public SshTransferOptions getTransfer() {
-        return overrideTransfer;
-    }
+	public SshTransferOptions getTransfer() {
+		return overrideTransfer;
+	}
 
-    @Extension
-    public static class SshOverrideDefaultsDescriptor extends SshDefaultsDescriptor {
+	@Extension
+	public static class SshOverrideDefaultsDescriptor extends SshDefaultsDescriptor {
 
-        private static final SshPluginDefaults PLUGIN_DEFAULTS = new SshPluginDefaults();
+		private static final SshPluginDefaults PLUGIN_DEFAULTS = new SshPluginDefaults();
 
-        @Override
-        public String getDisplayName() {
-            return Messages.defaults_overrideDefaults();
-        }
+		@Override
+		public String getDisplayName() {
+			return Messages.defaults_overrideDefaults();
+		}
 
-        public SshPluginDefaults getPluginDefaults() {
-            return PLUGIN_DEFAULTS;
-        }
+		public SshPluginDefaults getPluginDefaults() {
+			return PLUGIN_DEFAULTS;
+		}
 
-    }
+	}
 
 }

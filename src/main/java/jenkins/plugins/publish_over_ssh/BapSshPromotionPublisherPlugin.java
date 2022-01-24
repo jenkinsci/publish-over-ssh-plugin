@@ -49,68 +49,72 @@ import java.util.ArrayList;
 @SuppressWarnings("PMD.LooseCoupling") // serializable
 public class BapSshPromotionPublisherPlugin extends Notifier implements SimpleBuildStep {
 
-    private final BapSshPublisherPlugin delegate;
+	private final BapSshPublisherPlugin delegate;
 
-    @DataBoundConstructor
-    public BapSshPromotionPublisherPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError,
-                                          final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName,
-                                          final BapSshParamPublish paramPublish) {
-        this.delegate = new BapSshPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName,
-                                                  paramPublish);
-    }
+	@DataBoundConstructor
+	public BapSshPromotionPublisherPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError,
+			final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName,
+			final BapSshParamPublish paramPublish) {
+		this.delegate = new BapSshPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster,
+				masterNodeName, paramPublish);
+	}
 
-    @Override
-    public void perform(final Run<?, ?> run, final FilePath ws, final Launcher launcher, final TaskListener listener)
-                    throws InterruptedException, IOException {
-        delegate.perform(run, ws, launcher, listener);
-    }
+	@Override
+	public void perform(final Run<?, ?> run, final FilePath ws, final Launcher launcher, final TaskListener listener)
+			throws InterruptedException, IOException {
+		delegate.perform(run, ws, launcher, listener);
+	}
 
-    public BapSshPublisherPlugin getDelegate() {
-        return delegate;
-    }
+	public BapSshPublisherPlugin getDelegate() {
+		return delegate;
+	}
 
-    public BuildStepMonitor getRequiredMonitorService() {
-        return delegate.getRequiredMonitorService();
-    }
+	public BuildStepMonitor getRequiredMonitorService() {
+		return delegate.getRequiredMonitorService();
+	}
 
-    protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
-        return builder.append(delegate);
-    }
+	protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
+		return builder.append(delegate);
+	}
 
-    protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshPromotionPublisherPlugin that) {
-        return builder.append(delegate, that.delegate);
-    }
+	protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshPromotionPublisherPlugin that) {
+		return builder.append(delegate, that.delegate);
+	}
 
-    protected ToStringBuilder addToToString(final ToStringBuilder builder) {
-        return builder.append("delegate", delegate);
-    }
+	protected ToStringBuilder addToToString(final ToStringBuilder builder) {
+		return builder.append("delegate", delegate);
+	}
 
-    public boolean equals(final Object that) {
-        if (this == that) return true;
-        if (that == null || getClass() != that.getClass()) return false;
+	public boolean equals(final Object that) {
+		if (this == that)
+			return true;
+		if (that == null || getClass() != that.getClass())
+			return false;
 
-        return addToEquals(new EqualsBuilder(), (BapSshPromotionPublisherPlugin) that).isEquals();
-    }
+		return addToEquals(new EqualsBuilder(), (BapSshPromotionPublisherPlugin) that).isEquals();
+	}
 
-    public int hashCode() {
-        return addToHashCode(new HashCodeBuilder()).toHashCode();
-    }
+	public int hashCode() {
+		return addToHashCode(new HashCodeBuilder()).toHashCode();
+	}
 
-    public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
-    }
+	public String toString() {
+		return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+	}
 
-    @Extension
-    public static class Descriptor extends BuildStepDescriptor<Publisher> {
-        public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
-            return BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
-        }
-        public String getDisplayName() {
-            return Messages.promotion_descriptor_displayName();
-        }
-        public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return Jenkins.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
-        }
-    }
+	@Extension
+	public static class Descriptor extends BuildStepDescriptor<Publisher> {
+		public boolean isApplicable(final Class<? extends AbstractProject> aClass) {
+			return BPPlugin.PROMOTION_JOB_TYPE.equals(aClass.getCanonicalName());
+		}
+
+		public String getDisplayName() {
+			return Messages.promotion_descriptor_displayName();
+		}
+
+		public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
+			return Jenkins.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+		}
+	}
 
 }

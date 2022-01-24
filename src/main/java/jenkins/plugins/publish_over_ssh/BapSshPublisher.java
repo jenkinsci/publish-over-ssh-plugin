@@ -37,56 +37,61 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import java.util.ArrayList;
 
 /**
- * Class required to enable stapler/DBC to bind to correct BPTransfer - BapSshTransfer
+ * Class required to enable stapler/DBC to bind to correct BPTransfer -
+ * BapSshTransfer
  */
 @SuppressWarnings("PMD.LooseCoupling") // serializable
 public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Describable<BapSshPublisher> {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @DataBoundConstructor
-    public BapSshPublisher(final String configName, final boolean verbose, final ArrayList<BapSshTransfer> transfers,
-                           final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp, final BapSshRetry sshRetry,
-                           final BapSshPublisherLabel sshLabel, final BapSshCredentials sshCredentials) {
-        super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp, sshRetry, sshLabel, sshCredentials);
-    }
+	@DataBoundConstructor
+	public BapSshPublisher(final String configName, final boolean verbose, final ArrayList<BapSshTransfer> transfers,
+			final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp, final BapSshRetry sshRetry,
+			final BapSshPublisherLabel sshLabel, final BapSshCredentials sshCredentials) {
+		super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp, sshRetry, sshLabel,
+				sshCredentials);
+	}
 
-    public final boolean isSftpRequired() {
-        for (BapSshTransfer transfer : getTransfers()) {
-            if (transfer.hasConfiguredSourceFiles() || transfer.isUseSftpForExec()) return true;
-        }
-        return false;
-    }
+	public final boolean isSftpRequired() {
+		for (BapSshTransfer transfer : getTransfers()) {
+			if (transfer.hasConfiguredSourceFiles() || transfer.isUseSftpForExec())
+				return true;
+		}
+		return false;
+	}
 
-    public BapSshRetry getSshRetry() {
-        return (BapSshRetry) super.getRetry();
-    }
+	public BapSshRetry getSshRetry() {
+		return (BapSshRetry) super.getRetry();
+	}
 
-    public BapSshPublisherLabel getSshLabel() {
-        return (BapSshPublisherLabel) super.getLabel();
-    }
+	public BapSshPublisherLabel getSshLabel() {
+		return (BapSshPublisherLabel) super.getLabel();
+	}
 
-    public BapSshCredentials getSshCredentials() {
-        return (BapSshCredentials) getCredentials();
-    }
+	public BapSshCredentials getSshCredentials() {
+		return (BapSshCredentials) getCredentials();
+	}
 
-    public BapSshPublisherDescriptor getDescriptor() {
-        return Jenkins.getInstance().getDescriptorByType(BapSshPublisherDescriptor.class);
-    }
+	public BapSshPublisherDescriptor getDescriptor() {
+		return Jenkins.getInstance().getDescriptorByType(BapSshPublisherDescriptor.class);
+	}
 
-    public boolean equals(final Object that) {
-        if (this == that) return true;
-        if (that == null || getClass() != that.getClass()) return false;
+	public boolean equals(final Object that) {
+		if (this == that)
+			return true;
+		if (that == null || getClass() != that.getClass())
+			return false;
 
-        return addToEquals(new EqualsBuilder(), (BapSshPublisher) that).isEquals();
-    }
+		return addToEquals(new EqualsBuilder(), (BapSshPublisher) that).isEquals();
+	}
 
-    public int hashCode() {
-        return addToHashCode(new HashCodeBuilder()).toHashCode();
-    }
+	public int hashCode() {
+		return addToHashCode(new HashCodeBuilder()).toHashCode();
+	}
 
-    public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
-    }
+	public String toString() {
+		return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+	}
 
 }

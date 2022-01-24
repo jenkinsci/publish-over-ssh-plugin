@@ -40,37 +40,40 @@ import java.util.ArrayList;
 @SuppressWarnings("PMD.LooseCoupling") // serializable
 public class BapSshAlwaysRunPublisherPlugin extends BapSshPublisherPlugin {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    public BapSshAlwaysRunPublisherPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError,
-                                          final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName,
-                                          final BapSshParamPublish paramPublish) {
-        super(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName, paramPublish);
-    }
+	public BapSshAlwaysRunPublisherPlugin(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError,
+			final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName,
+			final BapSshParamPublish paramPublish) {
+		super(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName, paramPublish);
+	}
 
-    @Override
-    protected boolean isBuildGoodEnoughToRun(final Run<?, ?> build, final PrintStream console) {
-        return true;
-    }
+	@Override
+	protected boolean isBuildGoodEnoughToRun(final Run<?, ?> build, final PrintStream console) {
+		return true;
+	}
 
-    public boolean perform(final AbstractBuild<?, ?> build, final BuildListener listener) throws InterruptedException, IOException {
-        Launcher nullLauncher = null;
-        return perform(build, nullLauncher, listener);
-    }
+	public boolean perform(final AbstractBuild<?, ?> build, final BuildListener listener)
+			throws InterruptedException, IOException {
+		Launcher nullLauncher = null;
+		return perform(build, nullLauncher, listener);
+	}
 
-    public boolean equals(final Object that) {
-        if (this == that) return true;
-        if (that == null || getClass() != that.getClass()) return false;
+	public boolean equals(final Object that) {
+		if (this == that)
+			return true;
+		if (that == null || getClass() != that.getClass())
+			return false;
 
-        return addToEquals(new EqualsBuilder(), (BapSshAlwaysRunPublisherPlugin) that).isEquals();
-    }
+		return addToEquals(new EqualsBuilder(), (BapSshAlwaysRunPublisherPlugin) that).isEquals();
+	}
 
-    public int hashCode() {
-        return addToHashCode(new HashCodeBuilder()).toHashCode();
-    }
+	public int hashCode() {
+		return addToHashCode(new HashCodeBuilder()).toHashCode();
+	}
 
-    public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
-    }
+	public String toString() {
+		return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+	}
 
 }

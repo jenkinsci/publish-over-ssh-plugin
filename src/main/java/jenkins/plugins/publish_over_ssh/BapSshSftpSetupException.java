@@ -28,12 +28,12 @@ import jenkins.plugins.publish_over.BapPublisherException;
 
 public class BapSshSftpSetupException extends BapPublisherException {
 
-    public BapSshSftpSetupException(final Throwable throwable) {
-        super(throwable);
-    }
+	public BapSshSftpSetupException(final Throwable throwable) {
+		super(throwable);
+	}
 
-    public BapSshSftpSetupException(final String message) {
-        super(message);
-    }
+	public BapSshSftpSetupException(final String message) {
+		super(message);
+	}
 
 }

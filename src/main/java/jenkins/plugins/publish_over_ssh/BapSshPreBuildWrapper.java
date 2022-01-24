@@ -44,64 +44,69 @@ import java.util.ArrayList;
 @SuppressWarnings("PMD.LooseCoupling") // serializable
 public class BapSshPreBuildWrapper extends BuildWrapper {
 
-    private final BapSshAlwaysRunPublisherPlugin preBuild;
+	private final BapSshAlwaysRunPublisherPlugin preBuild;
 
-    @DataBoundConstructor
-    public BapSshPreBuildWrapper(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError, final boolean failOnError,
-                                 final boolean alwaysPublishFromMaster, final String masterNodeName,
-                                 final BapSshParamPublish paramPublish) {
-        preBuild = new BapSshAlwaysRunPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster, masterNodeName,
-                                                      paramPublish);
-    }
+	@DataBoundConstructor
+	public BapSshPreBuildWrapper(final ArrayList<BapSshPublisher> publishers, final boolean continueOnError,
+			final boolean failOnError, final boolean alwaysPublishFromMaster, final String masterNodeName,
+			final BapSshParamPublish paramPublish) {
+		preBuild = new BapSshAlwaysRunPublisherPlugin(publishers, continueOnError, failOnError, alwaysPublishFromMaster,
+				masterNodeName, paramPublish);
+	}
 
-    public BapSshPublisherPlugin getPreBuild() {
-        return preBuild;
-    }
+	public BapSshPublisherPlugin getPreBuild() {
+		return preBuild;
+	}
 
-    @SuppressWarnings("PMD.JUnit4TestShouldUseBeforeAnnotation")
-    public Environment setUp(final AbstractBuild build, final Launcher launcher, final BuildListener listener)
-                    throws IOException, InterruptedException {
-        return preBuild.perform(build, launcher, listener) ? new Environment() { } : null;
-    }
+	@SuppressWarnings("PMD.JUnit4TestShouldUseBeforeAnnotation")
+	public Environment setUp(final AbstractBuild build, final Launcher launcher, final BuildListener listener)
+			throws IOException, InterruptedException {
+		return preBuild.perform(build, launcher, listener) ? new Environment() {
+		} : null;
+	}
 
-    protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
-        return builder.append(preBuild);
-    }
+	protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
+		return builder.append(preBuild);
+	}
 
-    protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshPreBuildWrapper that) {
-        return builder.append(preBuild, that.preBuild);
-    }
+	protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshPreBuildWrapper that) {
+		return builder.append(preBuild, that.preBuild);
+	}
 
-    protected ToStringBuilder addToToString(final ToStringBuilder builder) {
-        return builder.append("preBuild", preBuild);
-    }
+	protected ToStringBuilder addToToString(final ToStringBuilder builder) {
+		return builder.append("preBuild", preBuild);
+	}
 
-    public boolean equals(final Object that) {
-        if (this == that) return true;
-        if (that == null || getClass() != that.getClass()) return false;
+	public boolean equals(final Object that) {
+		if (this == that)
+			return true;
+		if (that == null || getClass() != that.getClass())
+			return false;
 
-        return addToEquals(new EqualsBuilder(), (BapSshPreBuildWrapper) that).isEquals();
-    }
+		return addToEquals(new EqualsBuilder(), (BapSshPreBuildWrapper) that).isEquals();
+	}
 
-    public int hashCode() {
-        return addToHashCode(new HashCodeBuilder()).toHashCode();
-    }
+	public int hashCode() {
+		return addToHashCode(new HashCodeBuilder()).toHashCode();
+	}
 
-    public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
-    }
+	public String toString() {
+		return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+	}
 
-    @Extension(ordinal = BapSshUtil.EXTENSION_ORDINAL_PRE_BUILD_WRAPPER)
-    public static class Descriptor extends BuildWrapperDescriptor {
-        public boolean isApplicable(final AbstractProject<?, ?> abstractProject) {
-            return true;
-        }
-        public String getDisplayName() {
-            return Messages.preBuild_descriptor_displayName();
-        }
-        public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
-            return Jenkins.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
-        }
-    }
+	@Extension(ordinal = BapSshUtil.EXTENSION_ORDINAL_PRE_BUILD_WRAPPER)
+	public static class Descriptor extends BuildWrapperDescriptor {
+		public boolean isApplicable(final AbstractProject<?, ?> abstractProject) {
+			return true;
+		}
+
+		public String getDisplayName() {
+			return Messages.preBuild_descriptor_displayName();
+		}
+
+		public BapSshPublisherPlugin.Descriptor getPublisherDescriptor() {
+			return Jenkins.getInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+		}
+	}
 
 }

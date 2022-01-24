@@ -35,53 +35,52 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class BapSshCommonConfiguration extends BapSshKeyInfo implements Describable<BapSshCommonConfiguration> {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private final boolean disableAllExec;
+	private final boolean disableAllExec;
 
-    @DataBoundConstructor
-    public BapSshCommonConfiguration(final String encryptedPassphrase, final String key, 
-                                     final String keyPath, final boolean disableAllExec) {
-        super(encryptedPassphrase, key, keyPath);
-        this.disableAllExec = disableAllExec;
-    }
+	@DataBoundConstructor
+	public BapSshCommonConfiguration(final String encryptedPassphrase, final String key, final String keyPath,
+			final boolean disableAllExec) {
+		super(encryptedPassphrase, key, keyPath);
+		this.disableAllExec = disableAllExec;
+	}
 
-    public boolean isDisableAllExec() {
-        return disableAllExec;
-    }
+	public boolean isDisableAllExec() {
+		return disableAllExec;
+	}
 
-    public BapSshCommonConfigurationDescriptor getDescriptor() {
-        return Jenkins.getInstance().getDescriptorByType(BapSshCommonConfigurationDescriptor.class);
-    }
+	public BapSshCommonConfigurationDescriptor getDescriptor() {
+		return Jenkins.getInstance().getDescriptorByType(BapSshCommonConfigurationDescriptor.class);
+	}
 
-    protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshCommonConfiguration that) {
-        return super.addToEquals(builder, that)
-            .append(disableAllExec, that.disableAllExec);
-    }
+	protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshCommonConfiguration that) {
+		return super.addToEquals(builder, that).append(disableAllExec, that.disableAllExec);
+	}
 
-    protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
-        return super.addToHashCode(builder)
-            .append(disableAllExec);
-    }
+	protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
+		return super.addToHashCode(builder).append(disableAllExec);
+	}
 
-    protected ToStringBuilder addToToString(final ToStringBuilder builder) {
-        return super.addToToString(builder)
-            .append("disableAllExec", disableAllExec);
-    }
+	protected ToStringBuilder addToToString(final ToStringBuilder builder) {
+		return super.addToToString(builder).append("disableAllExec", disableAllExec);
+	}
 
-    public boolean equals(final Object that) {
-        if (this == that) return true;
-        if (that == null || getClass() != that.getClass()) return false;
+	public boolean equals(final Object that) {
+		if (this == that)
+			return true;
+		if (that == null || getClass() != that.getClass())
+			return false;
 
-        return addToEquals(new EqualsBuilder(), (BapSshCommonConfiguration) that).isEquals();
-    }
+		return addToEquals(new EqualsBuilder(), (BapSshCommonConfiguration) that).isEquals();
+	}
 
-    public int hashCode() {
-        return addToHashCode(new HashCodeBuilder()).toHashCode();
-    }
+	public int hashCode() {
+		return addToHashCode(new HashCodeBuilder()).toHashCode();
+	}
 
-    public String toString() {
-        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
-    }
+	public String toString() {
+		return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+	}
 
 }

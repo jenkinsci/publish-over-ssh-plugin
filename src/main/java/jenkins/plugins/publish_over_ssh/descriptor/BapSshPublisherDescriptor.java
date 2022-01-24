@@ -32,28 +32,29 @@ import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import jenkins.plugins.publish_over_ssh.Messages;
 import org.jenkinsci.Symbol;
 
-@Extension @Symbol("sshPublisherDesc")
+@Extension
+@Symbol("sshPublisherDesc")
 public class BapSshPublisherDescriptor extends Descriptor<BapSshPublisher> {
 
-    public BapSshPublisherDescriptor() {
-        super(BapSshPublisher.class);
-    }
+	public BapSshPublisherDescriptor() {
+		super(BapSshPublisher.class);
+	}
 
-    @Override
-    public String getDisplayName() {
-        return Messages.publisher_descriptor_displayName();
-    }
+	@Override
+	public String getDisplayName() {
+		return Messages.publisher_descriptor_displayName();
+	}
 
-    public BapSshPublisherPlugin.Descriptor getPublisherPluginDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
-    }
+	public BapSshPublisherPlugin.Descriptor getPublisherPluginDescriptor() {
+		return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+	}
 
-    public BapSshTransferDescriptor getTransferDescriptor() {
-        return Jenkins.getActiveInstance().getDescriptorByType(BapSshTransferDescriptor.class);
-    }
+	public BapSshTransferDescriptor getTransferDescriptor() {
+		return Jenkins.getActiveInstance().getDescriptorByType(BapSshTransferDescriptor.class);
+	}
 
-    public jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages getCommonFieldNames() {
-        return new jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages();
-    }
+	public jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages getCommonFieldNames() {
+		return new jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages();
+	}
 
 }

@@ -38,51 +38,50 @@ import java.lang.reflect.Proxy;
 
 public final class SshPluginDefaults extends SshDefaults {
 
-    public static final GlobalDefaults GLOBAL_DEFAULTS = new GlobalDefaults();
-    private static final SshTransferOptions TRANSFER_DEFAULTS;
+	public static final GlobalDefaults GLOBAL_DEFAULTS = new GlobalDefaults();
+	private static final SshTransferOptions TRANSFER_DEFAULTS;
 
-    static {
-        TRANSFER_DEFAULTS = (SshTransferOptions) Proxy.newProxyInstance(
-                SshTransferOptions.class.getClassLoader(),
-                new Class[]{SshTransferOptions.class},
-                new SshPluginDefaultsHandler());
-    }
+	static {
+		TRANSFER_DEFAULTS = (SshTransferOptions) Proxy.newProxyInstance(SshTransferOptions.class.getClassLoader(),
+				new Class[] { SshTransferOptions.class }, new SshPluginDefaultsHandler());
+	}
 
-    @DataBoundConstructor
-    public SshPluginDefaults() { }
+	@DataBoundConstructor
+	public SshPluginDefaults() {
+	}
 
-    public InstanceConfigOptions getInstanceConfig() {
-        return GLOBAL_DEFAULTS;
-    }
+	public InstanceConfigOptions getInstanceConfig() {
+		return GLOBAL_DEFAULTS;
+	}
 
-    public ParamPublishOptions getParamPublish() {
-        return GLOBAL_DEFAULTS;
-    }
+	public ParamPublishOptions getParamPublish() {
+		return GLOBAL_DEFAULTS;
+	}
 
-    public PublisherOptions getPublisher() {
-        return GLOBAL_DEFAULTS;
-    }
+	public PublisherOptions getPublisher() {
+		return GLOBAL_DEFAULTS;
+	}
 
-    public PublisherLabelOptions getPublisherLabel() {
-        return GLOBAL_DEFAULTS;
-    }
+	public PublisherLabelOptions getPublisherLabel() {
+		return GLOBAL_DEFAULTS;
+	}
 
-    public RetryOptions getRetry() {
-        return GLOBAL_DEFAULTS;
-    }
+	public RetryOptions getRetry() {
+		return GLOBAL_DEFAULTS;
+	}
 
-    public SshTransferOptions getTransfer() {
-        return TRANSFER_DEFAULTS;
-    }
+	public SshTransferOptions getTransfer() {
+		return TRANSFER_DEFAULTS;
+	}
 
-    @Extension
-    public static final class SshPluginDefaultsDescriptor extends SshDefaultsDescriptor {
+	@Extension
+	public static final class SshPluginDefaultsDescriptor extends SshDefaultsDescriptor {
 
-        @Override
-        public String getDisplayName() {
-            return Messages.defaults_pluginDefaults();
-        }
+		@Override
+		public String getDisplayName() {
+			return Messages.defaults_pluginDefaults();
+		}
 
-    }
+	}
 
 }
