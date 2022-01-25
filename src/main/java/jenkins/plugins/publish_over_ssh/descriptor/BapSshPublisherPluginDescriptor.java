@@ -230,7 +230,8 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 	 */
 	public static FormValidation validateConnection(BapSshHostConfiguration hostConfig, BPBuildInfo buildInfo) {
 		try {
-			hostConfig.createClient(buildInfo).disconnect();
+			boolean connectSftp = false;
+			hostConfig.createClient(buildInfo, connectSftp).disconnect();
 			return FormValidation.ok(Messages.descriptor_testConnection_ok());
 		} catch (BapSshSftpSetupException sse) {
 			return connectionError(Messages.descriptor_testConnection_sftpError(), sse);
