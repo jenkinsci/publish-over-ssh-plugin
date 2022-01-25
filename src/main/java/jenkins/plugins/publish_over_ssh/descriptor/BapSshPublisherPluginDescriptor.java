@@ -198,7 +198,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 
 	public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
 		final BapSshHostConfiguration hostConfig = request.bindParameters(BapSshHostConfiguration.class, "");
-		hostConfig.setCommonConfig(request.bindParameters(BapSshCommonConfiguration.class, "common."));
+		hostConfig.setCommonConfig(request.bindParameters(BapSshCommonConfiguration.class, ""));
 		
 		for(String current : request.getParameterMap().keySet()) {
 			System.out.println(current + "=" + request.getParameter(current));

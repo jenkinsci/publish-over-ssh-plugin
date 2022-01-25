@@ -104,9 +104,9 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	// CSOFF: ParameterNumberCheck
 	@SuppressWarnings("PMD.ExcessiveParameterList") // DBC for you!
 	@DataBoundConstructor
-	public BapSshHostConfiguration(final String name, final String hostname, final String hostCredentialsId, final String remoteRootDir,
-			 final String jumpHost, final int port, final int timeout, final boolean overrideKey,
-			final boolean disableExec) {
+	public BapSshHostConfiguration(final String name, final String hostname, final String hostCredentialsId,
+			final String remoteRootDir, final String jumpHost, final int port, final int timeout,
+			final boolean overrideKey, final boolean disableExec) {
 		// TODO: SWA, username is empty
 
 		// CSON: ParameterNumberCheck
@@ -562,7 +562,14 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
 	@Override
 	public String getUsername() {
-		return getEffectiveCredentials(null).getUsername();
+		UsernamePasswordCredentials effectiveCredentials = getEffectiveCredentials(null);
+		if (effectiveCredentials == null) {
+			LOG.warn("this should not be null");
+			return "";
+		} else {
+			LOG.info("getUsername(): " + effectiveCredentials.getUsername());
+			return effectiveCredentials.getUsername();
+		}
 	}
 
 	public void setUsername(final String username) {
