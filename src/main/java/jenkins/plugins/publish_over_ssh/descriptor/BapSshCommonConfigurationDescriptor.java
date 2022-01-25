@@ -39,8 +39,10 @@ import java.util.Collections;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.QueryParameter;
 
+import com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey;
 import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
+import com.cloudbees.plugins.credentials.common.StandardUsernameCredentials;
 import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 
@@ -63,12 +65,12 @@ public class BapSshCommonConfigurationDescriptor extends Descriptor<BapSshCommon
 	public ListBoxModel doFillGeneralCredentialsIdItems(@AncestorInPath Item pItem) {
 		final ListBoxModel retVal;
 
-		retVal = new StandardListBoxModel().includeEmptyValue().includeMatchingAs(ACL.SYSTEM, pItem,
-				StandardUsernamePasswordCredentials.class, Collections.<DomainRequirement>emptyList(),
-				CredentialsMatchers.instanceOf(StandardUsernamePasswordCredentials.class));
+		retVal = new StandardListBoxModel().includeMatchingAs(ACL.SYSTEM, pItem, StandardUsernameCredentials.class,
+				Collections.<DomainRequirement>emptyList(),
+				CredentialsMatchers.anyOf(CredentialsMatchers.instanceOf(StandardUsernamePasswordCredentials.class),
+						CredentialsMatchers.instanceOf(BasicSSHUserPrivateKey.class)));
 
 		return retVal;
 	}
-	
-	
+
 }
