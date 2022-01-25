@@ -83,5 +83,5 @@
     </f:advanced>
 
     <f:validateButton title="${m.test_title()}" progress="${m.test_progress()}" method="testConnection"
-                      with="name,hostname,hostCredentialsId,remoteRootDir,jumpHost,port,timeout,overrideKey,generalCredentialsId,proxyType,proxyHost,proxyPort,proxyCredentialsId"/>
+                      with="name,hostname,hostCredentialsId,remoteRootDir,jumpHost,port,timeout,overrideKey,common.generalCredentialsId,proxyType,proxyHost,proxyPort,proxyCredentialsId"/>
 </j:jelly>

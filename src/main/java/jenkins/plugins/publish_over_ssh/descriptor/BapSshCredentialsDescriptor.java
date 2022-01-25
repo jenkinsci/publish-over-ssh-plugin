@@ -60,24 +60,18 @@ public class BapSshCredentialsDescriptor extends Descriptor<PublishOverSSHCreden
 
 	public FormValidation doTestConnection(@QueryParameter final String configName,
 			@QueryParameter final String credentialsId) {
-		try {
-			final BPBuildInfo buildInfo = BapSshPublisherPluginDescriptor.createDummyBuildInfo();
-			buildInfo.put(BPBuildInfo.OVERRIDE_CREDENTIALS_CONTEXT_KEY, credentialsId);
-			Jenkins j = Jenkins.getInstanceOrNull();
-			final BapSshPublisherPlugin.Descriptor pluginDescriptor;
-			if (j != null) {
-				pluginDescriptor = j.getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
-			} else {
-				throw new NullPointerException("Jenkins is not ready on going to be offline...");
-			}
-
-			final BapSshHostConfiguration hostConfig = pluginDescriptor.getConfiguration(configName);
-			return BapSshPublisherPluginDescriptor.validateConnection(hostConfig, buildInfo);
-		} catch (Exception e) {
-			System.out.println("wrong");
-			e.printStackTrace();
-			return FormValidation.error(e.getMessage());
+		final BPBuildInfo buildInfo = BapSshPublisherPluginDescriptor.createDummyBuildInfo();
+		buildInfo.put(BPBuildInfo.OVERRIDE_CREDENTIALS_CONTEXT_KEY, credentialsId);
+		Jenkins j = Jenkins.getInstanceOrNull();
+		final BapSshPublisherPlugin.Descriptor pluginDescriptor;
+		if (j != null) {
+			pluginDescriptor = j.getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+		} else {
+			throw new NullPointerException("Jenkins is not ready on going to be offline...");
 		}
+
+		final BapSshHostConfiguration hostConfig = pluginDescriptor.getConfiguration(configName);
+		return BapSshPublisherPluginDescriptor.validateConnection(hostConfig, buildInfo);
 	}
 
 	public jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages getCommonFieldNames() {
