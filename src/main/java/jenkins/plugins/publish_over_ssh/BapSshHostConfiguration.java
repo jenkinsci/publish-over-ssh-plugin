@@ -100,18 +100,19 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		this.hostCredentialsId = null;
 	}
 
+	// "name,hostname,hostCredentialsId,remoteRootDir,jumpHost,port,timeout,overrideKey,common.generalCredentialsId,
 	// CSOFF: ParameterNumberCheck
 	@SuppressWarnings("PMD.ExcessiveParameterList") // DBC for you!
 	@DataBoundConstructor
-	public BapSshHostConfiguration(final String name, final String hostname, final String hostCredentialsId,
-			final String remoteRootDir, final int port, final int timeout, final boolean overrideCredentials,
+	public BapSshHostConfiguration(final String name, final String hostname, final String hostCredentialsId, final String remoteRootDir,
+			 final String jumpHost, final int port, final int timeout, final boolean overrideKey,
 			final boolean disableExec) {
 		// TODO: SWA, username is empty
 
 		// CSON: ParameterNumberCheck
 		super(name, hostname, "", null, remoteRootDir, port);
 		this.timeout = timeout;
-		this.overrideCredentials = overrideCredentials;
+		this.overrideCredentials = overrideKey;
 		this.hostCredentialsId = hostCredentialsId;
 		this.disableExec = disableExec;
 	}
