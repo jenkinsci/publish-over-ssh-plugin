@@ -93,4 +93,5 @@ public class LegacyBapSshCredentialsDescriptor extends Descriptor<LegacyBapSshCr
 		return new jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages();
 	}
 
+	
 }
