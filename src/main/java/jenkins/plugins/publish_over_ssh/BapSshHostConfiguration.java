@@ -278,6 +278,12 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
 		final JSch ssh = createJSch();
 		String[] hosts = getHosts();
+		
+		// SECURITY-2287
+		if(!HostnameAndIPValidator.isValidHostNameOrIP(hosts[0])) {
+			throw new BapPublisherException("Given value is not a valid IP or Hostname: " + hosts[0]);
+		}
+		
 		Session session = createSession(buildInfo, ssh, hosts[0], getPort());
 		configureAuthentication(buildInfo, ssh, session);
 		final BapSshClient bapClient = new BapSshClient(buildInfo, session, isEffectiveDisableExec());

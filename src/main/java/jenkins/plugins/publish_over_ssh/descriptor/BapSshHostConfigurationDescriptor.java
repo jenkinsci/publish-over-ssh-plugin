@@ -100,7 +100,17 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
 		return FormValidation.validateNonNegativeInteger(value);
 	}
 
+	/**
+	 * Called from Jenkins General Settings.
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
+		// This method is afaik only called from General Administration page. 
+		Jenkins.get().checkPermission(Jenkins.ADMINISTER);
+		
 		final BapSshPublisherPlugin.Descriptor pluginDescriptor;
 		Jenkins j = Jenkins.getInstanceOrNull();
 		if (j != null) {
