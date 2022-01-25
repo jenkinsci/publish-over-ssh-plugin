@@ -1,3 +1,5 @@
+<?jelly escape-by-default='true'?>
+
 <!--
   ~ The MIT License
   ~
@@ -22,9 +24,15 @@
   ~ THE SOFTWARE.
   -->
 
-<div>
-    <p>The path to the private key.</p>
-    <p>Either supply the path to the file containing the key, or paste the key into the <code>Key</code> box.<br />
-        The <code>Path to key</code> can be absolute, or relative to <code>$JENKINS_HOME</code>
-    </p>
-</div>
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:poj="/pojelly" xmlns:c="/lib/credentials">
+
+    <poj:defaultMessages/>
+    
+   	<f:entry title="${%Credentials}" field="credentialsId">
+        <c:select/>
+    </f:entry>
+    
+    <f:validateButton title="${m.test_title()}" progress="${m.test_progress()}" method="testConnection"
+                            with="configName,credentialsId"/>
+
+</j:jelly>

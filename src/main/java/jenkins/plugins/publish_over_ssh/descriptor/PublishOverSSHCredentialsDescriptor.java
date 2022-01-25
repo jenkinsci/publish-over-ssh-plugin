@@ -24,22 +24,11 @@
 
 package jenkins.plugins.publish_over_ssh.descriptor;
 
-import java.util.Collections;
-
-import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.QueryParameter;
-
-import com.cloudbees.plugins.credentials.CredentialsMatchers;
-import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
-import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
-import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 
 import hudson.Extension;
 import hudson.model.Descriptor;
-import hudson.model.Item;
-import hudson.security.ACL;
 import hudson.util.FormValidation;
-import hudson.util.ListBoxModel;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
@@ -47,9 +36,9 @@ import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import jenkins.plugins.publish_over_ssh.PublishOverSSHCredentials;
 
 @Extension
-public class BapSshCredentialsDescriptor extends Descriptor<PublishOverSSHCredentials> {
+public class PublishOverSSHCredentialsDescriptor extends Descriptor<PublishOverSSHCredentials> {
 
-	public BapSshCredentialsDescriptor() {
+	public PublishOverSSHCredentialsDescriptor() {
 		super(PublishOverSSHCredentials.class);
 	}
 
@@ -58,9 +47,12 @@ public class BapSshCredentialsDescriptor extends Descriptor<PublishOverSSHCreden
 		return "not seen";
 	}
 
+	public FormValidation doCheckCredentialsId(@QueryParameter final String value) {
+		return FormValidation.validateRequired(value);
+	}
+
 	public FormValidation doTestConnection(@QueryParameter final String configName,
 			@QueryParameter final String credentialsId) {
-
 		final BPBuildInfo buildInfo = BapSshPublisherPluginDescriptor.createDummyBuildInfo();
 		buildInfo.put(BPBuildInfo.OVERRIDE_CREDENTIALS_CONTEXT_KEY, credentialsId);
 		Jenkins j = Jenkins.getInstanceOrNull();
@@ -73,20 +65,6 @@ public class BapSshCredentialsDescriptor extends Descriptor<PublishOverSSHCreden
 
 		final BapSshHostConfiguration hostConfig = pluginDescriptor.getConfiguration(configName);
 		return BapSshPublisherPluginDescriptor.validateConnection(hostConfig, buildInfo);
-	}
-
-	public jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages getCommonFieldNames() {
-		return new jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages();
-	}
-
-	public ListBoxModel doFillCredentialsIdItems(@AncestorInPath Item pItem) {
-		final ListBoxModel retVal;
-
-		retVal = new StandardListBoxModel().includeEmptyValue().includeMatchingAs(ACL.SYSTEM, pItem,
-				StandardUsernamePasswordCredentials.class, Collections.<DomainRequirement>emptyList(),
-				CredentialsMatchers.instanceOf(StandardUsernamePasswordCredentials.class));
-
-		return retVal;
 	}
 
 }

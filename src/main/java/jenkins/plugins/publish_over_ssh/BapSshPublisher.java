@@ -48,9 +48,9 @@ public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Des
 	@DataBoundConstructor
 	public BapSshPublisher(final String configName, final boolean verbose, final ArrayList<BapSshTransfer> transfers,
 			final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp, final BapSshRetry sshRetry,
-			final BapSshPublisherLabel sshLabel, final LegacyBapSshCredentials legacySshCredentials) {
+			final BapSshPublisherLabel sshLabel, final PublishOverSSHCredentials sshCredentials) {
 		super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp, sshRetry, sshLabel,
-				legacySshCredentials);
+				sshCredentials);
 	}
 
 	public final boolean isSftpRequired() {
@@ -69,8 +69,8 @@ public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Des
 		return (BapSshPublisherLabel) super.getLabel();
 	}
 
-	public LegacyBapSshCredentials getSshCredentials() {
-		return (LegacyBapSshCredentials) getCredentials();
+	public PublishOverSSHCredentials getSshCredentials() {
+		return (PublishOverSSHCredentials) getCredentials();
 	}
 
 	public BapSshPublisherDescriptor getDescriptor() {
