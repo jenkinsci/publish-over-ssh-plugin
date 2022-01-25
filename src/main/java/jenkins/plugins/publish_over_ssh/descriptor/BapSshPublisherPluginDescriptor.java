@@ -35,6 +35,7 @@ import org.kohsuke.stapler.StaplerResponse;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Util;
 import hudson.model.AbstractProject;
+import hudson.model.Job;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
@@ -197,6 +198,8 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 	}
 
 	public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
+		Jenkins.get().checkPermission(Job.CONFIGURE);
+		
 		final BapSshHostConfiguration hostConfig = request.bindParameters(BapSshHostConfiguration.class, "");
 		hostConfig.setCommonConfig(request.bindParameters(BapSshCommonConfiguration.class, ""));
 		

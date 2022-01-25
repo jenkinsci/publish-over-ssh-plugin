@@ -62,6 +62,9 @@ public class BapSshCredentialsDescriptor extends Descriptor<PublishOverSSHCreden
 
 	public FormValidation doTestConnection(@QueryParameter final String configName,
 			@QueryParameter final String credentialsId) {
+//		Jenkins.get().checkPermission(Job.CONFIGURE);
+		Jenkins.get().checkPermission(Jenkins.ADMINISTER);
+		
 		final BPBuildInfo buildInfo = BapSshPublisherPluginDescriptor.createDummyBuildInfo();
 		buildInfo.put(BPBuildInfo.OVERRIDE_CREDENTIALS_CONTEXT_KEY, credentialsId);
 		Jenkins j = Jenkins.getInstanceOrNull();
