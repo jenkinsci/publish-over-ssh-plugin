@@ -52,7 +52,7 @@ import java.util.Stack;
 import java.util.Vector;
 
 @SuppressWarnings("PMD.TooManyMethods")
-public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
+public class BapSshClient extends BPDefaultClient<BapSshTransfer> implements AutoCloseable {
 
 	private static final transient Log LOG = LogFactory.getLog(BapSshClient.class);
 
@@ -563,6 +563,11 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
 				LOG.warn(ie.getMessage(), ie);
 			}
 		}
+	}
+
+	@Override
+	public void close() throws Exception {
+		this.disconnectQuietly();
 	}
 
 }

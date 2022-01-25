@@ -222,6 +222,12 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 		return validateConnection(hostConfig, createDummyBuildInfo());
 	}
 
+	/**
+	 * Called from a Build Job, when Build Specific Credentials should be used.
+	 * @param hostConfig
+	 * @param buildInfo
+	 * @return
+	 */
 	public static FormValidation validateConnection(BapSshHostConfiguration hostConfig, BPBuildInfo buildInfo) {
 		try {
 			hostConfig.createClient(buildInfo).disconnect();
