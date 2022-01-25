@@ -199,6 +199,15 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 	public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
 		final BapSshHostConfiguration hostConfig = request.bindParameters(BapSshHostConfiguration.class, "");
 		hostConfig.setCommonConfig(request.bindParameters(BapSshCommonConfiguration.class, "common."));
+		
+		System.out.println("Hostname: " + hostConfig.getHostname());
+		System.out.println("getName: " + hostConfig.getName());
+		System.out.println("getProxyCredentialsId: " + hostConfig.getProxyCredentialsId());
+		System.out.println("getHostCredentialsId: " + hostConfig.getHostCredentialsId());
+		System.out.println("getUsername: " + hostConfig.getUsername());
+		System.out.println("getCommonConfig().getGeneralCredentialsId(): " + hostConfig.getCommonConfig().getGeneralCredentialsId());
+		
+		
 		return validateConnection(hostConfig, createDummyBuildInfo());
 	}
 

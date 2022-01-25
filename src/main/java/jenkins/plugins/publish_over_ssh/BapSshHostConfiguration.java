@@ -113,10 +113,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		this.timeout = timeout;
 		this.overrideCredentials = overrideCredentials;
 		this.hostCredentialsId = hostCredentialsId;
-
 		this.disableExec = disableExec;
-
-		System.out.println("generalCredentialsId:" + generalCredentialsId);
 	}
 
 	@DataBoundSetter
