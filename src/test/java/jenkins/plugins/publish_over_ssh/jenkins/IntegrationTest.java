@@ -60,71 +60,74 @@ import com.jcraft.jsch.SftpATTRS;
 @SuppressWarnings("PMD.SignatureDeclareThrowsException")
 public class IntegrationTest {
 
-    @Rule
-    public JenkinsRule j = new JenkinsRule();
+	@Rule
+	public JenkinsRule j = new JenkinsRule();
 
 // @TODO test that we get the expected result when in a promotion
 
-    @Test
-    public void testIntegration() throws Exception {
-        final JSch mockJsch = mock(JSch.class);
-        final Session mockSession = mock(Session.class);
-        final ChannelSftp mockSftp = mock(ChannelSftp.class);
-        final int port = 28;
-        final int timeout = 3000;
-        final BapSshHostConfiguration testHostConfig = new BapSshHostConfiguration() {
-            @Override
-            public JSch createJSch() {
-                return mockJsch;
-            }
-            @Override
-            public Object readResolve() {
-                return super.readResolve();
-            }
-        };
-        JenkinsTestHelper.fill(testHostConfig, "testConfig", "testHostname", "testUsername", "",
-                "/testRemoteRoot", "", port, timeout, false, "", "", false);
-        final BapSshCommonConfiguration commonConfig = new BapSshCommonConfiguration("passphrase", "key", "", false);
-        new JenkinsTestHelper().setGlobalConfig(commonConfig, testHostConfig);
-        final String dirToIgnore = "target";
-        final int execTimeout = 10000;
-        final BapSshTransfer transfer = new BapSshTransfer("**/*", null, "sub-home", dirToIgnore, false, false, "", execTimeout, false, false, false, null);
-        final BapSshPublisher publisher = new BapSshPublisher(testHostConfig.getName(), false,
-                        new ArrayList<BapSshTransfer>(Collections.singletonList(transfer)), false, false, null, null, null);
-        final BapSshPublisherPlugin plugin = new BapSshPublisherPlugin(
-                        new ArrayList<BapSshPublisher>(Collections.singletonList(publisher)), false, false, false, "master", null);
+	@Test
+	public void testIntegration() throws Exception {
+		final JSch mockJsch = mock(JSch.class);
+		final Session mockSession = mock(Session.class);
+		final ChannelSftp mockSftp = mock(ChannelSftp.class);
+		final int port = 28;
+		final int timeout = 3000;
+		final BapSshHostConfiguration testHostConfig = new BapSshHostConfiguration() {
+			@Override
+			public JSch createJSch() {
+				return mockJsch;
+			}
 
-        final FreeStyleProject project = j.createFreeStyleProject();
-        project.getPublishersList().add(plugin);
-        final String buildDirectory = "build-dir";
-        final String buildFileName = "file.txt";
-        project.getBuildersList().add(new TestBuilder() {
-            @Override
-            public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher, final BuildListener listener)
-                                   throws InterruptedException, IOException {
-                final FilePath dir = build.getWorkspace().child(dirToIgnore).child(buildDirectory);
-                dir.mkdirs();
-                dir.child(buildFileName).write("Helloooooo", "UTF-8");
-                build.setResult(Result.SUCCESS);
-                return true;
-            }
-        });
+			@Override
+			public Object readResolve() {
+				return super.readResolve();
+			}
+		};
+		JenkinsTestHelper.fill(testHostConfig, "testConfig", "testHostname", "testUsername", "", "/testRemoteRoot", "",
+				port, timeout, false, "", "", false);
+		final BapSshCommonConfiguration commonConfig = new BapSshCommonConfiguration("passphrase", false);
+		new JenkinsTestHelper().setGlobalConfig(commonConfig, testHostConfig);
+		final String dirToIgnore = "target";
+		final int execTimeout = 10000;
+		final BapSshTransfer transfer = new BapSshTransfer("**/*", null, "sub-home", dirToIgnore, false, false, "",
+				execTimeout, false, false, false, null);
+		final BapSshPublisher publisher = new BapSshPublisher(testHostConfig.getName(), false,
+				new ArrayList<BapSshTransfer>(Collections.singletonList(transfer)), false, false, null, null, null);
+		final BapSshPublisherPlugin plugin = new BapSshPublisherPlugin(
+				new ArrayList<BapSshPublisher>(Collections.singletonList(publisher)), false, false, false, "master",
+				null);
 
-        when(mockJsch.getSession(testHostConfig.getUsername(), testHostConfig.getHostname(), testHostConfig.getPort()))
-                .thenReturn(mockSession);
-        when(mockSession.openChannel("sftp")).thenReturn(mockSftp);
-        final SftpATTRS mockAttrs = mock(SftpATTRS.class);
-        when(mockAttrs.isDir()).thenReturn(true);
-        when(mockSftp.stat(anyString())).thenReturn(mockAttrs);
+		final FreeStyleProject project = j.createFreeStyleProject();
+		project.getPublishersList().add(plugin);
+		final String buildDirectory = "build-dir";
+		final String buildFileName = "file.txt";
+		project.getBuildersList().add(new TestBuilder() {
+			@Override
+			public boolean perform(final AbstractBuild<?, ?> build, final Launcher launcher,
+					final BuildListener listener) throws InterruptedException, IOException {
+				final FilePath dir = build.getWorkspace().child(dirToIgnore).child(buildDirectory);
+				dir.mkdirs();
+				dir.child(buildFileName).write("Helloooooo", "UTF-8");
+				build.setResult(Result.SUCCESS);
+				return true;
+			}
+		});
 
-        j.assertBuildStatusSuccess(project.scheduleBuild2(0).get());
+		when(mockJsch.getSession(testHostConfig.getUsername(), testHostConfig.getHostname(), testHostConfig.getPort()))
+				.thenReturn(mockSession);
+		when(mockSession.openChannel("sftp")).thenReturn(mockSftp);
+		final SftpATTRS mockAttrs = mock(SftpATTRS.class);
+		when(mockAttrs.isDir()).thenReturn(true);
+		when(mockSftp.stat(anyString())).thenReturn(mockAttrs);
 
-        verify(mockJsch).addIdentity("TheKey", BapSshUtil.toBytes("key"), null, BapSshUtil.toBytes("passphrase"));
-        verify(mockSession).connect(timeout);
-        verify(mockSftp).connect(timeout);
-        verify(mockSftp).cd(transfer.getRemoteDirectory());
-        verify(mockSftp).cd("build-dir");
-        verify(mockSftp).put((InputStream) anyObject(), eq(buildFileName));
-    }
+		j.assertBuildStatusSuccess(project.scheduleBuild2(0).get());
+
+		verify(mockJsch).addIdentity("TheKey", BapSshUtil.toBytes("key"), null, BapSshUtil.toBytes("passphrase"));
+		verify(mockSession).connect(timeout);
+		verify(mockSftp).connect(timeout);
+		verify(mockSftp).cd(transfer.getRemoteDirectory());
+		verify(mockSftp).cd("build-dir");
+		verify(mockSftp).put((InputStream) anyObject(), eq(buildFileName));
+	}
 
 }

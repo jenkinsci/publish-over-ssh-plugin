@@ -95,8 +95,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
 	public BapSshHostConfiguration() {
 		// use this constructor instead of the default w/o parameters because there is
-		// some
-		// business logic in there...
+		// some business logic in there...
 		super(null, null, null, null, null, 0);
 		this.hostCredentialsId = null;
 	}
@@ -105,8 +104,8 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	@SuppressWarnings("PMD.ExcessiveParameterList") // DBC for you!
 	@DataBoundConstructor
 	public BapSshHostConfiguration(final String name, final String hostname, final String hostCredentialsId,
-			final String remoteRootDir, final int port, final int timeout, final boolean overrideCredentials,
-			final boolean disableExec) {
+			final String generalCredentialsId, final String remoteRootDir, final int port, final int timeout,
+			final boolean overrideCredentials, final boolean disableExec) {
 		// TODO: SWA, username is empty
 
 		// CSON: ParameterNumberCheck
@@ -114,7 +113,10 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		this.timeout = timeout;
 		this.overrideCredentials = overrideCredentials;
 		this.hostCredentialsId = hostCredentialsId;
+
 		this.disableExec = disableExec;
+
+		System.out.println("generalCredentialsId:" + generalCredentialsId);
 	}
 
 	@DataBoundSetter
@@ -222,12 +224,21 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 			final String publisherCredentials = getPublisherOverrideCredentials(buildInfo);
 			if (StringUtils.isNotEmpty(publisherCredentials)) {
 				// this is configured in a specific job
+				LOG.info("use overriden credentials: " + publisherCredentials);
 				return publisherCredentials;
 			}
 		}
 
-		// either general credentials or host specific credentials
-		return overrideCredentials ? hostCredentialsId : getCommonConfig().getGeneralCredentialsId();
+		String retVal = null;
+		if (overrideCredentials) {
+			retVal = hostCredentialsId;
+			LOG.info("use host specific credentials: " + hostCredentialsId);
+		} else {
+			retVal = getCommonConfig().getGeneralCredentialsId();
+			LOG.info("use common specific credentials: " + retVal + ", host creds are set: " + hostCredentialsId);
+		}
+
+		return retVal;
 	}
 
 	private UsernamePasswordCredentials getEffectiveCredentials(@Nullable final BPBuildInfo buildInfo) {

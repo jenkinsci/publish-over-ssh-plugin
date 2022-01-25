@@ -5,7 +5,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import hudson.model.Descriptor;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.Credentials;
-import jenkins.plugins.publish_over_ssh.descriptor.PublishOverSSHCredentialsDescriptor;
+import jenkins.plugins.publish_over_ssh.descriptor.BapSshCredentialsDescriptor;
 
 public class PublishOverSSHCredentials implements Credentials<PublishOverSSHCredentials> {
 
@@ -17,10 +17,10 @@ public class PublishOverSSHCredentials implements Credentials<PublishOverSSHCred
 	public PublishOverSSHCredentials(final String credentialsId) {
 		this.credentialsId = credentialsId;
 	}
-	
+
 	@Override
 	public Descriptor<PublishOverSSHCredentials> getDescriptor() {
-		return Jenkins.get().getDescriptorByType(PublishOverSSHCredentialsDescriptor.class);
+		return Jenkins.get().getDescriptorByType(BapSshCredentialsDescriptor.class);
 	}
 
 	public String getCredentialsId() {

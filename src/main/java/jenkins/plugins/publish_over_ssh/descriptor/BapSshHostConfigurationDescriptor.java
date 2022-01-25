@@ -112,16 +112,14 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
 	}
 
 	public ListBoxModel doFillHostCredentialsIdItems(@AncestorInPath Item pItem) {
-		final ListBoxModel retVal;
-
-		retVal = new StandardListBoxModel().includeEmptyValue().includeMatchingAs(ACL.SYSTEM, pItem,
-				StandardUsernamePasswordCredentials.class, Collections.<DomainRequirement>emptyList(),
-				CredentialsMatchers.instanceOf(StandardUsernamePasswordCredentials.class));
-
-		return retVal;
+		return createProxyCredentialsIdItems(pItem);
 	}
-	
+
 	public ListBoxModel doFillProxyCredentialsIdItems(@AncestorInPath Item pItem) {
+		return createProxyCredentialsIdItems(pItem);
+	}
+
+	private ListBoxModel createProxyCredentialsIdItems(Item pItem) {
 		final ListBoxModel retVal;
 
 		retVal = new StandardListBoxModel().includeEmptyValue().includeMatchingAs(ACL.SYSTEM, pItem,
@@ -130,5 +128,5 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
 
 		return retVal;
 	}
-	
+
 }

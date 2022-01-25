@@ -214,6 +214,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 	}
 
 	private static FormValidation connectionError(final String description, final Exception exception) {
+		exception.printStackTrace();
 		return FormValidation.errorWithMarkup("<p>" + description + "</p><p><pre>"
 				+ Util.escape(exception.getClass().getCanonicalName() + ": " + exception.getLocalizedMessage())
 				+ "</pre></p>");
