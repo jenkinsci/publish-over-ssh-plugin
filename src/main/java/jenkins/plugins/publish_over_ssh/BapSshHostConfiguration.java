@@ -104,8 +104,8 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	@SuppressWarnings("PMD.ExcessiveParameterList") // DBC for you!
 	@DataBoundConstructor
 	public BapSshHostConfiguration(final String name, final String hostname, final String hostCredentialsId,
-			final String generalCredentialsId, final String remoteRootDir, final int port, final int timeout,
-			final boolean overrideCredentials, final boolean disableExec) {
+			final String remoteRootDir, final int port, final int timeout, final boolean overrideCredentials,
+			final boolean disableExec) {
 		// TODO: SWA, username is empty
 
 		// CSON: ParameterNumberCheck
@@ -210,6 +210,15 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	@DataBoundSetter
 	public void setProxyCredentialsId(String proxyCredentialsId) {
 		this.proxyCredentialsId = proxyCredentialsId;
+	}
+
+	public String getHostCredentialsId() {
+		return hostCredentialsId;
+	}
+
+	@DataBoundSetter
+	public void setHostCredentialsId(String hostCredentialsId) {
+		this.hostCredentialsId = hostCredentialsId;
 	}
 
 	public boolean isEffectiveDisableExec() {
@@ -553,15 +562,6 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	@Override
 	public String getUsername() {
 		return getEffectiveCredentials(null).getUsername();
-	}
-
-	public String getHostCredentialsId() {
-		return hostCredentialsId;
-	}
-
-	@DataBoundSetter
-	public void setHostCredentialsId(String hostCredentialsId) {
-		this.hostCredentialsId = hostCredentialsId;
 	}
 
 	public void setUsername(final String username) {

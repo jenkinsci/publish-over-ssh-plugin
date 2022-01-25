@@ -200,13 +200,24 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 		final BapSshHostConfiguration hostConfig = request.bindParameters(BapSshHostConfiguration.class, "");
 		hostConfig.setCommonConfig(request.bindParameters(BapSshCommonConfiguration.class, "common."));
 		
-		System.out.println("Hostname: " + hostConfig.getHostname());
+		for(String current : request.getParameterMap().keySet()) {
+			System.out.println(current + "=" + request.getParameter(current));
+		}
+		System.out.println("---");
+		// name,hostname,hostCredentialsId,remoteRootDir,jumpHost,port,timeout,overrideKey,common.generalCredentialsId,proxyType,proxyHost,proxyPort,proxyCredentialsId"/>
 		System.out.println("getName: " + hostConfig.getName());
-		System.out.println("getProxyCredentialsId: " + hostConfig.getProxyCredentialsId());
+		System.out.println("Hostname: " + hostConfig.getHostname());
 		System.out.println("getHostCredentialsId: " + hostConfig.getHostCredentialsId());
-		System.out.println("getUsername: " + hostConfig.getUsername());
+		System.out.println("remoteRootDir: " + hostConfig.getRemoteRootDir());
+		System.out.println("jumpHost: " + hostConfig.getJumpHost());
+		System.out.println("port: " + hostConfig.getPort());
+		System.out.println("timeout: " + hostConfig.getTimeout());
+		System.out.println("overrideKey: " + hostConfig.isOverrideKey());
+		System.out.println("proxyType: " + hostConfig.getProxyType());
+		System.out.println("proxyHost: " + hostConfig.getProxyHost());
+		System.out.println("proxyPort: " + hostConfig.getProxyPort());
+		System.out.println("getProxyCredentialsId: " + hostConfig.getProxyCredentialsId());
 		System.out.println("getCommonConfig().getGeneralCredentialsId(): " + hostConfig.getCommonConfig().getGeneralCredentialsId());
-		
 		
 		return validateConnection(hostConfig, createDummyBuildInfo());
 	}

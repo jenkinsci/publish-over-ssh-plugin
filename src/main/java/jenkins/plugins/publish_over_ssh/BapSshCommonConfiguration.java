@@ -40,11 +40,6 @@ public class BapSshCommonConfiguration implements Describable<BapSshCommonConfig
 	private final boolean disableAllExec;
 
 	private String generalCredentialsId;
-
-	@DataBoundConstructor
-	public BapSshCommonConfiguration(final String generalCredentialsId) {
-		this(generalCredentialsId, false);
-	}
 	
 	@DataBoundConstructor
 	public BapSshCommonConfiguration(final String generalCredentialsId, final boolean disableAllExec) {

@@ -80,20 +80,12 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
 		return FormValidation.validateRequired(value);
 	}
 
-	public FormValidation doCheckUsername(@QueryParameter final String value) {
-		return FormValidation.validateRequired(value);
-	}
-
 	public FormValidation doCheckPort(@QueryParameter final String value) {
 		return FormValidation.validatePositiveInteger(value);
 	}
 
 	public FormValidation doCheckTimeout(@QueryParameter final String value) {
 		return FormValidation.validateNonNegativeInteger(value);
-	}
-
-	public FormValidation doCheckKeyPath(@QueryParameter final String value) {
-		return BPValidators.validateFileOnMaster(value);
 	}
 
 	public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
@@ -112,14 +104,14 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
 	}
 
 	public ListBoxModel doFillHostCredentialsIdItems(@AncestorInPath Item pItem) {
-		return createProxyCredentialsIdItems(pItem);
+		return createCredentialsIdItems(pItem);
 	}
 
 	public ListBoxModel doFillProxyCredentialsIdItems(@AncestorInPath Item pItem) {
-		return createProxyCredentialsIdItems(pItem);
+		return createCredentialsIdItems(pItem);
 	}
 
-	private ListBoxModel createProxyCredentialsIdItems(Item pItem) {
+	private ListBoxModel createCredentialsIdItems(Item pItem) {
 		final ListBoxModel retVal;
 
 		retVal = new StandardListBoxModel().includeEmptyValue().includeMatchingAs(ACL.SYSTEM, pItem,
