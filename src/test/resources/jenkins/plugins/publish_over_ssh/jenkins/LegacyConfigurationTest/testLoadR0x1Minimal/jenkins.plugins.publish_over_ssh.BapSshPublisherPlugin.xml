@@ -36,12 +36,15 @@
     <jenkins.plugins.publish__over__ssh.BapSshHostConfiguration>
       <name>default</name>
       <hostname>hostname</hostname>
-      <username>username</username>
+      <username></username>
       <remoteRootDir></remoteRootDir>
       <port>22</port>
-      <commonConfig class="jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration" reference="../../../commonConfig"/>
+      <commonConfig class="jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration">
+        <disableAllExec>false</disableAllExec>
+        <generalCredentialsId></generalCredentialsId>
+      </commonConfig>
       <timeout>300000</timeout>
-      <overrideKey>true</overrideKey>
+      <overrideCredentials>true</overrideCredentials>
       <keyInfo>
         <passphrase>password</passphrase>
         <key></key>

@@ -113,7 +113,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		// TODO: SWA, username is empty
 
 		// CSON: ParameterNumberCheck
-		super(name, hostname, "", null, remoteRootDir, port);
+		super(name, hostname, null, null, remoteRootDir, port);
 		this.timeout = timeout;
 		this.overrideCredentials = overrideKey;
 		this.hostCredentialsId = hostCredentialsId;
@@ -603,7 +603,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 	public String getUsername() {
 		StandardUsernameCredentials effectiveCredentials = getEffectiveCredentials(null);
 		if (effectiveCredentials == null) {
-			LOG.warn("this should not be null");
+			LOG.warn("effectiveCredentials should not be null");
 			return "";
 		} else {
 			LOG.info("getUsername(): " + effectiveCredentials.getUsername());
@@ -611,8 +611,10 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 		}
 	}
 
+	@Override
 	public void setUsername(final String username) {
 		LOG.warn("no credentials should be stored with this method: setUsername");
+		super.setUsername(username);
 	}
 
 	@Override

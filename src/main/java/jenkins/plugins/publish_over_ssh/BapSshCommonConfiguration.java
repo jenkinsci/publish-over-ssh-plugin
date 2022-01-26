@@ -26,6 +26,10 @@ package jenkins.plugins.publish_over_ssh;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
@@ -35,33 +39,63 @@ import jenkins.plugins.publish_over_ssh.descriptor.BapSshCommonConfigurationDesc
 
 public class BapSshCommonConfiguration implements Describable<BapSshCommonConfiguration>, Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final boolean disableAllExec;
+    private final boolean disableAllExec;
 
-	private String generalCredentialsId;
-	
-	@DataBoundConstructor
-	public BapSshCommonConfiguration(final String generalCredentialsId, final boolean disableAllExec) {
-		this.disableAllExec = disableAllExec;
-		this.generalCredentialsId = generalCredentialsId;
-	}
+    private String generalCredentialsId;
 
-	public boolean isDisableAllExec() {
-		return disableAllExec;
-	}
+    @DataBoundConstructor
+    public BapSshCommonConfiguration(final String generalCredentialsId, final boolean disableAllExec) {
+        this.disableAllExec = disableAllExec;
+        this.generalCredentialsId = generalCredentialsId;
+    }
 
-	public BapSshCommonConfigurationDescriptor getDescriptor() {
-		return Jenkins.get().getDescriptorByType(BapSshCommonConfigurationDescriptor.class);
-	}
+    public boolean isDisableAllExec() {
+        return disableAllExec;
+    }
 
-	public String getGeneralCredentialsId() {
-		return generalCredentialsId;
-	}
+    public BapSshCommonConfigurationDescriptor getDescriptor() {
+        return Jenkins.get().getDescriptorByType(BapSshCommonConfigurationDescriptor.class);
+    }
 
-	@DataBoundSetter
-	public void setGeneralCredentialsId(String credentialsId) {
-		this.generalCredentialsId = credentialsId;
-	}
+    public String getGeneralCredentialsId() {
+        return generalCredentialsId;
+    }
+
+    @DataBoundSetter
+    public void setGeneralCredentialsId(String credentialsId) {
+        this.generalCredentialsId = credentialsId;
+    }
+
+    public boolean equals(final Object that) {
+        if (this == that)
+            return true;
+        if (that == null || getClass() != that.getClass())
+            return false;
+
+        return addToEquals(new EqualsBuilder(), (BapSshCommonConfiguration) that).isEquals();
+    }
+
+    public int hashCode() {
+        return addToHashCode(new HashCodeBuilder()).toHashCode();
+    }
+
+    public String toString() {
+        return addToToString(new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)).toString();
+    }
+
+    protected HashCodeBuilder addToHashCode(final HashCodeBuilder builder) {
+        return builder.append(generalCredentialsId).append(disableAllExec);
+    }
+
+    protected EqualsBuilder addToEquals(final EqualsBuilder builder, final BapSshCommonConfiguration that) {
+        return builder.append(generalCredentialsId, that.generalCredentialsId).append(disableAllExec,
+                that.disableAllExec);
+    }
+
+    protected ToStringBuilder addToToString(final ToStringBuilder builder) {
+        return builder.append("generalCredentialsId", generalCredentialsId).append("disableAllExec", disableAllExec);
+    }
 
 }

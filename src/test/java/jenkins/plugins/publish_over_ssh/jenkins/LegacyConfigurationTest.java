@@ -65,8 +65,8 @@ public class LegacyConfigurationTest {
 	public void testLoadR0x1Minimal() {
 		final List<BapSshHostConfiguration> configurations = getPublisherPluginDescriptor().getHostConfigurations();
 		assertEquals(1, configurations.size());
-		final BapSshHostConfiguration expected = prepare("default", "hostname", "username", "password", "", null,
-				DEFAULT_PORT, DEFAULT_TIMEOUT, true, "", "", false);
+		final BapSshHostConfiguration expected = prepare("default", "hostname", "password", "", null, DEFAULT_PORT,
+				DEFAULT_TIMEOUT, true, "", "", false);
 		expected.setCommonConfig(new BapSshCommonConfiguration("", false));
 		assertEquals(expected, configurations.get(0));
 
@@ -124,14 +124,14 @@ public class LegacyConfigurationTest {
 		final int configDPort = 8022;
 		final int configDTimeout = 10000;
 		final BapSshHostConfiguration[] expectedConfig = new BapSshHostConfiguration[] {
-				prepare(configName('a'), hostname('a'), "username.a", "password.a", "remoteDirectory.a",
-						DEFAULT_JUMPHOST, DEFAULT_PORT, DEFAULT_TIMEOUT, false, "", "", false),
-				prepare(configName('b'), hostname('b'), "username.b", "", "", DEFAULT_JUMPHOST, DEFAULT_PORT,
-						DEFAULT_TIMEOUT, true, "/an/unencrypted/key", "", false),
-				prepare(configName('c'), hostname('c'), "username.c", "", "", DEFAULT_JUMPHOST, DEFAULT_PORT,
-						DEFAULT_TIMEOUT, true, "", KEY_2, false),
-				prepare(configName('d'), hostname('d'), "username.d", "passphrase", "remoteDirectory.d",
-						DEFAULT_JUMPHOST, configDPort, configDTimeout, true, "path/to/key", KEY_2, false) };
+				prepare(configName('a'), hostname('a'), "password.a", "remoteDirectory.a", DEFAULT_JUMPHOST,
+						DEFAULT_PORT, DEFAULT_TIMEOUT, false, "", "", false),
+				prepare(configName('b'), hostname('b'), "", "", DEFAULT_JUMPHOST, DEFAULT_PORT, DEFAULT_TIMEOUT, true,
+						"/an/unencrypted/key", "", false),
+				prepare(configName('c'), hostname('c'), "", "", DEFAULT_JUMPHOST, DEFAULT_PORT, DEFAULT_TIMEOUT, true,
+						"", KEY_2, false),
+				prepare(configName('d'), hostname('d'), "passphrase", "remoteDirectory.d", DEFAULT_JUMPHOST,
+						configDPort, configDTimeout, true, "path/to/key", KEY_2, false) };
 		final BapSshCommonConfiguration common = new BapSshCommonConfiguration("hello", false);
 		for (BapSshHostConfiguration hostConfig : expectedConfig) {
 			hostConfig.setCommonConfig(common);
@@ -212,7 +212,7 @@ public class LegacyConfigurationTest {
 			+ "-----END DSA PRIVATE KEY-----\n";
 
 	private BapSshPublisherPlugin.Descriptor getPublisherPluginDescriptor() {
-		return Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+		return Jenkins.get().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
 	}
 
 	private BapSshPublisherPlugin getConfiguredPublisherPlugin() {

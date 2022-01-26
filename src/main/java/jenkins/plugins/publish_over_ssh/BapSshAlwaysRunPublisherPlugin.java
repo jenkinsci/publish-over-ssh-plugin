@@ -49,7 +49,7 @@ public class BapSshAlwaysRunPublisherPlugin extends BapSshPublisherPlugin {
 	}
 
 	@Override
-	protected boolean isBuildGoodEnoughToRun(final Run<?, ?> build, final PrintStream console) {
+    protected boolean isBuildGoodEnoughToRun(final Run<?, ?> build, final PrintStream console) {
 		return true;
 	}
 

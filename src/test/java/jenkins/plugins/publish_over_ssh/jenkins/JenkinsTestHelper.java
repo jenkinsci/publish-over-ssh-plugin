@@ -24,28 +24,31 @@
 
 package jenkins.plugins.publish_over_ssh.jenkins;
 
-import hudson.util.CopyOnWriteList;
-import jenkins.model.Jenkins;
-import jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration;
-import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
-import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
-import jenkins.plugins.publish_over_ssh.descriptor.BapSshPublisherPluginDescriptor;
+import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.Field;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
+import hudson.util.CopyOnWriteList;
+import jenkins.model.Jenkins;
+import jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration;
+import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
+import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
+import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin.Descriptor;
+import jenkins.plugins.publish_over_ssh.descriptor.BapSshPublisherPluginDescriptor;
+
 public class JenkinsTestHelper {
 
 	public static BapSshHostConfiguration fill(final BapSshHostConfiguration toFill, final String name,
-			final String hostname, final String username, final String encryptedPassword, final String remoteRootDir,
-			final String jumpHost, final int port, final int timeout, final boolean overrideKey, final String keyPath,
-			final String key, final boolean disableExec) {
+			final String hostname, final String encryptedPassword, final String remoteRootDir, final String jumpHost,
+			final int port, final int timeout, final boolean overrideKey, final String keyPath, final String key,
+			final boolean disableExec) {
 		toFill.setName(name);
 		toFill.setHostname(hostname);
-		toFill.setUsername(username);
 		toFill.setRemoteRootDir(remoteRootDir);
+		toFill.setUsername("");
 		toFill.setJumpHost(jumpHost);
 		toFill.setPort(port);
 		toFill.setTimeout(timeout);
@@ -63,13 +66,13 @@ public class JenkinsTestHelper {
 		return toFill;
 	}
 
-	public static BapSshHostConfiguration prepare(final String name, final String hostname, final String username,
+	public static BapSshHostConfiguration prepare(final String name, final String hostname,
 			final String encryptedPassword, final String remoteRootDir, final String jumpHost, final int port,
 			final int timeout, final boolean overrideKey, final String keyPath, final String key,
 			final boolean disableExec) {
 		BapSshHostConfiguration bapSshHostConfiguration = new BapSshHostConfiguration();
-		return fill(bapSshHostConfiguration, name, hostname, username, encryptedPassword, remoteRootDir, jumpHost, port,
-				timeout, overrideKey, keyPath, key, disableExec);
+		return fill(bapSshHostConfiguration, name, hostname, encryptedPassword, remoteRootDir, jumpHost, port, timeout,
+				overrideKey, keyPath, key, disableExec);
 	}
 
 	public void setGlobalConfig(final BapSshCommonConfiguration commonConfig,
@@ -103,8 +106,9 @@ public class JenkinsTestHelper {
 
 		public CopyOnWriteList<BapSshHostConfiguration> run() throws IllegalAccessException {
 			hostConfigurations.setAccessible(true);
-			return (CopyOnWriteList) hostConfigurations
-					.get(Jenkins.get().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class));
+			Descriptor instance = Jenkins.get().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+			assertNotNull(instance);
+			return (CopyOnWriteList) hostConfigurations.get(instance);
 		}
 	}
 
