@@ -37,6 +37,7 @@ import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.Stapler;
+import org.kohsuke.stapler.interceptor.RequirePOST;
 
 import java.io.IOException;
 
@@ -73,6 +74,7 @@ public class BapSshCredentialsDescriptor extends Descriptor<BapSshCredentials> {
         }
     }
 
+    @RequirePOST
     public FormValidation doTestConnection(@QueryParameter final String configName, @QueryParameter final String username,
                                            @QueryParameter final String encryptedPassphrase, @QueryParameter final String key,
                                            @QueryParameter final String keyPath) {

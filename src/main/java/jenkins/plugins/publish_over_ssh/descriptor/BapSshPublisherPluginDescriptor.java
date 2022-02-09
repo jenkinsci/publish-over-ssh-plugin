@@ -53,6 +53,7 @@ import jenkins.plugins.publish_over_ssh.Messages;
 import jenkins.plugins.publish_over_ssh.options.SshDefaults;
 import jenkins.plugins.publish_over_ssh.options.SshPluginDefaults;
 import net.sf.json.JSONObject;
+import org.kohsuke.stapler.interceptor.RequirePOST;
 
 @SuppressWarnings("PMD.TooManyMethods")
 public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publisher> {
@@ -190,6 +191,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
         return new jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages();
     }
 
+    @RequirePOST
     public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
         final BapSshHostConfiguration hostConfig = request.bindParameters(BapSshHostConfiguration.class, "");
         hostConfig.setCommonConfig(request.bindParameters(BapSshCommonConfiguration.class, "common."));
