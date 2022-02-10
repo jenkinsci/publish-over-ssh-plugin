@@ -35,6 +35,7 @@ import jenkins.plugins.publish_over_ssh.Messages;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.interceptor.RequirePOST;
 
 @Extension
 public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConfiguration> {
@@ -84,6 +85,7 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
         return BPValidators.validateFileOnMaster(value);
     }
 
+    @RequirePOST
     public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
         final BapSshPublisherPlugin.Descriptor pluginDescriptor;
         Jenkins j = Jenkins.getInstanceOrNull();
