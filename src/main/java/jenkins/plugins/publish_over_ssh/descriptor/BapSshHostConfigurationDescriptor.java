@@ -99,5 +99,4 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
     public jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages getCommonFieldNames() {
         return new jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages();
     }
-
 }
