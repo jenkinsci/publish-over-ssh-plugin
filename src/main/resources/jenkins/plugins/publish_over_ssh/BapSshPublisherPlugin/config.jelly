@@ -37,7 +37,7 @@
         <script type="text/javascript" src="${rootURL}/plugin/publish-over-ssh/js/pos.js" />
         <script type="text/javascript">
             <j:forEach var="config" items="${descriptor.hostConfigurations}">
-                exec_disabled['${config.name}'] = ${config.effectiveDisableExec};
+                exec_disabled["${config.name}"] = ${config.effectiveDisableExec};
             </j:forEach>
         </script>
     </st:once>
