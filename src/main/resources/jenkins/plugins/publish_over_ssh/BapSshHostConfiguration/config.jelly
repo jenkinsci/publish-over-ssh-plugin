@@ -86,7 +86,7 @@
         <f:entry title="${%proxyUser}" field="proxyUser">
             <f:textbox/>
         </f:entry>
-        <f:entry title="${%proxyPassword}" field="proxyPassword">
+        <f:entry title="${%proxyPassword}" field="secretProxyPassword">
             <f:password/>
         </f:entry>
         

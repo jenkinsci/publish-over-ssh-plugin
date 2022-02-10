@@ -29,6 +29,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import hudson.Extension;
+import hudson.ExtensionPoint;
+import hudson.init.InitMilestone;
+import hudson.init.Initializer;
+import hudson.util.Secret;
+import jenkins.plugins.publish_over.BPHostConfiguration;
+import org.apache.commons.lang.StringUtils;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
@@ -67,7 +74,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
     /** null - prevent complaints from xstream */
     @SuppressFBWarnings(value = "URF_UNREAD_FIELD")
     private transient Class hostConfigClass;
-    private final CopyOnWriteList<BapSshHostConfiguration> hostConfigurations = new CopyOnWriteList<BapSshHostConfiguration>();
+    private final CopyOnWriteList<BapSshHostConfiguration> hostConfigurations = new CopyOnWriteList<>();
     private BapSshCommonConfiguration commonConfig;
     private SshDefaults defaults;
 
@@ -101,14 +108,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
             retVal.add(current);
         }
 
-        Collections.sort(retVal, new Comparator<BapSshHostConfiguration>() {
-
-            @Override
-            public int compare(BapSshHostConfiguration p1, BapSshHostConfiguration p2) {
-                return p1.getName().compareTo(p2.getName());
-            }
-
-        });
+        Collections.sort(retVal, Comparator.comparing(BPHostConfiguration::getName));
 
         return retVal;
     }
