@@ -35,12 +35,12 @@
     <artifactId>publish-over-ssh</artifactId>
     <packaging>hpi</packaging>
     <name>Publish Over SSH</name>
-    <version>1.23</version>
+    <version>${revision}${changelist}</version>
     <description>Send build artifacts over SSH</description>
     <url>https://github.com/jenkinsci/publish-over-ssh-plugin</url>
 
     <properties>
-        <revision>1.23</revision>
+        <revision>1.24</revision>
         <changelist>-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/publish-over-ssh-plugin</gitHubRepo>
         <jenkins.version>2.263.1</jenkins.version>
@@ -117,7 +117,7 @@
         <url>https://github.com/${gitHubRepo}</url>
         <connection>scm:git:git://github.com/${gitHubRepo}.git</connection>
         <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
-        <tag>publish-over-ssh-1.23</tag>
+        <tag>${scmTag}</tag>
     </scm>
 
     <issueManagement>
