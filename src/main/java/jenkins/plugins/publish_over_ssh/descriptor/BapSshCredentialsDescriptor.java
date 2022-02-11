@@ -65,13 +65,7 @@ public class BapSshCredentialsDescriptor extends Descriptor<BapSshCredentials> {
         if (!subject.hasPermission(Item.CONFIGURE)&&subject.hasPermission(Item.EXTENDED_READ)) {
             return FormValidation.ok();
         }
-        try {
-            return Jenkins.getInstance().getRootPath().validateRelativePath(value, true, true);
-        } catch (final IOException ioe) {
-            return FormValidation.error(ioe, "");
-        } catch (final NullPointerException npe) {
-            return FormValidation.error(npe, "");
-        }
+        return FormValidation.ok();
     }
 
     @RequirePOST
