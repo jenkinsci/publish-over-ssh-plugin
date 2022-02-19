@@ -37,6 +37,7 @@ import hudson.util.Secret;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.*;
 import jenkins.plugins.publish_over_ssh.descriptor.BapSshHostConfigurationDescriptor;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -110,7 +111,11 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     @DataBoundSetter
     @Override
     public void setName(String name) {
-        super.setName(name);
+        super.setName(StringEscapeUtils.escapeJavaScript(name));
+    }
+
+    public String getName() {
+        return StringEscapeUtils.escapeJavaScript(super.getName());
     }
 
     @DataBoundSetter
