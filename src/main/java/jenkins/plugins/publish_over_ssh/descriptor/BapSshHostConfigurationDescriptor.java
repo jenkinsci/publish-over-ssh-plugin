@@ -83,7 +83,7 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
 
     @RequirePOST
     public FormValidation doCheckKeyPath(@QueryParameter final String value) {
-        Jenkins.get().checkPermission(Jenkins.ADMINISTER));
+        Jenkins.get().checkPermission(Jenkins.ADMINISTER);
         return BPValidators.validateFileOnMaster(value);
     }
 
