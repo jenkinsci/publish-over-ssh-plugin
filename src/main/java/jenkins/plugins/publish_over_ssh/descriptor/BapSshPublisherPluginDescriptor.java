@@ -193,6 +193,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 
     @RequirePOST
     public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
+        Jenkins.get().checkPermission(Jenkins.ADMINISTER);
         final BapSshHostConfiguration hostConfig = request.bindParameters(BapSshHostConfiguration.class, "");
         hostConfig.setCommonConfig(request.bindParameters(BapSshCommonConfiguration.class, "common."));
         return validateConnection(hostConfig, createDummyBuildInfo());

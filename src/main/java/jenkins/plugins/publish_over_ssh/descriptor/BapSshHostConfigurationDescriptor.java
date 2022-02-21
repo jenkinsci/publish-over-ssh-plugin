@@ -81,12 +81,16 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
         return FormValidation.validateNonNegativeInteger(value);
     }
 
+    @RequirePOST
     public FormValidation doCheckKeyPath(@QueryParameter final String value) {
+        Jenkins.get().checkPermission(Jenkins.ADMINISTER);
         return BPValidators.validateFileOnMaster(value);
     }
 
     @RequirePOST
     public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
+        Jenkins.get().checkPermission(Jenkins.ADMINISTER);
+
         final BapSshPublisherPlugin.Descriptor pluginDescriptor;
         Jenkins j = Jenkins.getInstanceOrNull();
         if(j != null) {
