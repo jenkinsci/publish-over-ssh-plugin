@@ -1,5 +1,7 @@
 # Changelog
 
+For changes since 1.14 please go to the releases section in [Github](https://github.com/jenkinsci/publish-over-ssh-plugin/releases)
+
 ## 1.14 (24/03/2016)
 
 -   [JENKINS-29360](https://issues.jenkins-ci.org/browse/JENKINS-29360) Bumped
