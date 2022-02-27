@@ -108,12 +108,6 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         return jumpHost;
     }
 
-    @DataBoundSetter
-    @Override
-    public void setName(String name) {
-        super.setName(StringEscapeUtils.escapeJavaScript(name));
-    }
-
     public String getName() {
         return StringEscapeUtils.escapeJavaScript(super.getName());
     }
