@@ -33,6 +33,7 @@ import com.jcraft.jsch.SftpException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.FilePath;
 import hudson.Util;
+import jenkins.plugins.publish_over.BPBuildEnv;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BPDefaultClient;
 import jenkins.plugins.publish_over.BapPublisherException;
@@ -61,12 +62,14 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     private final boolean disableExec;
     private ChannelSftp sftp;
 
+    private BapSshTransferCache remoteResourceCache;
+
     public BapSshClient(final BPBuildInfo buildInfo, final Session session) {
         this(buildInfo, session, false);
     }
 
     public BapSshClient(final BPBuildInfo buildInfo, final Session session, final boolean disableExec) {
-        this.buildInfo = buildInfo;        
+        this.buildInfo = buildInfo;
         this.disableExec = disableExec;
         addSession(session);
     }
@@ -103,6 +106,15 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
             if (!transfer.hasConfiguredSourceFiles() && !transfer.hasExecCommand())
                 throw new BapPublisherException(Messages.exception_badTransferConfig());
         }
+
+        BPBuildEnv buildEnv = getBuildInfo().getCurrentBuildEnv();
+        String jobName = buildEnv.getEnvVars().get(BPBuildEnv.ENV_JOB_NAME);
+
+        FilePath jobConfigPath = getBuildInfo().getConfigDir()
+          .child("jobs")
+          .child(jobName);
+
+        this.remoteResourceCache = new BapSshTransferCache(jobConfigPath);
     }
 
     public boolean changeDirectory(final String directory) {
@@ -180,9 +192,16 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
 
     public void transferFile(final BapSshTransfer bapSshTransfer, final FilePath filePath,
                              final InputStream inputStream) throws SftpException {
+
         buildInfo.printIfVerbose(Messages.console_put(filePath.getName()));
-        sftp.put(inputStream, filePath.getName());
-        success();
+        if( remoteResourceCache.checkCachedResource(filePath) ) {
+          sftp.put(inputStream, filePath.getName());
+          success();
+        }
+        else
+        {
+          buildInfo.println(Messages._console_failure( "Transfer skipped" ).toString());
+        }
     }
 
     private void success() {
@@ -194,6 +213,9 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     }
 
     public void endTransfers(final BapSshTransfer transfer) {
+        this.remoteResourceCache.save();
+        this.remoteResourceCache = null;
+
         if (!disableExec && transfer.hasExecCommand()) {
             if (transfer.isUseSftpForExec())
                 sftpExec(transfer);
