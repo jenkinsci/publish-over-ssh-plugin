@@ -40,7 +40,7 @@ public class BapSshTransferCache {
   private FilePath.FileCallable<File> callableFile;
   public BapSshTransferCache(FilePath configPath) {
     try {
-      callableFile = new FilePath.FileCallable<>() {
+      callableFile = new FilePath.FileCallable<File>() {
         @Override
         public File invoke(File file, VirtualChannel virtualChannel) throws IOException, InterruptedException {
           return file;
@@ -52,7 +52,7 @@ public class BapSshTransferCache {
       configFile = configPath.child(CACHEFILENAME).act(callableFile);
 
       ObjectMapper mapper = new ObjectMapper();
-      data = mapper.readValue(configFile, new TypeReference<>() {});
+      data = mapper.readValue(configFile, new TypeReference<HashMap<String, BapSshTransferCacheRow>>() {});
     }
     catch ( IOException | InterruptedException ex )
     {
