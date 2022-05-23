@@ -91,14 +91,14 @@ public class BapSshClientTest {
     }
 
     @Test public void testGetSession() {
-        assertEquals(mockSession, bapSshClient.getSession());        
+        assertEquals(mockSession, bapSshClient.getSession());
     }
-    
+
     @Test public void testAddSession() {
         bapSshClient.addSession(mockSession2);
         assertEquals(mockSession2, bapSshClient.getSession());
     }
-    
+
     @Test public void testChangeDirectory() throws Exception {
         testHelper.expectDirectoryCheck(DIRECTORY_PATH, true);
         mockSftp.cd(DIRECTORY_PATH);
@@ -184,7 +184,7 @@ public class BapSshClientTest {
         mockSession.disconnect();
         assertDisconnect();
     }
-    
+
     @Test public void testDisconnectNotConnected() throws Exception {
         mockControl.checkOrder(false);
         expect(mockSftp.isConnected()).andReturn(false);
@@ -312,7 +312,7 @@ public class BapSshClientTest {
 
     @Test public void testBeginTransfersFailIfNoSourceFilesWhenExecDisabled() throws Exception {
         try {
-            final BapSshClient noExecBapSshClient = new BapSshClient(buildInfo, mockSession, true);
+            final BapSshClient noExecBapSshClient = new BapSshClient(buildInfo, mockSession, true, false);
             noExecBapSshClient.setSftp(mockSftp);
             final int execTimeout = 10000;
             noExecBapSshClient.beginTransfers(new BapSshTransfer("", "", "", false, false, "something to exec", execTimeout));
@@ -385,7 +385,7 @@ public class BapSshClientTest {
     }
 
      @Test public void testEndTransfersDoesNothingIfExecDisabled() throws Exception {
-        final BapSshClient noExecBapSshClient = new BapSshClient(buildInfo, mockSession, true);
+        final BapSshClient noExecBapSshClient = new BapSshClient(buildInfo, mockSession, true, false);
         noExecBapSshClient.setSftp(mockSftp);
         final int execTimeout = 10000;
         mockControl.replay();

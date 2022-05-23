@@ -50,15 +50,12 @@
     <gitHubRepo>jenkinsci/publish-over-ssh-plugin</gitHubRepo>
     <jenkins.version>2.289.1</jenkins.version>
     <java.level>8</java.level>
-
-    <timestamp>${maven.build.timestamp}</timestamp>
-    <maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
   </properties>
 
   <artifactId>publish-over-ssh</artifactId>
     <packaging>hpi</packaging>
     <name>Publish Over SSH</name>
-    <version>${revision}${changelist}-JENKINS67693-${timestamp}</version>
+    <version>${revision}${changelist}</version>
     <description>Send build artifacts over SSH</description>
     <url>https://github.com/jenkinsci/publish-over-ssh-plugin</url>
 

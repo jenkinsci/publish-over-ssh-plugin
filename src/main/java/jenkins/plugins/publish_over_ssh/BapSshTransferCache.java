@@ -36,7 +36,7 @@ public class BapSshTransferCache {
       configFile = configPath.child(CACHEFILENAME).act(callableFile);
 
       ObjectMapper mapper = new ObjectMapper();
-      data = mapper.readValue(configFile, new TypeReference<HashMap<String, BapSshTransferCacheRow>>() {});
+      data = mapper.readValue(configFile, new TypeReference<>() {});
     }
     catch ( IOException | InterruptedException ex )
     {

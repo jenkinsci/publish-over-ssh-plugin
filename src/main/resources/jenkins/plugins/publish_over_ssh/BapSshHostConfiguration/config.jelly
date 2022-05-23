@@ -40,6 +40,9 @@
     <f:entry title="${m.remotePath()}" field="remoteRootDir">
         <f:textbox/>
     </f:entry>
+    <f:entry title="${%avoidSameFileUploads}" field="avoidSameFileUploads">
+        <f:checkbox default="${descriptor.defaultAvoidSameFileUploads}" />
+    </f:entry>
 
     <f:advanced>
 
@@ -89,7 +92,7 @@
         <f:entry title="${%proxyPassword}" field="secretProxyPassword">
             <f:password/>
         </f:entry>
-        
+
     </f:advanced>
 
     <f:validateButton title="${m.test_title()}" progress="${m.test_progress()}" method="testConnection"

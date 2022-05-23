@@ -61,16 +61,18 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     private final Stack<Session> sessions = new Stack<>();
     private final boolean disableExec;
     private ChannelSftp sftp;
+    private final boolean avoidSameFileUpload;
 
     private BapSshTransferCache remoteResourceCache;
 
     public BapSshClient(final BPBuildInfo buildInfo, final Session session) {
-        this(buildInfo, session, false);
+        this(buildInfo, session, false, false);
     }
 
-    public BapSshClient(final BPBuildInfo buildInfo, final Session session, final boolean disableExec) {
+    public BapSshClient(final BPBuildInfo buildInfo, final Session session, final boolean disableExec, final boolean avoidSameFileUpload) {
         this.buildInfo = buildInfo;
         this.disableExec = disableExec;
+        this.avoidSameFileUpload = avoidSameFileUpload;
         addSession(session);
     }
 
@@ -84,6 +86,10 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
 
     public boolean isDisableExec() {
         return disableExec;
+    }
+
+    public boolean isAvoidSameFileUpload() {
+      return avoidSameFileUpload;
     }
 
     public BPBuildInfo getBuildInfo() {
@@ -114,7 +120,8 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
           .child("jobs")
           .child(jobName);
 
-        this.remoteResourceCache = new BapSshTransferCache(jobConfigPath);
+        if( isAvoidSameFileUpload() )
+          this.remoteResourceCache = new BapSshTransferCache(jobConfigPath);
     }
 
     public boolean changeDirectory(final String directory) {
@@ -194,13 +201,13 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
                              final InputStream inputStream) throws SftpException {
 
         buildInfo.printIfVerbose(Messages.console_put(filePath.getName()));
-        if( remoteResourceCache.checkCachedResource(filePath) ) {
+        if( !isAvoidSameFileUpload() || remoteResourceCache.checkCachedResource(filePath) ) {
           sftp.put(inputStream, filePath.getName());
           success();
         }
         else
         {
-          buildInfo.println(Messages._console_failure( "Transfer skipped" ).toString());
+          buildInfo.printIfVerbose(Messages._console_warning( Messages.console_message_transferskip() ).toString());
         }
     }
 
@@ -213,8 +220,10 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     }
 
     public void endTransfers(final BapSshTransfer transfer) {
-        this.remoteResourceCache.save();
-        this.remoteResourceCache = null;
+        if( isAvoidSameFileUpload() ) {
+          remoteResourceCache.save();
+          remoteResourceCache = null;
+        }
 
         if (!disableExec && transfer.hasExecCommand()) {
             if (transfer.isUseSftpForExec())
