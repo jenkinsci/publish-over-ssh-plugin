@@ -200,14 +200,16 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     public void transferFile(final BapSshTransfer bapSshTransfer, final FilePath filePath,
                              final InputStream inputStream) throws SftpException {
 
-        buildInfo.printIfVerbose(Messages.console_put(filePath.getName()));
         if( !isAvoidSameFileUpload() || remoteResourceCache.checkCachedResource(filePath) ) {
+          buildInfo.printIfVerbose(Messages.console_put(filePath.getName()));
           sftp.put(inputStream, filePath.getName());
           success();
         }
         else
         {
-          buildInfo.printIfVerbose(Messages._console_warning( Messages.console_message_transferskip() ).toString());
+          buildInfo.println(Messages._console_warning(
+            Messages.console_message_transferskip(filePath.getName()) )
+            .toString());
         }
     }
 
