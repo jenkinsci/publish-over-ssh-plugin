@@ -61,6 +61,10 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
         return BapSshHostConfiguration.DEFAULT_TIMEOUT;
     }
 
+    public boolean getDefaultAvoidSameFileUploads() {
+      return BapSshHostConfiguration.DEFAULT_AVOID_SAME_FILES_UPLOAD;
+    }
+
     public FormValidation doCheckName(@QueryParameter final String value) {
         return BPValidators.validateName(value);
     }

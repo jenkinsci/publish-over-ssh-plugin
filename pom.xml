@@ -25,27 +25,26 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
         <version>4.19</version>
     </parent>
 
-    <artifactId>publish-over-ssh</artifactId>
+  <properties>
+    <revision>1.25</revision>
+    <changelist>-SNAPSHOT</changelist>
+    <gitHubRepo>jenkinsci/publish-over-ssh-plugin</gitHubRepo>
+    <jenkins.version>2.289.1</jenkins.version>
+    <java.level>8</java.level>
+  </properties>
+
+  <artifactId>publish-over-ssh</artifactId>
     <packaging>hpi</packaging>
     <name>Publish Over SSH</name>
     <version>${revision}${changelist}</version>
     <description>Send build artifacts over SSH</description>
     <url>https://github.com/jenkinsci/publish-over-ssh-plugin</url>
-
-    <properties>
-        <revision>1.25</revision>
-        <changelist>-SNAPSHOT</changelist>
-        <gitHubRepo>jenkinsci/publish-over-ssh-plugin</gitHubRepo>
-        <jenkins.version>2.289.1</jenkins.version>
-        <java.level>8</java.level>
-    </properties>
 
     <licenses>
         <license>
@@ -89,6 +88,11 @@
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>structs</artifactId>
         </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>2.13.0</version>
+      </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>

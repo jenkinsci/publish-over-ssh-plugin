@@ -27,7 +27,7 @@
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:poj="/pojelly">
 
     <poj:defaultMessages/>
-    
+
     <f:entry title="${m.sourceFiles()}" field="sourceFiles">
         <f:textbox default="${defaults.transfer.sourceFiles}"/>
     </f:entry>
@@ -69,5 +69,8 @@
     </f:entry>
     <f:entry title="${m.cleanRemote()}" field="cleanRemote">
         <f:checkbox default="${defaults.transfer.cleanRemote}"/>
+    </f:entry>
+    <f:entry title="${%avoidSameFileUploads}" field="avoidSameFileUploads">
+        <f:checkbox default="${defaults.transfer.avoidSameFileUploads}"/>
     </f:entry>
 </j:jelly>
