@@ -162,6 +162,7 @@ public class BapSshClientTest {
         expect(mockTransfer.isKeepFilePermissions()).andReturn(false);
         mockControl.replay();
         bapSshClient.transferFile(mockTransfer, FILE_PATH, anInputStream);
+        assertFalse(mockTransfer.isKeepFilePermissions());
         mockControl.verify();
     }
 
