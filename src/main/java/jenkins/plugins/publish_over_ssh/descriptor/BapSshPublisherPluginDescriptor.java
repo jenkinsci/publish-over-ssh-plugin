@@ -124,7 +124,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 
     /**
      * Add a Host Configuration to the list of configurations.
-     * 
+     *
      * @param configuration Host Configuration to add. The common configuration will be automatically set.
      */
     public void addHostConfiguration(final BapSshHostConfiguration configuration) {
@@ -134,7 +134,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 
     /**
      * Removes the given named Host Configuration from the list of configurations.
-     * 
+     *
      * @param name The Name of the Host Configuration to remove.
      */
     public void removeHostConfiguration(final String name) {
