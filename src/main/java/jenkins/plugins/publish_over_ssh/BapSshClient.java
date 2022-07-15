@@ -37,9 +37,11 @@ import jenkins.plugins.publish_over.BapPublisherException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.InputStream;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.io.OutputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -193,15 +195,15 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
 
     public void transferFile(final BapSshTransfer bapSshTransfer, final FilePath filePath,
                              final InputStream inputStream) throws SftpException, IOException, InterruptedException {
-        String fileName = filePath.getName();
+        final String fileName = filePath.getName();
         buildInfo.printIfVerbose(Messages.console_put(fileName));
         sftp.put(inputStream, fileName);
 
         if (bapSshTransfer.isKeepFilePermissions()) {
-          FilePath parentFle = filePath.getParent();
+          final FilePath parentFle = filePath.getParent();
           if (parentFle != null) {
-            FilePath directory = parentFle.absolutize();
-            String remoteDir = sftp.pwd();
+            final FilePath directory = parentFle.absolutize();
+            final String remoteDir = sftp.pwd();
             int directoryMode = directory.mode();
             if (directoryMode >= 0) {
               buildInfo.printIfVerbose(Messages.console_chmod(Integer.toString(directoryMode, 8), fileName));
