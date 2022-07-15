@@ -33,6 +33,7 @@ import hudson.FilePath;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BapPublisherException;
 import jenkins.plugins.publish_over_ssh.helper.BapSshTestHelper;
+import org.apache.commons.lang.SystemUtils;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import org.junit.AfterClass;
@@ -174,14 +175,15 @@ public class BapSshClientTest {
       mockSftp.put(anInputStream, tmp.getName());
       expect(mockTransfer.isKeepFilePermissions()).andReturn(true);
       expect(mockSftp.pwd()).andReturn(filePath.getName());
-      mockSftp.chmod(Objects.requireNonNull(filePath.getParent()).mode(), tmp.getName());
-      mockSftp.chmod(filePath.mode(), filePath.getName());
 
+      if (SystemUtils.IS_OS_LINUX){ //we can execute chmod only in Linux
+        mockSftp.chmod(Objects.requireNonNull(filePath.getParent()).mode(), tmp.getName());
+        mockSftp.chmod(filePath.mode(), filePath.getName());
+      }
       mockControl.replay();
       mockTransfer.setKeepFilePermissions(true);
       bapSshClient.transferFile(mockTransfer, filePath, anInputStream);
       mockControl.verify();
-
       assertTrue(tmp.delete());
     }
 
