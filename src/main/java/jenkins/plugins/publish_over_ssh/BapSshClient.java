@@ -198,23 +198,24 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         sftp.put(inputStream, fileName);
 
         if (bapSshTransfer.isKeepFilePermissions()) {
-            if(filePath.getParent() != null){
-              FilePath directory = filePath.getParent().absolutize();
-              String remoteDir = sftp.pwd();
-              int directoryMode = directory.mode();
-              if (directoryMode >= 0){
-                buildInfo.printIfVerbose(Messages.console_chmod(Integer.toString(directoryMode, 8), fileName));
-                sftp.chmod(directoryMode, remoteDir);
-                success();
-              }
+          FilePath parentFle = filePath.getParent();
+          if (parentFle != null) {
+            FilePath directory = parentFle.absolutize();
+            String remoteDir = sftp.pwd();
+            int directoryMode = directory.mode();
+            if (directoryMode >= 0) {
+              buildInfo.printIfVerbose(Messages.console_chmod(Integer.toString(directoryMode, 8), fileName));
+              sftp.chmod(directoryMode, remoteDir);
+              success();
             }
 
             int fileMode = filePath.mode();
-            if (fileMode >= 0 ) {
-                buildInfo.printIfVerbose(Messages.console_chmod(Integer.toString(fileMode, 8), fileName));
-                sftp.chmod(fileMode, fileName);
-                success();
+            if (fileMode >= 0) {
+              buildInfo.printIfVerbose(Messages.console_chmod(Integer.toString(fileMode, 8), fileName));
+              sftp.chmod(fileMode, fileName);
+              success();
             }
+          }
         }
     }
 

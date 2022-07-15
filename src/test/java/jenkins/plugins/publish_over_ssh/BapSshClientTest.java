@@ -177,7 +177,9 @@ public class BapSshClientTest {
       expect(mockSftp.pwd()).andReturn(filePath.getName());
 
       if (SystemUtils.IS_OS_LINUX){ //we can execute chmod only in Linux
-        mockSftp.chmod(Objects.requireNonNull(filePath.getParent()).mode(), tmp.getName());
+        if (filePath.getParent() != null){
+            mockSftp.chmod((filePath.getParent()).mode(), tmp.getName());
+        }
         mockSftp.chmod(filePath.mode(), filePath.getName());
       }
       mockControl.replay();
