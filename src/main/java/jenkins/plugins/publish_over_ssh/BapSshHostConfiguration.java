@@ -114,7 +114,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     }
 
     public String getName() {
-        return StringEscapeUtils.escapeJavaScript(super.getName());
+        return StringEscapeUtils.unescapeJavaScript(super.getName());
     }
 
     @DataBoundSetter
