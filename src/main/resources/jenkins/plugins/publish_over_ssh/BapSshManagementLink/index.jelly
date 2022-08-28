@@ -1,0 +1,25 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
+  xmlns:l="/lib/layout" xmlns:f="/lib/form">
+  <l:layout permission="${app.ADMINISTER}" norefresh="true" title="钉钉配置页面">
+    <st:include it="${app}" page="sidepanel.jelly"/>
+    <l:main-panel>
+      <h1>
+        <img src="${rootURL}/plugin/publish-over-ssh/images/ssh.png" style="height:32px;"/>
+        ${%title}
+      </h1>
+      <f:form action="configure" method="POST" name="dingTalkManagementLinkForm">
+        <j:scope>
+          <j:set var="descriptor" value="${it.descriptor}"/>
+          <j:set var="instance" value="${descriptor}"/>
+          <st:include it="${descriptor}" from="${descriptor}"
+            page="/jenkins/plugins/publish_over_ssh/BapSshManagementLink/config.jelly"/>
+        </j:scope>
+        <f:bottomButtonBar>
+          <f:apply value="Apply"/>
+          <f:submit value="Submit"/>
+        </f:bottomButtonBar>
+      </f:form>
+    </l:main-panel>
+  </l:layout>
+</j:jelly>
