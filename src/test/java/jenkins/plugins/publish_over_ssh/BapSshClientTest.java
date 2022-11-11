@@ -33,6 +33,7 @@ import hudson.FilePath;
 import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over.BapPublisherException;
 import jenkins.plugins.publish_over_ssh.helper.BapSshTestHelper;
+import org.apache.commons.lang.SystemUtils;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
 import org.junit.AfterClass;
@@ -43,6 +44,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Objects;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -159,10 +161,34 @@ public class BapSshClientTest {
 
     @Test public void testTransferFile() throws Exception {
         mockSftp.put(anInputStream, FILENAME);
+        expect(mockTransfer.isKeepFilePermissions()).andReturn(false).times(2);
         mockControl.replay();
         bapSshClient.transferFile(mockTransfer, FILE_PATH, anInputStream);
+        assertFalse(mockTransfer.isKeepFilePermissions());
         mockControl.verify();
     }
+
+    @Test public void testKeepPermissions() throws Exception{
+      File tmp = File.createTempFile("file","my");
+      FilePath filePath = new FilePath(tmp);
+      mockTransfer.setKeepFilePermissions(true);
+      mockSftp.put(anInputStream, tmp.getName());
+      expect(mockTransfer.isKeepFilePermissions()).andReturn(true);
+      expect(mockSftp.pwd()).andReturn(filePath.getName());
+
+      if (SystemUtils.IS_OS_LINUX){ //we can execute chmod only in Linux
+        if (filePath.getParent() != null){
+            mockSftp.chmod((filePath.getParent()).mode(), tmp.getName());
+        }
+        mockSftp.chmod(filePath.mode(), filePath.getName());
+      }
+      mockControl.replay();
+      mockTransfer.setKeepFilePermissions(true);
+      bapSshClient.transferFile(mockTransfer, filePath, anInputStream);
+      mockControl.verify();
+      assertTrue(tmp.delete());
+    }
+
 
     @Test public void testDisconnect() throws Exception {
         mockControl.checkOrder(false);
@@ -401,7 +427,7 @@ public class BapSshClientTest {
         expect(mockSession.openChannel("exec")).andReturn(exec);
         expect(mockSession.getTimeout()).andReturn(timeout);
         mockControl.replay();
-        bapSshClient.endTransfers(new BapSshTransfer("", "", "", "", false, false, command, timeout, true, false, false, null));
+        bapSshClient.endTransfers(new BapSshTransfer("", "", "", "", false, false, command, timeout, true, false, false, false, null));
         assertTrue(exec.isUsePty());
         assertFalse(exec.isUseAgentForwarding());
     }
@@ -414,13 +440,28 @@ public class BapSshClientTest {
         expect(mockSession.openChannel("exec")).andReturn(exec);
         expect(mockSession.getTimeout()).andReturn(timeout);
         mockControl.replay();
-        BapSshTransfer transfer = new BapSshTransfer("", "", "", "", false, false, command, timeout, true, false, false, null);
+        BapSshTransfer transfer = new BapSshTransfer("", "", "", "", false, false, command, timeout, true, false, false, false, null);
         transfer.setUseAgentForwarding(true);
         bapSshClient.endTransfers(transfer);
         assertTrue(exec.isUsePty());
         assertTrue(exec.isUseAgentForwarding());
     }
 
+
+    @Test public void testKeepFilePermissions() throws Exception {
+      final String command = "n/a";
+      final int timeout = 20000;
+      final int pollsBeforeClosed = 1;
+      final TestExec exec = new TestExec(command, timeout, 0, pollsBeforeClosed);
+      expect(mockSession.openChannel("exec")).andReturn(exec);
+      expect(mockSession.getTimeout()).andReturn(timeout);
+      mockControl.replay();
+      BapSshTransfer transfer = new BapSshTransfer("", "", "", "", false, false, command, timeout, true, false, false, false, null);
+      transfer.setKeepFilePermissions(true);
+      bapSshClient.endTransfers(transfer);
+      assertTrue(transfer.isKeepFilePermissions());
+
+    }
     public static class TestExec extends ChannelExec {
         private final String expectedCommand;
         private final int expectedTimeout;

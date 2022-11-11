@@ -88,6 +88,9 @@
         <f:entry title="${%useAgentForwarding}" field="useAgentForwarding">
             <f:checkbox default="${defaults.transfer.useAgentForwarding}"/>
         </f:entry>
+        <f:entry title="${%keepFilePermissions}" field="keepFilePermissions">
+            <f:checkbox default="${defaults.transfer.keepFilePermissions}"/>
+        </f:entry>
 
         <f:entry title="${%useSftpForExec}" field="useSftpForExec">
             <f:checkbox />
