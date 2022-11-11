@@ -94,7 +94,8 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     @DataBoundConstructor
     public BapSshHostConfiguration(final String name, final String hostname, final String username, final String encryptedPassword,
                                    final String remoteRootDir, final int port, final int timeout, final boolean overrideKey, final String keyPath,
-                                   final String key, final boolean disableExec, final boolean avoidSameFileUploads) {
+                                   final String key, final boolean disableExec, final boolean avoidSameFileUploads,
+                                   final String proxyHost, final int proxyPort, final String proxyUser, final String secretProxyPassword, final String proxyType) {
         // CSON: ParameterNumberCheck
         super(name, hostname, username, null, remoteRootDir, port);
         this.timeout = timeout;
@@ -102,6 +103,12 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         this.keyInfo = new BapSshKeyInfo(encryptedPassword, key, keyPath);
         this.disableExec = disableExec;
         this.avoidSameFileUploads = avoidSameFileUploads;
+        this.proxyHost = proxyHost;
+        this.proxyPort = proxyPort;
+        this.proxyUser = proxyUser;
+        this.proxyType = proxyType;
+        this.secretProxyPassword = Secret.fromString(secretProxyPassword);
+        this.proxyPassword = secretProxyPassword;
     }
 
     @DataBoundSetter
