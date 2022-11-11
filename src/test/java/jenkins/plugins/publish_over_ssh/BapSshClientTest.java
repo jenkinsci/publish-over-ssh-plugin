@@ -181,12 +181,12 @@ public class BapSshClientTest {
             mockSftp.chmod((filePath.getParent()).mode(), tmp.getName());
         }
         mockSftp.chmod(filePath.mode(), filePath.getName());
-      }
       mockControl.replay();
       mockTransfer.setKeepFilePermissions(true);
       bapSshClient.transferFile(mockTransfer, filePath, anInputStream);
       mockControl.verify();
       assertTrue(tmp.delete());
+      }
     }
 
 
