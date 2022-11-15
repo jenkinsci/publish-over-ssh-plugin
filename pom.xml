@@ -35,7 +35,7 @@
     <revision>1.25</revision>
     <changelist>-SNAPSHOT</changelist>
     <gitHubRepo>jenkinsci/publish-over-ssh-plugin</gitHubRepo>
-    <jenkins.version>2.289.1</jenkins.version>
+    <jenkins.version>2.289.3</jenkins.version>
     <java.level>8</java.level>
   </properties>
 
@@ -67,7 +67,7 @@
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
                 <artifactId>bom-2.289.x</artifactId>
-                <version>961.vf0c9f6f59827</version>
+                <version>1500.ve4d05cd32975</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
