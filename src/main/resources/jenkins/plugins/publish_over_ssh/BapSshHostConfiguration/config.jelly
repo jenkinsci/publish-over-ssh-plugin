@@ -26,75 +26,83 @@
 
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form" xmlns:poj="/pojelly">
 
-    <poj:defaultMessages/>
+  <poj:defaultMessages/>
 
-    <f:entry title="${m.name()}" field="name">
+  <f:invisibleEntry>
+    <f:entry title="ID" field="id">
+      <f:textbox/>
+    </f:entry>
+  </f:invisibleEntry>
+  <f:entry title="${m.name()}" field="name">
+    <f:textbox/>
+  </f:entry>
+  <f:entry title="${m.hostname()}" field="hostname">
+    <f:textbox/>
+  </f:entry>
+  <f:entry title="${m.username()}" field="username">
+    <f:textbox/>
+  </f:entry>
+  <f:entry title="${m.remotePath()}" field="remoteRootDir">
+    <f:textbox/>
+  </f:entry>
+  <f:entry title="${%avoidSameFileUploads}" field="avoidSameFileUploads">
+    <f:checkbox default="${descriptor.defaultAvoidSameFileUploads}"/>
+  </f:entry>
+
+  <f:advanced>
+
+    <f:optionalBlock inline="true" title="${%override.default.key}" field="overrideKey">
+      <f:entry title="${%password}" field="encryptedPassword">
+        <f:password/>
+      </f:entry>
+      <f:entry title="${%keyPath}" field="keyPath">
         <f:textbox/>
-    </f:entry>
-    <f:entry title="${m.hostname()}" field="hostname">
-        <f:textbox/>
-    </f:entry>
-    <f:entry title="${m.username()}" field="username">
-        <f:textbox/>
-    </f:entry>
-    <f:entry title="${m.remotePath()}" field="remoteRootDir">
-        <f:textbox/>
-    </f:entry>
-    <f:entry title="${%avoidSameFileUploads}" field="avoidSameFileUploads">
-        <f:checkbox default="${descriptor.defaultAvoidSameFileUploads}" />
+      </f:entry>
+      <f:entry title="${%key}" field="key">
+        <f:textarea/>
+      </f:entry>
+    </f:optionalBlock>
+
+    <f:entry title="${%jumpHost}" field="jumpHost">
+      <f:textbox default="${descriptor.defaultJumpHost}"/>
     </f:entry>
 
-    <f:advanced>
+    <f:entry title="${m.port()}" field="port">
+      <f:textbox default="${descriptor.defaultPort}"/>
+    </f:entry>
+    <f:entry title="${m.timeout()}" field="timeout">
+      <f:textbox default="${descriptor.defaultTimeout}"/>
+    </f:entry>
+    <f:entry title="${%disableExec}" field="disableExec">
+      <f:checkbox/>
+    </f:entry>
 
-        <f:optionalBlock inline="true" title="${%override.default.key}" field="overrideKey">
-            <f:entry title="${%password}" field="encryptedPassword">
-                <f:password/>
-            </f:entry>
-            <f:entry title="${%keyPath}" field="keyPath">
-                <f:textbox/>
-            </f:entry>
-            <f:entry title="${%key}" field="key">
-                <f:textarea/>
-            </f:entry>
-        </f:optionalBlock>
+    <f:entry name="proxyType" title="${%proxyType}" field="proxyType">
+      <select name="proxyType">
+        <f:option value=""></f:option>
+        <f:option selected="${instance.proxyType == 'http'}" value="http">${%proxyHTTP}</f:option>
+        <f:option selected="${instance.proxyType == 'socks4'}" value="socks4">${%proxySocks4}
+        </f:option>
+        <f:option selected="${instance.proxyType == 'socks5'}" value="socks5">${%proxySocks5}
+        </f:option>
+      </select>
+    </f:entry>
+    <f:entry title="${%proxyHost}" field="proxyHost">
+      <f:textbox/>
+    </f:entry>
+    <f:entry title="${%proxyPort}" field="proxyPort">
+      <f:textbox clazz="number"/>
+    </f:entry>
+    <f:entry title="${%proxyUser}" field="proxyUser">
+      <f:textbox/>
+    </f:entry>
+    <f:entry title="${%proxyPassword}" field="secretProxyPassword">
+      <f:password/>
+    </f:entry>
 
-        <f:entry title="${%jumpHost}" field="jumpHost">
-            <f:textbox default="${descriptor.defaultJumpHost}"/>
-        </f:entry>
+  </f:advanced>
 
-        <f:entry title="${m.port()}" field="port">
-            <f:textbox default="${descriptor.defaultPort}"/>
-        </f:entry>
-        <f:entry title="${m.timeout()}" field="timeout">
-            <f:textbox default="${descriptor.defaultTimeout}"/>
-        </f:entry>
-        <f:entry title="${%disableExec}" field="disableExec">
-            <f:checkbox/>
-        </f:entry>
-
-        <f:entry name="proxyType" title="${%proxyType}" field="proxyType">
-            <select name="proxyType">
-                <f:option value=""></f:option>
-                <f:option selected="${instance.proxyType == 'http'}" value="http">${%proxyHTTP}</f:option>
-                <f:option selected="${instance.proxyType == 'socks4'}" value="socks4">${%proxySocks4}</f:option>
-                <f:option selected="${instance.proxyType == 'socks5'}" value="socks5">${%proxySocks5}</f:option>
-            </select>
-        </f:entry>
-        <f:entry title="${%proxyHost}" field="proxyHost">
-            <f:textbox/>
-        </f:entry>
-        <f:entry title="${%proxyPort}" field="proxyPort">
-            <f:textbox clazz="number" />
-        </f:entry>
-        <f:entry title="${%proxyUser}" field="proxyUser">
-            <f:textbox/>
-        </f:entry>
-        <f:entry title="${%proxyPassword}" field="secretProxyPassword">
-            <f:password/>
-        </f:entry>
-
-    </f:advanced>
-
-    <f:validateButton title="${m.test_title()}" progress="${m.test_progress()}" method="testConnection"
-                      with="name,hostname,username,encryptedPassword,remoteRootDir,jumpHost,port,timeout,keyPath,key,overrideKey,common.encryptedPassphrase,common.key,common.keyPath,proxyType,proxyHost,proxyPort,proxyUser,proxyPassword"/>
+  <f:validateButton title="${m.test_title()}" progress="${m.test_progress()}"
+    method="testConnection"
+    with="name,hostname,username,encryptedPassword,remoteRootDir,jumpHost,port,timeout,keyPath,key,overrideKey,common.encryptedPassphrase,common.key,common.keyPath,proxyType,proxyHost,proxyPort,proxyUser,proxyPassword"/>
 </j:jelly>
