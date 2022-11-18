@@ -101,5 +101,5 @@
     </f:advanced>
 
     <f:validateButton title="${m.test_title()}" progress="${m.test_progress()}" method="testConnection"
-                      with="name,hostname,username,encryptedPassword,remoteRootDir,jumpHost,port,timeout,keyPath,key,overrideKey,common.encryptedPassphrase,common.key,common.keyPath,proxyType,proxyHost,proxyPort,proxyUser,proxyPassword"/>
+                      with="name,hostname,username,encryptedPassword,remoteRootDir,jumpHost,port,timeout,keyPath,key,overrideKey,common.encryptedPassphrase,common.key,common.keyPath,proxyType,proxyHost,proxyPort,proxyUser,secretProxyPassword"/>
 </j:jelly>

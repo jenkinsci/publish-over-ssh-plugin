@@ -45,31 +45,36 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
     private boolean usePty;
     private boolean useAgentForwarding;
     private boolean useSftpForExec;
+    private boolean keepFilePermissions;
 
     BapSshTransfer(final String sourceFiles, final String remoteDirectory, final String removePrefix,
                    final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout) {
-        this(sourceFiles, null, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, execCommand, execTimeout, false, false, false, null);
+        this(sourceFiles, null, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, execCommand, execTimeout, false, false, false, false, null);
     }
 
     public BapSshTransfer(final String sourceFiles, final String excludes, final String remoteDirectory, final String removePrefix,
                           final boolean remoteDirectorySDF, final boolean flatten, final String execCommand, final int execTimeout,
-                          final boolean usePty, final boolean noDefaultExcludes, final boolean makeEmptyDirs, final String patternSeparator) {
+                          final boolean usePty, final boolean keepFilePermissions, final boolean noDefaultExcludes, final boolean makeEmptyDirs,
+                          final String patternSeparator) {
         super(sourceFiles, excludes, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, false, noDefaultExcludes, makeEmptyDirs, patternSeparator);
         this.execCommand = execCommand;
         this.execTimeout = execTimeout;
         this.usePty = usePty;
         this.useAgentForwarding = false;
+        this.keepFilePermissions = keepFilePermissions;
     }
 
     @DataBoundConstructor
     public BapSshTransfer(final String sourceFiles, final String excludes, final String remoteDirectory, final String removePrefix,
                           final boolean remoteDirectorySDF, final boolean flatten, final boolean cleanRemote, final String execCommand, final int execTimeout,
-                          final boolean usePty, final boolean noDefaultExcludes, final boolean makeEmptyDirs, final String patternSeparator) {
+                          final boolean usePty, final boolean keepFilePermissions, final boolean noDefaultExcludes, final boolean makeEmptyDirs,
+                          final String patternSeparator) {
         super(sourceFiles, excludes, remoteDirectory, removePrefix, remoteDirectorySDF, flatten, cleanRemote, noDefaultExcludes, makeEmptyDirs, patternSeparator);
         this.execCommand = execCommand;
         this.execTimeout = execTimeout;
         this.usePty = usePty;
         this.useAgentForwarding = false;
+        this.keepFilePermissions = keepFilePermissions;
     }
 
     public String getExecCommand() { return execCommand; }
@@ -117,6 +122,15 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
         useAgentForwarding = value;
     }
 
+    public boolean isKeepFilePermissions() {
+        return keepFilePermissions;
+    }
+
+    @DataBoundSetter
+    public void setKeepFilePermissions(boolean keepFilePermissions) {
+        this.keepFilePermissions = keepFilePermissions;
+    }
+
     public BapSshTransferDescriptor getDescriptor() {
         return Jenkins.getInstance().getDescriptorByType(BapSshTransferDescriptor.class);
     }
@@ -132,7 +146,8 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
                 .append(execTimeout, that.execTimeout)
                 .append(usePty, that.usePty)
                 .append(useAgentForwarding, that.useAgentForwarding)
-                .append(useSftpForExec, that.useSftpForExec);
+                .append(useSftpForExec, that.useSftpForExec)
+                .append(keepFilePermissions, that.keepFilePermissions);
     }
 
     @Override
@@ -142,7 +157,8 @@ public class BapSshTransfer extends BPTransfer implements Describable<BapSshTran
                 .append("execTimeout", execTimeout)
                 .append("pseudoTty", usePty)
                 .append("agentForwarding", useAgentForwarding)
-                .append("useSftpForExec", useSftpForExec);
+                .append("useSftpForExec", useSftpForExec)
+                .append("keepFilePermissions", keepFilePermissions);
     }
 
     public boolean equals(final Object that) {

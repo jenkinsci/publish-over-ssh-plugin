@@ -24,11 +24,7 @@
 
 package jenkins.plugins.publish_over_ssh;
 
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpException;
+import com.jcraft.jsch.*;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.FilePath;
@@ -42,10 +38,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -198,18 +194,30 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     }
 
     public void transferFile(final BapSshTransfer bapSshTransfer, final FilePath filePath,
-                             final InputStream inputStream) throws SftpException {
+                             final InputStream inputStream) throws SftpException, IOException, InterruptedException {
+        final String fileName = filePath.getName();
+        buildInfo.printIfVerbose(Messages.console_put(fileName));
+        sftp.put(inputStream, fileName);
 
-        if( !isAvoidSameFileUpload() || remoteResourceCache.checkCachedResource(filePath) ) {
-          buildInfo.printIfVerbose(Messages.console_put(filePath.getName()));
-          sftp.put(inputStream, filePath.getName());
-          success();
-        }
-        else
-        {
-          buildInfo.println(Messages._console_warning(
-            Messages.console_message_transferskip(filePath.getName()) )
-            .toString());
+        if (bapSshTransfer.isKeepFilePermissions()) {
+          final FilePath parentFle = filePath.getParent();
+          if (parentFle != null) {
+            final FilePath directory = parentFle.absolutize();
+            final String remoteDir = sftp.pwd();
+            int directoryMode = directory.mode();
+            if (directoryMode >= 0) {
+              buildInfo.printIfVerbose(Messages.console_chmod(Integer.toString(directoryMode, 8), fileName));
+              sftp.chmod(directoryMode, remoteDir);
+              success();
+            }
+
+            int fileMode = filePath.mode();
+            if (fileMode >= 0) {
+              buildInfo.printIfVerbose(Messages.console_chmod(Integer.toString(fileMode, 8), fileName));
+              sftp.chmod(fileMode, fileName);
+              success();
+            }
+          }
         }
     }
 
