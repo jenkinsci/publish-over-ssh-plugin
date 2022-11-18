@@ -34,6 +34,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 import hudson.util.Secret;
+import java.util.UUID;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.*;
 import jenkins.plugins.publish_over_ssh.descriptor.BapSshHostConfigurationDescriptor;
@@ -64,6 +65,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
     public static final boolean DEFAULT_AVOID_SAME_FILES_UPLOAD = false;
 
+    private String id;
     private int timeout;
     private boolean overrideKey;
     private boolean disableExec;
@@ -87,6 +89,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         // business logic in there...
         super(null, null, null, null, null, 0);
         this.keyInfo = new BapSshKeyInfo(null, null, null);
+        this.id = UUID.randomUUID().toString();
     }
 
     // CSOFF: ParameterNumberCheck
@@ -102,6 +105,11 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         this.keyInfo = new BapSshKeyInfo(encryptedPassword, key, keyPath);
         this.disableExec = disableExec;
         this.avoidSameFileUploads = avoidSameFileUploads;
+        this.id = StringUtils.isEmpty(id) ? UUID.randomUUID().toString() : id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     @DataBoundSetter
@@ -499,6 +507,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     @Override
     protected ToStringBuilder addToToString(final ToStringBuilder builder) {
         return super.addToToString(builder)
+                .append("id",id)
                 .append("keyInfo", keyInfo)
                 .append("timeout", timeout)
                 .append("overrideKey", overrideKey)
