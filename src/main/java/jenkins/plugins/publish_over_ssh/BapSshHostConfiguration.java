@@ -95,7 +95,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     // CSOFF: ParameterNumberCheck
     @SuppressWarnings("PMD.ExcessiveParameterList") // DBC for you!
     @DataBoundConstructor
-    public BapSshHostConfiguration(final String name, final String hostname, final String username, final String encryptedPassword,
+    public BapSshHostConfiguration(final String id, final String name, final String hostname, final String username, final String encryptedPassword,
                                    final String remoteRootDir, final int port, final int timeout, final boolean overrideKey, final String keyPath,
                                    final String key, final boolean disableExec, final boolean avoidSameFileUploads,
                                    final String proxyHost, final int proxyPort, final String proxyUser, final String secretProxyPassword, final String proxyType) {
