@@ -44,11 +44,14 @@ public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Des
 
     private static final long serialVersionUID = 1L;
 
+    private BapSshOverrideHostname overrideHostname;
+    
     @DataBoundConstructor
     public BapSshPublisher(final String configName, final boolean verbose, final ArrayList<BapSshTransfer> transfers,
                            final boolean useWorkspaceInPromotion, final boolean usePromotionTimestamp, final BapSshRetry sshRetry,
-                           final BapSshPublisherLabel sshLabel, final BapSshCredentials sshCredentials) {
+                           final BapSshPublisherLabel sshLabel, final BapSshCredentials sshCredentials, final BapSshOverrideHostname sshOverrideHostname) {
         super(configName, verbose, transfers, useWorkspaceInPromotion, usePromotionTimestamp, sshRetry, sshLabel, sshCredentials);
+        this.overrideHostname = sshOverrideHostname;
     }
 
     public final boolean isSftpRequired() {
@@ -69,9 +72,17 @@ public class BapSshPublisher extends BapPublisher<BapSshTransfer> implements Des
     public BapSshCredentials getSshCredentials() {
         return (BapSshCredentials) getCredentials();
     }
+    
+    public BapSshOverrideHostname getSshOverrideHostname() {
+        return overrideHostname;
+    }
+    
+    public String getOverrideHostnameOrNull() {
+        return (overrideHostname == null ? null : overrideHostname.getOverrideHostname());
+    }
 
     public BapSshPublisherDescriptor getDescriptor() {
-        return Jenkins.getInstance().getDescriptorByType(BapSshPublisherDescriptor.class);
+        return Jenkins.getInstanceOrNull().getDescriptorByType(BapSshPublisherDescriptor.class);
     }
 
     public boolean equals(final Object that) {

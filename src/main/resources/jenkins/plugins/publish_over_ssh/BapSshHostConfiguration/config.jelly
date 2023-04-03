@@ -45,7 +45,7 @@
     </f:entry>
 
     <f:advanced>
-
+    
         <f:optionalBlock inline="true" title="${%override.default.key}" field="overrideKey">
             <f:entry title="${%password}" field="encryptedPassword">
                 <f:password/>

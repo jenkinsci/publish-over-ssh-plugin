@@ -263,20 +263,20 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     @Override
     public BapSshClient createClient(final BPBuildInfo buildInfo, final BapPublisher publisher) {
         if(publisher instanceof BapSshPublisher) {
-            return createClient(buildInfo, ((BapSshPublisher) publisher).isSftpRequired());
+            return createClient(buildInfo, ((BapSshPublisher) publisher).isSftpRequired(), ((BapSshPublisher) publisher).getOverrideHostnameOrNull());
         }
         throw new IllegalArgumentException("Invalid type passed to createClient");
     }
 
     @Override
     public BapSshClient createClient(final BPBuildInfo buildInfo) {
-        return createClient(buildInfo, true);
+        return createClient(buildInfo, true, null);
     }
 
-    public BapSshClient createClient(final BPBuildInfo buildInfo, final boolean connectSftp) {
+    public BapSshClient createClient(final BPBuildInfo buildInfo, final boolean connectSftp, final String overrideHostname) {
 
         final JSch ssh = createJSch();
-        String[] hosts = getHosts();
+        String[] hosts = getHosts(overrideHostname);
         Session session = createSession(buildInfo, ssh, hosts[0], getPort());
         configureAuthentication(buildInfo, ssh, session);
         final BapSshClient bapClient = new BapSshClient(buildInfo, session, isEffectiveDisableExec(), isAvoidSameFileUploads());
@@ -300,11 +300,16 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
     /**
      * create a list of hosts from the explicit stated target host and an optional list of jumphosts
+     * @param overrideHostname 
      *
      * @return list of hosts
      */
-    String[] getHosts() {
-        return HostsHelper.getHosts(getHostnameTrimmed(), jumpHost);
+    String[] getHosts(String overrideHostname) {
+    	if(overrideHostname == null) {
+    		return HostsHelper.getHosts(getHostnameTrimmed(), jumpHost);
+    	} else {
+    		return new String[] {overrideHostname};
+    	}
     }
 
     static class HostsHelper {

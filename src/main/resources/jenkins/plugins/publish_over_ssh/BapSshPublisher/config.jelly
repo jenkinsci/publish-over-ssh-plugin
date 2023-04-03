@@ -54,6 +54,9 @@
     </j:if>
 
     <f:advanced>
+    	
+    	<f:optionalProperty title="${%hostconfig.sshOverrideHostname}" field="sshOverrideHostname"/>
+    	
         <f:entry field="verbose">
             <poj:checkbox title="${m.verbose()}" default="${defaults.publisher.verbose}"/>
         </f:entry>

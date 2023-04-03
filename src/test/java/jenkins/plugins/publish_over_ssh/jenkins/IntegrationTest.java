@@ -90,7 +90,7 @@ public class IntegrationTest {
         final int execTimeout = 10000;
         final BapSshTransfer transfer = new BapSshTransfer("**/*", null, "sub-home", dirToIgnore, false, false, "", execTimeout, false, false, false, false, null);
         final BapSshPublisher publisher = new BapSshPublisher(testHostConfig.getName(), false,
-                        new ArrayList<BapSshTransfer>(Collections.singletonList(transfer)), false, false, null, null, null);
+                        new ArrayList<BapSshTransfer>(Collections.singletonList(transfer)), false, false, null, null, null, null);
         final BapSshPublisherPlugin plugin = new BapSshPublisherPlugin(
                         new ArrayList<BapSshPublisher>(Collections.singletonList(publisher)), false, false, false, "master", null);
 
