@@ -1,11 +1,11 @@
-var exec_disabled = new Array();
+var exec_disabled = [];
 
 function bap_is_exec_disabled(configName) {
     return exec_disabled[configName.value];
 }
 
 function bap_get_configName_from_publisher(publisher) {
-    return $(publisher).getElementsBySelector('.ssh-config-name')[0];
+    return publisher.querySelector('.ssh-config-name');
 }
 
 function bap_is_exec_disabled_for_publisher(publisher) {
@@ -14,16 +14,16 @@ function bap_is_exec_disabled_for_publisher(publisher) {
 }
 
 function bap_get_publisher_from_setting(setting) {
-    var transfer = $(setting).ancestors()[3];
+    var transfer = setting.parentNode.parentNode.parentNode.parentNode;
     return bap_get_publisher_from_transfer(transfer);
 }
 
 function bap_get_publisher_from_transfer(transfer) {
-    return $(transfer).ancestors()[5];
+    return transfer.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
 }
 
 function bap_get_publisher_from_configName(configName) {
-    return $(configName).ancestors()[3];
+    return configName.parentNode.parentNode.parentNode.parentNode;
 }
 
 function bap_is_exec_disabled_for_transfer(transfer) {
@@ -41,28 +41,28 @@ function bap_get_configName_qs(setting) {
 }
 
 function bap_show_row(row) {
-    row.show();
-    row.next().show();
+    row.style.display = "";
+    row.nextElementSibling.style.display = "";
 }
 
 function bap_hide_row(row) {
-    row.hide();
-    row.next().hide();
+    row.style.display = "none";
+    row.nextElementSibling.style.display = "none";
 }
 
 function bap_set_exec_control_visibility(container, show_or_hide_row) {
-    $(container).getElementsBySelector('.ssh-exec-control').each(function(sshControl) {
-        var row = sshControl.ancestors()[1];
+    container.querySelectorAll('.ssh-exec-control').forEach(function(sshControl) {
+        var row = sshControl.parentNode.parentNode;
         show_or_hide_row(row);
     });
     // hack for pty as can't get class onto a checkbox
-    $(container).getElementsBySelector('input[name="_.usePty"]').each(function(sshControl) {
-        var row = sshControl.ancestors()[1];
+    container.querySelectorAll('input[name="_.usePty"]').forEach(function(sshControl) {
+        var row = sshControl.parentNode.parentNode;
         show_or_hide_row(row);
     });
     // hack for agentForwarding as can't get class onto a checkbox
-    $(container).getElementsBySelector('input[name="_.useAgentForwarding"]').each(function(sshControl) {
-        var row = sshControl.ancestors()[1];
+    container.querySelectorAll('input[name="_.useAgentForwarding"]').forEach(function(sshControl) {
+        var row = sshControl.parentNode.parentNode;
         show_or_hide_row(row);
     });
 }
@@ -76,10 +76,10 @@ function bap_hide_exec_controls(container) {
 }
 
 function bap_blur_inputs(container) {
-    $(container).getElementsBySelector('input').each(function(inputControl) {
+    container.querySelectorAll('input').forEach(function(inputControl) {
         fireEvent(inputControl, 'change');
     });
-    $(container).getElementsBySelector('textarea').each(function(inputControl) {
+    container.querySelectorAll('textarea').forEach(function(inputControl) {
         fireEvent(inputControl, 'change');
     });
 }
