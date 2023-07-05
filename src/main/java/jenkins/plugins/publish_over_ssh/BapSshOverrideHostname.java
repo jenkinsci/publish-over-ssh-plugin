@@ -49,7 +49,7 @@ public class BapSshOverrideHostname implements Describable<BapSshOverrideHostnam
 	}
 
 	public Descriptor<BapSshOverrideHostname> getDescriptor() {
-		return Jenkins.getInstanceOrNull().getDescriptorByType(BapSshOverrideHostnameDescriptor.class);
+		return Jenkins.getInstance().getDescriptorByType(BapSshOverrideHostnameDescriptor.class);
 	}
 
 }
