@@ -125,8 +125,8 @@
     </scm>
 
     <issueManagement>
-        <system>JIRA</system>
-        <url>http://issues.jenkins-ci.org/</url>
+        <system>Github</system>
+        <url>https://github.com/jenkinsci/publish-over-ssh-plugin/issues</url>
     </issueManagement>
 
     <repositories>
