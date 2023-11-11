@@ -24,6 +24,10 @@
 
 package jenkins.plugins.publish_over_ssh.descriptor;
 
+import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.Stapler;
+import org.kohsuke.stapler.interceptor.RequirePOST;
+
 import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.model.Descriptor;
@@ -35,11 +39,6 @@ import jenkins.plugins.publish_over.BPBuildInfo;
 import jenkins.plugins.publish_over_ssh.BapSshCredentials;
 import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
-import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.Stapler;
-import org.kohsuke.stapler.interceptor.RequirePOST;
-
-import java.io.IOException;
 
 @Extension
 public class BapSshCredentialsDescriptor extends Descriptor<BapSshCredentials> {
@@ -60,9 +59,9 @@ public class BapSshCredentialsDescriptor extends Descriptor<BapSshCredentials> {
     public FormValidation doCheckKeyPath(@QueryParameter final String value) {
         AccessControlled subject = Stapler.getCurrentRequest().findAncestorObject(AbstractProject.class);
         if (subject == null) {
-            subject = Jenkins.getInstance();
+            subject = Jenkins.getInstanceOrNull();
         }
-        if (!subject.hasPermission(Item.CONFIGURE)&&subject.hasPermission(Item.EXTENDED_READ)) {
+        if (subject != null && !subject.hasPermission(Item.CONFIGURE) && subject.hasPermission(Item.EXTENDED_READ)) {
             return FormValidation.ok();
         }
         return FormValidation.ok();

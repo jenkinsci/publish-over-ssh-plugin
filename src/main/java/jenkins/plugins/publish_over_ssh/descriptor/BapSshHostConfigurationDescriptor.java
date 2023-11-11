@@ -96,7 +96,7 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
         Jenkins.get().checkPermission(Jenkins.ADMINISTER);
 
         final BapSshPublisherPlugin.Descriptor pluginDescriptor;
-        Jenkins j = Jenkins.getInstanceOrNull();
+        Jenkins j = Jenkins.getInstance();
         if(j != null) {
             pluginDescriptor = j.getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
         }
