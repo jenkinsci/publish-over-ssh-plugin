@@ -24,15 +24,20 @@
 
 package jenkins.plugins.publish_over_ssh;
 
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.ChannelSftp;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.SftpATTRS;
-import com.jcraft.jsch.SftpException;
-import hudson.FilePath;
-import jenkins.plugins.publish_over.BPBuildInfo;
-import jenkins.plugins.publish_over.BapPublisherException;
-import jenkins.plugins.publish_over_ssh.helper.BapSshTestHelper;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.apache.commons.lang.SystemUtils;
 import org.easymock.classextension.EasyMock;
 import org.easymock.classextension.IMocksControl;
@@ -41,20 +46,16 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Objects;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpATTRS;
+import com.jcraft.jsch.SftpException;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import hudson.FilePath;
+import jenkins.plugins.publish_over.BPBuildInfo;
+import jenkins.plugins.publish_over.BapPublisherException;
+import jenkins.plugins.publish_over_ssh.helper.BapSshTestHelper;
 
 @SuppressWarnings({ "PMD.SignatureDeclareThrowsException", "PMD.TooManyMethods" })
 public class BapSshClientTest {
