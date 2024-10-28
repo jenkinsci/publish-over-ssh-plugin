@@ -35,11 +35,11 @@
     
     <st:once>
         <script type="text/javascript" src="${rootURL}/plugin/publish-over-ssh/js/pos.js" />
-        <script type="text/javascript">
-            <j:forEach var="config" items="${descriptor.hostConfigurations}">
-                exec_disabled["${config.name}"] = ${config.effectiveDisableExec};
-            </j:forEach>
-        </script>
+        <j:forEach var="config" items="${descriptor.hostConfigurations}">
+            <span class="pos-host-configs-data-holder"
+                  data-config-name="${config.name}"
+                  data-effective-disable-exec="${config.effectiveDisableExec}"/>
+        </j:forEach>
     </st:once>
 
     <f:entry title='${inPromotion ? "" : "%publishers.section"}'>

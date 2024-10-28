@@ -107,3 +107,11 @@ var sshBehave = {
 };
 
 Behaviour.register(sshBehave);
+
+window.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".pos-host-configs-data-holder").forEach(function(dataHolder) {
+        const { configName, effectiveDisableExec } = dataHolder.dataset;
+
+        exec_disabled[configName] = effectiveDisableExec === "true";
+    });
+});
