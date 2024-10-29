@@ -111,11 +111,11 @@ Behaviour.register(sshBehave);
 
 function updateSourceFilesConfigName(configNameElement) {
     const parentContainer = configNameElement.closest("div[name='publishers']");
-    parentContainer.querySelectorAll(".ssh-transfer-source-files-config-name").forEach(function(hiddenField) {
+    parentContainer.querySelectorAll(".ssh-transfer-source-files-config-name").forEach(function (hiddenField) {
         hiddenField.value = configNameElement.value;
     });
 }
 
-Behaviour.specify(".ssh-transfer-source-files-config-name", "SshTransfer_syncSourceFileConfigName", 0, function(element) {
+Behaviour.specify(".ssh-transfer-source-files-config-name", "SshTransfer_syncSourceFileConfigName", 0, function (element) {
     element.value = element.closest("div[name='publishers']").querySelector("select.ssh-config-name").value;
 });
