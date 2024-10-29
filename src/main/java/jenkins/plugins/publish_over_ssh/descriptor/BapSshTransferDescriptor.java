@@ -53,26 +53,26 @@ public class BapSshTransferDescriptor extends Descriptor<BapSshTransfer> {
         return FormValidation.validateNonNegativeInteger(value);
     }
 
-    public FormValidation doCheckSourceFiles(@QueryParameter final String configName, @QueryParameter final String sourceFiles,
+    public FormValidation doCheckSourceFiles(@QueryParameter final String sourceFilesConfigName, @QueryParameter final String value,
                                              @QueryParameter final String execCommand) {
-        if (Util.fixEmptyAndTrim(configName) != null) {
+        if (Util.fixEmptyAndTrim(sourceFilesConfigName) != null) {
             final BapSshPublisherPlugin.Descriptor pluginDescriptor = Jenkins.getActiveInstance().getDescriptorByType(
                     BapSshPublisherPlugin.Descriptor.class);
-            final BapSshHostConfiguration hostConfig = pluginDescriptor.getConfiguration(configName);
+            final BapSshHostConfiguration hostConfig = pluginDescriptor.getConfiguration(sourceFilesConfigName);
             if (hostConfig == null)
-                return FormValidation.error(Messages.descriptor_sourceFiles_check_configNotFound(configName));
+                return FormValidation.error(Messages.descriptor_sourceFiles_check_configNotFound(sourceFilesConfigName));
             if (hostConfig.isEffectiveDisableExec())
-                return FormValidation.validateRequired(sourceFiles);
+                return FormValidation.validateRequired(value);
         }
-        return checkTransferSet(sourceFiles, execCommand);
+        return checkTransferSet(value, execCommand);
     }
 
     public FormValidation doCheckPatternSeparator(@QueryParameter final String value) {
         return BPValidators.validateRegularExpression(value);
     }
 
-    public FormValidation doCheckExecCommand(@QueryParameter final String sourceFiles, @QueryParameter final String execCommand) {
-        return checkTransferSet(sourceFiles, execCommand);
+    public FormValidation doCheckExecCommand(@QueryParameter final String sourceFiles, @QueryParameter final String value) {
+        return checkTransferSet(sourceFiles, value);
     }
 
     private FormValidation checkTransferSet(final String sourceFiles, final String execCommand) {
