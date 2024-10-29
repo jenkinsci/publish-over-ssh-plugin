@@ -119,3 +119,11 @@ function updateSourceFilesConfigName(configNameElement) {
 Behaviour.specify(".ssh-transfer-source-files-config-name", "SshTransfer_syncSourceFileConfigName", 0, function (element) {
     element.value = element.closest("div[name='publishers']").querySelector("select.ssh-config-name").value;
 });
+
+window.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".pos-host-configs-data-holder").forEach(function (dataHolder) {
+        const { configName, effectiveDisableExec } = dataHolder.dataset;
+
+        exec_disabled[configName] = effectiveDisableExec === "true";
+    });
+});
