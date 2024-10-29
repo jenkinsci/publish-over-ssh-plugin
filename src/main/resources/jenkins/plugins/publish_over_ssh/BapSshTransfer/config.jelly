@@ -28,8 +28,11 @@
 
     <poj:defaultMessages/>
 
+    <f:invisibleEntry>
+      <f:textbox clazz="ssh-transfer-source-files-config-name" field="sourceFilesConfigName"/>
+    </f:invisibleEntry>
     <f:entry title="${m.sourceFiles()}" field="sourceFiles" help="${descriptor.getHelpFile((inPromotion and !matrixPromotion) ? 'sourceFilesForPromotion' : 'sourceFiles')}">
-        <f:textbox checkUrl="'${rootURL}/descriptorByName/jenkins.plugins.publish_over_ssh.BapSshTransfer/checkSourceFiles'+qs(this).nearBy('sourceFiles').nearBy('execCommand').toString()+bap_get_configName_qs(this)" default="${defaults.transfer.sourceFiles}"/>
+        <f:textbox default="${defaults.transfer.sourceFiles}"/>
     </f:entry>
 
     <f:entry title="${m.removePrefix()}" field="removePrefix">
@@ -41,7 +44,7 @@
     </f:entry>
 
     <f:entry title="${%execCommand}" field="execCommand">
-        <poj:textarea checkUrl="'${rootURL}/descriptorByName/jenkins.plugins.publish_over_ssh.BapSshTransfer/checkExecCommand'+qs(this).nearBy('sourceFiles').nearBy('execCommand').toString()" minRows="1" class="ssh-exec-control" default="${defaults.transfer.execCommand}"/>
+        <f:textarea class="ssh-exec-control" default="${defaults.transfer.execCommand}"/>
     </f:entry>
 
     <f:description>
