@@ -246,7 +246,7 @@ public class LegacyConfigurationTest {
     }
 
     private static BapSshPublisher newPublisher(final String configName, final boolean verbose, final ArrayList<BapSshTransfer> transfers) {
-        return new BapSshPublisher(configName, verbose, transfers, false, false, null, null, null);
+        return new BapSshPublisher(configName, verbose, transfers, false, false, null, null, null, null);
     }
 
 }
