@@ -33,8 +33,7 @@
     </parent>
 
     <properties>
-        <revision>1.26</revision>
-        <changelist>-SNAPSHOT</changelist>
+        <changelist>999999-SNAPSHOT</changelist>
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
         <jenkins.version>2.361.4</jenkins.version>
     </properties>
@@ -42,7 +41,7 @@
   <artifactId>publish-over-ssh</artifactId>
     <packaging>hpi</packaging>
     <name>Publish Over SSH</name>
-    <version>${revision}${changelist}</version>
+    <version>${changelist}</version>
     <description>Send build artifacts over SSH</description>
     <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
 
