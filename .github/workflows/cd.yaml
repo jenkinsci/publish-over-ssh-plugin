@@ -1,0 +1,15 @@
+# Note: additional setup is required, see https://www.jenkins.io/redirect/continuous-delivery-of-plugins
+
+name: cd
+on:
+  workflow_dispatch:
+  check_run:
+    types:
+      - completed
+
+jobs:
+  maven-cd:
+    uses: jenkins-infra/github-reusable-workflows/.github/workflows/maven-cd.yml@setup # TODO main after https://github.com/jenkins-infra/github-reusable-workflows/pull/1
+    secrets:
+      MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+      MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
