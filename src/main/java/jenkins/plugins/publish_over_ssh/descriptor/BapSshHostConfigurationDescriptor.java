@@ -33,8 +33,8 @@ import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import jenkins.plugins.publish_over_ssh.Messages;
 import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 import org.kohsuke.stapler.interceptor.RequirePOST;
 
 @Extension
@@ -92,7 +92,7 @@ public class BapSshHostConfigurationDescriptor extends Descriptor<BapSshHostConf
     }
 
     @RequirePOST
-    public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
+    public FormValidation doTestConnection(final StaplerRequest2 request, final StaplerResponse2 response) {
         Jenkins.get().checkPermission(Jenkins.ADMINISTER);
 
         final BapSshPublisherPlugin.Descriptor pluginDescriptor;

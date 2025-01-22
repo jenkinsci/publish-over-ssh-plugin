@@ -58,7 +58,7 @@ public class BapSshCredentialsDescriptor extends Descriptor<BapSshCredentials> {
     }
 
     public FormValidation doCheckKeyPath(@QueryParameter final String value) {
-        AccessControlled subject = Stapler.getCurrentRequest().findAncestorObject(AbstractProject.class);
+        AccessControlled subject = Stapler.getCurrentRequest2().findAncestorObject(AbstractProject.class);
         if (subject == null) {
             subject = Jenkins.getInstance();
         }

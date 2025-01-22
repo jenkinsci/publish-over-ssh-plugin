@@ -2,6 +2,7 @@ package jenkins.plugins.publish_over_ssh;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.FilePath;
 import hudson.remoting.VirtualChannel;
 import org.jenkinsci.remoting.RoleChecker;
@@ -124,6 +125,7 @@ class BapSshTransferCacheRow {
    *
    * @param fileRef
    */
+  @SuppressFBWarnings(value = "PA_PUBLIC_PRIMITIVE_ATTRIBUTE", justification = "Backwards compatibility")
   public BapSshTransferCacheRow(File fileRef) {
     HashValue = getHashValue(fileRef);
     try {

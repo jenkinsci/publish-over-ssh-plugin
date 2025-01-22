@@ -36,8 +36,8 @@ import hudson.init.Initializer;
 import hudson.util.Secret;
 import jenkins.plugins.publish_over.BPHostConfiguration;
 import org.apache.commons.lang.StringUtils;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.StaplerRequest2;
+import org.kohsuke.stapler.StaplerResponse2;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Util;
@@ -145,7 +145,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
     }
 
     @Override
-    public boolean configure(final StaplerRequest request, final JSONObject formData) {
+    public boolean configure(final StaplerRequest2 request, final JSONObject formData) {
         final List<BapSshHostConfiguration> newConfigurations = request.bindJSONToList(BapSshHostConfiguration.class,
                                                                                                                 formData.get("instance"));
         commonConfig = request.bindJSON(BapSshCommonConfiguration.class, formData.getJSONObject("commonConfig"));
@@ -192,7 +192,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
     }
 
     @RequirePOST
-    public FormValidation doTestConnection(final StaplerRequest request, final StaplerResponse response) {
+    public FormValidation doTestConnection(final StaplerRequest2 request, final StaplerResponse2 response) {
         Jenkins.get().checkPermission(Jenkins.ADMINISTER);
         final BapSshHostConfiguration hostConfig = request.bindParameters(BapSshHostConfiguration.class, "");
         hostConfig.setCommonConfig(request.bindParameters(BapSshCommonConfiguration.class, "common."));
