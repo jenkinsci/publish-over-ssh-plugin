@@ -34,7 +34,7 @@ import java.util.Random;
 public class RandomFile {
 
     private static final int DEFAULT_FILE_SIZE = 200;
-    private static Random random = new Random();
+    private static final Random RANDOM = new Random();
 
     private final File file;
     private final byte[] contents;
@@ -51,7 +51,7 @@ public class RandomFile {
         this.file = file;
 
         contents = new byte[size];
-        random.nextBytes(contents);
+        RANDOM.nextBytes(contents);
         final File parent = file.getParentFile();
         if (!parent.exists() && !parent.mkdirs())
             throw new RuntimeException("Failed to make parent directory [" + parent.getAbsolutePath() + "]");

@@ -38,6 +38,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.FreeStyleProject;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collections;
 import jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration;
@@ -47,8 +48,7 @@ import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import jenkins.plugins.publish_over_ssh.BapSshTransfer;
 import jenkins.plugins.publish_over_ssh.BapSshUtil;
 
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.TestBuilder;
 
@@ -56,17 +56,16 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.SftpATTRS;
+import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
 
 @SuppressWarnings("PMD.SignatureDeclareThrowsException")
-public class IntegrationTest {
+@WithJenkins
+class IntegrationTest {
 
-    @Rule
-    public JenkinsRule j = new JenkinsRule();
-
-// @TODO test that we get the expected result when in a promotion
+    // @TODO test that we get the expected result when in a promotion
 
     @Test
-    public void testIntegration() throws Exception {
+    void testIntegration(JenkinsRule j) throws Exception {
         final JSch mockJsch = mock(JSch.class);
         final Session mockSession = mock(Session.class);
         final ChannelSftp mockSftp = mock(ChannelSftp.class);
@@ -77,6 +76,7 @@ public class IntegrationTest {
             public JSch createJSch() {
                 return mockJsch;
             }
+            @Serial
             @Override
             public Object readResolve() {
                 return super.readResolve();
@@ -90,9 +90,9 @@ public class IntegrationTest {
         final int execTimeout = 10000;
         final BapSshTransfer transfer = new BapSshTransfer("**/*", null, "sub-home", dirToIgnore, false, false, "", execTimeout, false, false, false, false, null);
         final BapSshPublisher publisher = new BapSshPublisher(testHostConfig.getName(), false,
-                        new ArrayList<BapSshTransfer>(Collections.singletonList(transfer)), false, false, null, null, null);
+            new ArrayList<>(Collections.singletonList(transfer)), false, false, null, null, null);
         final BapSshPublisherPlugin plugin = new BapSshPublisherPlugin(
-                        new ArrayList<BapSshPublisher>(Collections.singletonList(publisher)), false, false, false, "master", null);
+            new ArrayList<>(Collections.singletonList(publisher)), false, false, false, "master", null);
 
         final FreeStyleProject project = j.createFreeStyleProject();
         project.getPublishersList().add(plugin);
