@@ -80,7 +80,7 @@ public class JenkinsTestHelper {
         }
         final CopyOnWriteList<BapSshHostConfiguration> hostConfigurations = getHostConfigurations();
         hostConfigurations.replaceBy(newHostConfigurations);
-        Jenkins.getActiveInstance().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class).setCommonConfig(commonConfig);
+        Jenkins.get().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class).setCommonConfig(commonConfig);
     }
 
     public CopyOnWriteList<BapSshHostConfiguration> getHostConfigurations() throws NoSuchFieldException, IllegalAccessException {
@@ -94,12 +94,12 @@ public class JenkinsTestHelper {
 
     private static final class GetMeTheHostConfigurations implements PrivilegedExceptionAction<CopyOnWriteList<BapSshHostConfiguration>> {
         private final Field hostConfigurations;
-        protected GetMeTheHostConfigurations(final Field hostConfigurations) {
+        GetMeTheHostConfigurations(final Field hostConfigurations) {
             this.hostConfigurations = hostConfigurations;
         }
         public CopyOnWriteList<BapSshHostConfiguration> run() throws IllegalAccessException {
             hostConfigurations.setAccessible(true);
-            return (CopyOnWriteList) hostConfigurations.get(Jenkins.getActiveInstance().getDescriptorByType(
+            return (CopyOnWriteList<BapSshHostConfiguration>) hostConfigurations.get(Jenkins.get().getDescriptorByType(
                                                             BapSshPublisherPlugin.Descriptor.class));
         }
     }

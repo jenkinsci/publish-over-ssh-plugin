@@ -39,13 +39,13 @@ import java.util.Calendar;
 import java.util.TreeMap;
 
 import static org.easymock.EasyMock.expect;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BapSshTestHelper {
 
     public static BPBuildEnv createEmptyBuildEnv() {
-        return new BPBuildEnv(new TreeMap<String, String>(), new FilePath(new File("")), Calendar.getInstance());
+        return new BPBuildEnv(new TreeMap<>(), new FilePath(new File("")), Calendar.getInstance());
     }
 
     public static BPBuildInfo createEmpty() {
@@ -79,12 +79,10 @@ public class BapSshTestHelper {
 
     public void assertBPE(final String message, final Runnable toExec) {
         mockControl.replay();
-        try {
-            toExec.run();
-            fail();
-        } catch (BapPublisherException bpe) {
-            assertTrue(bpe.getLocalizedMessage().contains(message));
-        }
+
+        BapPublisherException bpe = assertThrows(BapPublisherException.class,
+              toExec::run);
+        assertTrue(bpe.getLocalizedMessage().contains(message));
         mockControl.verify();
     }
 
