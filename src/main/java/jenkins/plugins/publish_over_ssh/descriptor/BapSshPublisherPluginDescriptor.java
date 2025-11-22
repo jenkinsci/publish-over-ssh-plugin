@@ -113,9 +113,9 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
         return retVal;
     }
 
-    public BapSshHostConfiguration getConfiguration(final String name) {
+    public BapSshHostConfiguration getConfiguration(final String identifier) {
         for (BapSshHostConfiguration configuration : hostConfigurations) {
-            if (configuration.getName().equals(name)) {
+            if (configuration.getId().equals(identifier) || configuration.getName().equals(identifier)) {
                 return configuration;
             }
         }

@@ -34,6 +34,7 @@ import java.util.Objects;
 import java.util.Properties;
 
 import hudson.util.Secret;
+import java.util.UUID;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.*;
 import jenkins.plugins.publish_over_ssh.descriptor.BapSshHostConfigurationDescriptor;
@@ -64,6 +65,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
     public static final boolean DEFAULT_AVOID_SAME_FILES_UPLOAD = false;
 
+    private String id;
     private int timeout;
     private boolean overrideKey;
     private boolean disableExec;
@@ -87,12 +89,13 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         // business logic in there...
         super(null, null, null, null, null, 0);
         this.keyInfo = new BapSshKeyInfo(null, null, null);
+        this.id = UUID.randomUUID().toString();
     }
 
     // CSOFF: ParameterNumberCheck
     @SuppressWarnings("PMD.ExcessiveParameterList") // DBC for you!
     @DataBoundConstructor
-    public BapSshHostConfiguration(final String name, final String hostname, final String username, final String encryptedPassword,
+    public BapSshHostConfiguration(final String id, final String name, final String hostname, final String username, final String encryptedPassword,
                                    final String remoteRootDir, final int port, final int timeout, final boolean overrideKey, final String keyPath,
                                    final String key, final boolean disableExec, final boolean avoidSameFileUploads,
                                    final String proxyHost, final int proxyPort, final String proxyUser, final String secretProxyPassword, final String proxyType) {
@@ -109,6 +112,11 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         this.proxyType = proxyType;
         this.secretProxyPassword = Secret.fromString(secretProxyPassword);
         this.proxyPassword = secretProxyPassword;
+        this.id = StringUtils.isEmpty(id) ? UUID.randomUUID().toString() : id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     @DataBoundSetter
@@ -506,6 +514,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     @Override
     protected ToStringBuilder addToToString(final ToStringBuilder builder) {
         return super.addToToString(builder)
+                .append("id",id)
                 .append("keyInfo", keyInfo)
                 .append("timeout", timeout)
                 .append("overrideKey", overrideKey)
