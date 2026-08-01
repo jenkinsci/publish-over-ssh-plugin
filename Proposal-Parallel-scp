@@ -1,0 +1,20 @@
+I worked on a large project with over 70 war files, and developed a simple pipeline script that would do scp to our target environments in parallel, but it was difficult to maintain.
+My proposal is to add a parallel scp capability and add the necessary parameters as well.
+
+My initial thought is that the user would provide a relative "root" for the workspace and filename pattern to search that "root" for - *.jar, *.war, *.ear or whatever.
+A list of all files found would be created from this search.
+The user would set the number of parallel scp sessions.
+The user would set the remote path to place the files.
+
+After the build, the plugin would then start threads -- one for each csp session indicated as above.
+Each thread would grab a file path from the list, mark it as "in progess" and begin the scp transfer.
+Upon successful transfer, the file path in the list is marked "complete" and another file will be selected from the list of unsent files.
+When no files are in the "unsent" or "in progess" state, the scp transfers are complete.
+
+Errors in reading the artifact would result in an "error" indicator in the file path of the list of all files to be sent.
+All transfers will be logged.
+
+There's probably some things I forgot, but let me know what you think.
+
+Regards,
+Chuck chuckschwing@proton.me
