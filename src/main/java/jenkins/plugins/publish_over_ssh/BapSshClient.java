@@ -198,7 +198,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
         final String fileName = filePath.getName();
         if (isAvoidSameFileUpload() && remoteResourceCache != null
                 && !remoteResourceCache.checkCachedResource(filePath)) {
-            buildInfo.println(Messages._console_warning(Messages.console_message_transferskip(fileName)).toString());
+            buildInfo.println(Messages.console_warning(Messages.console_message_transferskip(fileName)));
             return;
         }
 

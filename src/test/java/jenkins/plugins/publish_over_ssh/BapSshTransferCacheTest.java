@@ -28,6 +28,11 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import hudson.FilePath;
 import hudson.model.Computer;
@@ -35,6 +40,7 @@ import hudson.remoting.VirtualChannel;
 import hudson.slaves.DumbSlave;
 import java.io.IOException;
 import java.io.Serial;
+import java.util.HashMap;
 import jenkins.security.MasterToSlaveCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -80,6 +86,24 @@ class BapSshTransferCacheTest {
     }
 
     @Test
+    void runtimeCacheFailuresDoNotFailTransfer() throws Exception {
+        final FilePath cacheDirectory = mock(FilePath.class);
+        final FilePath cacheFile = mock(FilePath.class);
+        when(cacheDirectory.child("remoteResourceCache.json")).thenReturn(cacheFile);
+        doReturn(new HashMap<String, BapSshTransferCacheRow>())
+                .doThrow(new SecurityException("save denied"))
+                .when(cacheFile)
+                .act(anyFileCallable());
+
+        final BapSshTransferCache cache = new BapSshTransferCache(cacheDirectory);
+        final FilePath source = mock(FilePath.class);
+        doThrow(new SecurityException("read denied")).when(source).act(anyFileCallable());
+
+        assertTrue(cache.checkCachedResource(source));
+        assertDoesNotThrow(cache::save);
+    }
+
+    @Test
     void cacheOnControllerCanBeUsedWhilePublishingOnAgent(final JenkinsRule j) throws Exception {
         final FilePath controllerRoot = j.jenkins.getRootPath();
         assertNotNull(controllerRoot);
@@ -121,5 +145,10 @@ class BapSshTransferCacheTest {
             cache.save();
             return shouldUpload;
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> FilePath.FileCallable<T> anyFileCallable() {
+        return (FilePath.FileCallable<T>) any(FilePath.FileCallable.class);
     }
 }

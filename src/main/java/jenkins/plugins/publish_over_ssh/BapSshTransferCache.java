@@ -40,7 +40,7 @@ public class BapSshTransferCache {
             if (data == null) {
                 data = new HashMap<>();
             }
-        } catch (IOException ex) {
+        } catch (IOException | RuntimeException ex) {
             LOGGER.log(Level.WARNING, "Unable to read the Publish Over SSH transfer cache; all files will be uploaded", ex);
             data = new HashMap<>();
         } catch (InterruptedException ex) {
@@ -54,7 +54,7 @@ public class BapSshTransferCache {
     public void save() {
         try {
             configFile.act(new WriteCache(data));
-        } catch (IOException ex) {
+        } catch (IOException | RuntimeException ex) {
             LOGGER.log(Level.WARNING, "Unable to save the Publish Over SSH transfer cache", ex);
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
@@ -77,7 +77,7 @@ public class BapSshTransferCache {
                 return true;
             }
             return cached.mustUpdateWith(resource);
-        } catch (IOException ex) {
+        } catch (IOException | RuntimeException ex) {
             LOGGER.log(Level.WARNING, "Unable to check the Publish Over SSH transfer cache; uploading the file", ex);
             return true;
         } catch (InterruptedException ex) {
