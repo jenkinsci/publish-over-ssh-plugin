@@ -28,6 +28,11 @@
 
     <poj:defaultMessages/>
 
+    <f:invisibleEntry>
+      <f:entry title="ID" field="id">
+        <f:textbox/>
+      </f:entry>
+    </f:invisibleEntry>
     <f:entry title="${m.name()}" field="name">
         <f:textbox/>
     </f:entry>
