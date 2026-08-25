@@ -29,6 +29,8 @@ import hudson.Util;
 import hudson.model.Describable;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Properties;
@@ -57,6 +59,8 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     public static final int DEFAULT_TIMEOUT = 300000;
     public static final String CONFIG_KEY_PREFERRED_AUTHENTICATIONS = "PreferredAuthentications";
     private static final Log LOG = LogFactory.getLog(BapSshHostConfiguration.class);
+    private static final String EFFECTIVE_DISABLE_EXEC_CONTEXT_KEY =
+            BapSshHostConfiguration.class.getName() + ".effectiveDisableExec";
     public static final String DEFAULT_JUMP_HOST = "";
     public static final String HTTP_PROXY_TYPE = "http";
     public static final String SOCKS_4_PROXY_TYPE = "socks4";
@@ -70,6 +74,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     private boolean disableExec;
 
     private final BapSshKeyInfo keyInfo;
+    private BapSshCommonConfiguration compatibleCommonConfig;
     private String jumpHost;
 
     private String proxyType;
@@ -252,6 +257,28 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         this.sftpPipelineDepth = sftpPipelineDepth;
     }
 
+    // publish-over changed the erased signature of these accessors, so keep a concrete bridge for mixed versions.
+    @Override
+    public BapSshCommonConfiguration getCommonConfig() {
+        return compatibleCommonConfig;
+    }
+
+    @Override
+    public void setCommonConfig(final BapSshCommonConfiguration commonConfig) {
+        compatibleCommonConfig = commonConfig;
+        synchronizeInheritedCommonConfig(commonConfig);
+    }
+
+    private void synchronizeInheritedCommonConfig(final BapSshCommonConfiguration commonConfig) {
+        try {
+            final Field inheritedCommonConfig = BPHostConfiguration.class.getDeclaredField("commonConfig");
+            inheritedCommonConfig.setAccessible(true);
+            inheritedCommonConfig.set(this, commonConfig);
+        } catch (ReflectiveOperationException exception) {
+            throw new IllegalStateException("Failed to synchronize the publish-over common configuration", exception);
+        }
+    }
+
     @Override
     public Object readResolve() {
         if(StringUtils.isNotEmpty(proxyPassword)) {
@@ -282,6 +309,21 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         return overrideKey ? keyInfo : getCommonConfig();
     }
 
+    void preloadAuthentication(final BPBuildInfo buildInfo, final BapSshPublisher publisher,
+                               final BapSshCommonConfiguration commonConfiguration) {
+        buildInfo.put(EFFECTIVE_DISABLE_EXEC_CONTEXT_KEY,
+                disableExec || commonConfiguration != null && commonConfiguration.isDisableAllExec());
+        final BapSshCredentials publisherCredentials = publisher.getSshCredentials();
+        if (publisherCredentials != null) {
+            publisherCredentials.preloadAuthentication(buildInfo);
+            return;
+        }
+        final BapSshKeyInfo effectiveKeyInfo = overrideKey ? keyInfo : commonConfiguration;
+        if (effectiveKeyInfo != null) {
+            effectiveKeyInfo.preloadAuthentication(buildInfo);
+        }
+    }
+
     @Override
     public BapSshClient createClient(final BPBuildInfo buildInfo, final BapPublisher publisher) {
         if(publisher instanceof BapSshPublisher) {
@@ -301,7 +343,8 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         String[] hosts = getHosts();
         Session session = createSession(buildInfo, ssh, hosts[0], getPort());
         configureAuthentication(buildInfo, ssh, session);
-        final BapSshClient bapClient = new BapSshClient(buildInfo, session, isEffectiveDisableExec(), isAvoidSameFileUploads());
+        final BapSshClient bapClient = new BapSshClient(
+                buildInfo, session, isEffectiveDisableExec(buildInfo), isAvoidSameFileUploads());
         try {
             connect(buildInfo, session);
             for (int i = 1; i < hosts.length; i++) {
@@ -345,13 +388,35 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     }
 
     private void configureAuthentication(final BPBuildInfo buildInfo, final JSch ssh, Session session) {
+        if (BapSshKeyInfo.hasPreloadedAuthentication(buildInfo)) {
+            configurePreloadedAuthentication(buildInfo, ssh, session);
+            return;
+        }
         final BapSshKeyInfo keyInfo = getEffectiveKeyInfo(buildInfo);
         final Properties sessionProperties = getSessionProperties();
+        buildInfo.println(Messages.console_authentication(
+                keyInfo.useKey() ? "publickey" : "password", keyInfo.getAuthenticationSource(buildInfo)));
         if (keyInfo.useKey()) {
             setKey(buildInfo, ssh, keyInfo);
             sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "publickey");
         } else {
-            session.setPassword(Util.fixNull(keyInfo.getPassphrase()));
+            session.setPassword(Util.fixNull(keyInfo.getEffectivePassphrase(buildInfo)));
+            sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "keyboard-interactive,password");
+        }
+        session.setConfig(sessionProperties);
+    }
+
+    private void configurePreloadedAuthentication(final BPBuildInfo buildInfo, final JSch ssh, final Session session) {
+        final boolean useKey = BapSshKeyInfo.usePreloadedKey(buildInfo);
+        buildInfo.println(Messages.console_authentication(
+                useKey ? "publickey" : "password", BapSshKeyInfo.getPreloadedAuthenticationSource(buildInfo)));
+        final Properties sessionProperties = getSessionProperties();
+        if (useKey) {
+            setKey(ssh, BapSshKeyInfo.getPreloadedKey(buildInfo),
+                    BapSshKeyInfo.getPreloadedPassphrase(buildInfo));
+            sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "publickey");
+        } else {
+            session.setPassword(Util.fixNull(BapSshKeyInfo.getPreloadedPassphrase(buildInfo)));
             sessionProperties.put(CONFIG_KEY_PREFERRED_AUTHENTICATIONS, "keyboard-interactive,password");
         }
         session.setConfig(sessionProperties);
@@ -374,11 +439,22 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     }
 
     private void setKey(final BPBuildInfo buildInfo, final JSch ssh, final BapSshKeyInfo keyInfo) {
+        setKey(ssh, keyInfo.getEffectiveKey(buildInfo), keyInfo.getEffectivePassphrase(buildInfo));
+    }
+
+    private void setKey(final JSch ssh, final byte[] key, final String passphrase) {
         try {
-            ssh.addIdentity("TheKey", keyInfo.getEffectiveKey(buildInfo), null, BapSshUtil.toBytes(keyInfo.getPassphrase()));
+            ssh.addIdentity("TheKey", key, null, BapSshUtil.toBytes(passphrase));
         } catch (JSchException jsche) {
             throw new BapPublisherException(Messages.exception_addIdentity(jsche.getLocalizedMessage()), jsche);
         }
+    }
+
+    private boolean isEffectiveDisableExec(final BPBuildInfo buildInfo) {
+        final Serializable preloadedDisableExec = buildInfo.get(EFFECTIVE_DISABLE_EXEC_CONTEXT_KEY);
+        return preloadedDisableExec instanceof Boolean
+                ? (Boolean) preloadedDisableExec
+                : isEffectiveDisableExec();
     }
 
     private void setRootDirectoryInClient(final BapSshClient client, final ChannelSftp sftp) throws IOException {

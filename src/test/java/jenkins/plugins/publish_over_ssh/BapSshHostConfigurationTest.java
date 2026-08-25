@@ -31,6 +31,7 @@ import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.isNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -40,6 +41,7 @@ import hudson.model.TaskListener;
 
 import java.io.File;
 import java.io.Serial;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -116,6 +118,24 @@ class BapSshHostConfigurationTest {
     @Test
     void testCreateClientWithOverridePassword() throws Exception {
         assertCreateWithDefaultInfo(null);
+    }
+
+    @Test
+    void commonConfigurationAccessorsProvideTheLegacyObjectBridge() throws Exception {
+        final BapSshHostConfiguration configuration = new BapSshHostConfiguration();
+        final BapSshCommonConfiguration expected = new BapSshCommonConfiguration("password", "key", "", false);
+        final Method objectSetter = BapSshHostConfiguration.class.getDeclaredMethod("setCommonConfig", Object.class);
+        final Method objectGetter = Arrays.stream(BapSshHostConfiguration.class.getDeclaredMethods())
+                .filter(method -> method.getName().equals("getCommonConfig"))
+                .filter(method -> method.getReturnType().equals(Object.class))
+                .findFirst()
+                .orElseThrow();
+
+        assertTrue(objectSetter.isBridge());
+        assertTrue(objectGetter.isBridge());
+        objectSetter.invoke(configuration, expected);
+        assertSame(expected, objectGetter.invoke(configuration));
+        assertSame(expected, configuration.getCommonConfig());
     }
 
     private BapSshClient assertCreateWithDefaultInfo(final String responseFromPwd) throws JSchException, SftpException {

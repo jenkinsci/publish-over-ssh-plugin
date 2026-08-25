@@ -196,6 +196,12 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     public void transferFile(final BapSshTransfer bapSshTransfer, final FilePath filePath,
                              final InputStream inputStream) throws SftpException, IOException, InterruptedException {
         final String fileName = filePath.getName();
+        if (isAvoidSameFileUpload() && remoteResourceCache != null
+                && !remoteResourceCache.checkCachedResource(filePath)) {
+            buildInfo.println(Messages.console_warning(Messages.console_message_transferskip(fileName)));
+            return;
+        }
+
         buildInfo.printIfVerbose(Messages.console_put(fileName));
         sftp.put(inputStream, fileName);
 
@@ -230,7 +236,7 @@ public class BapSshClient extends BPDefaultClient<BapSshTransfer> {
     }
 
     public void endTransfers(final BapSshTransfer transfer) {
-        if( isAvoidSameFileUpload() ) {
+        if (remoteResourceCache != null) {
           remoteResourceCache.save();
           remoteResourceCache = null;
         }

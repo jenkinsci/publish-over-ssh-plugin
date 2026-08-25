@@ -82,6 +82,7 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
     public BapSshPublisherPluginDescriptor() {
         super(BapSshPublisherPlugin.class);
         load();
+        synchronizeCommonConfiguration();
         if (defaults == null)
             defaults = new SshPluginDefaults();
     }
@@ -235,9 +236,16 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
         msg = null;
         commonConfigClass = null;
         hostConfigClass = null;
+        synchronizeCommonConfiguration();
         if (defaults == null)
             defaults = new SshPluginDefaults();
         return this;
+    }
+
+    private void synchronizeCommonConfiguration() {
+        for (BapSshHostConfiguration hostConfiguration : hostConfigurations) {
+            hostConfiguration.setCommonConfig(commonConfig);
+        }
     }
 
 }
