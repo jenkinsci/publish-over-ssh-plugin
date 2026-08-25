@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_ssh.descriptor;
 
+import org.kohsuke.accmod.restrictions.suppressions.SuppressRestrictedWarnings;
 import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.model.Descriptor;
@@ -89,6 +90,7 @@ public class BapSshCredentialsDescriptor extends Descriptor<BapSshCredentials> {
         return BapSshPublisherPluginDescriptor.validateConnection(hostConfig, buildInfo);
     }
 
+    @SuppressRestrictedWarnings(jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages.class)
     public jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages getCommonFieldNames() {
         return new jenkins.plugins.publish_over.view_defaults.HostConfiguration.Messages();
     }

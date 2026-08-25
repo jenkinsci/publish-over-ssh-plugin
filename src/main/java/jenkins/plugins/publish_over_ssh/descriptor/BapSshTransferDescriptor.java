@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_ssh.descriptor;
 
+import org.kohsuke.accmod.restrictions.suppressions.SuppressRestrictedWarnings;
 import hudson.Extension;
 import hudson.Util;
 import hudson.model.Descriptor;
@@ -87,6 +88,7 @@ public class BapSshTransferDescriptor extends Descriptor<BapSshTransfer> {
         return false;
     }
 
+    @SuppressRestrictedWarnings(jenkins.plugins.publish_over.view_defaults.BPTransfer.Messages.class)
     public jenkins.plugins.publish_over.view_defaults.BPTransfer.Messages getCommonFieldNames() {
         return new jenkins.plugins.publish_over.view_defaults.BPTransfer.Messages();
     }

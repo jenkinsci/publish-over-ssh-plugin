@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_ssh.options;
 
+import org.kohsuke.accmod.restrictions.suppressions.SuppressRestrictedWarnings;
 import hudson.Extension;
 import jenkins.plugins.publish_over.options.GlobalDefaults;
 import jenkins.plugins.publish_over.options.InstanceConfigOptions;
@@ -78,6 +79,7 @@ public final class SshPluginDefaults extends SshDefaults {
     @Extension
     public static final class SshPluginDefaultsDescriptor extends SshDefaultsDescriptor {
 
+        @SuppressRestrictedWarnings(jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages.class)
         @Override
         public String getDisplayName() {
             return Messages.defaults_pluginDefaults();

@@ -39,12 +39,12 @@ import hudson.util.Secret;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over.*;
 import jenkins.plugins.publish_over_ssh.descriptor.BapSshHostConfigurationDescriptor;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.text.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -128,7 +128,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     }
 
     public String getName() {
-        return StringEscapeUtils.unescapeJavaScript(super.getName());
+        return StringEscapeUtils.unescapeEcmaScript(super.getName());
     }
 
     @DataBoundSetter
@@ -288,8 +288,19 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         return super.readResolve();
     }
 
+    @Override
+    public BapSshCommonConfiguration getCommonConfig() {
+        return super.getCommonConfig();
+    }
+
+    @Override
+    public void setCommonConfig(final BapSshCommonConfiguration commonConfig) {
+        super.setCommonConfig(commonConfig);
+    }
+
     public boolean isEffectiveDisableExec() {
-        return getCommonConfig().isDisableAllExec() || disableExec;
+        final BapSshCommonConfiguration commonConfig = getCommonConfig();
+        return (commonConfig != null && commonConfig.isDisableAllExec()) || disableExec;
     }
 
     private BapSshKeyInfo getEffectiveKeyInfo(final BPBuildInfo buildInfo) {

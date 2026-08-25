@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_ssh.descriptor;
 
+import org.kohsuke.accmod.restrictions.suppressions.SuppressRestrictedWarnings;
 import hudson.Extension;
 import hudson.model.Descriptor;
 import jenkins.model.Jenkins;
@@ -52,6 +53,7 @@ public class BapSshPublisherDescriptor extends Descriptor<BapSshPublisher> {
         return Jenkins.getActiveInstance().getDescriptorByType(BapSshTransferDescriptor.class);
     }
 
+    @SuppressRestrictedWarnings(jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages.class)
     public jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages getCommonFieldNames() {
         return new jenkins.plugins.publish_over.view_defaults.BapPublisher.Messages();
     }

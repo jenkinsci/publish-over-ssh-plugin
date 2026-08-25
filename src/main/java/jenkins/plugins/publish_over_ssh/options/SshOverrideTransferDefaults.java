@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_ssh.options;
 
+import org.kohsuke.accmod.restrictions.suppressions.SuppressRestrictedWarnings;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
@@ -158,6 +159,7 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
             return FormValidation.validateNonNegativeInteger(value);
         }
 
+        @SuppressRestrictedWarnings(jenkins.plugins.publish_over.view_defaults.BPTransfer.Messages.class)
         public jenkins.plugins.publish_over.view_defaults.BPTransfer.Messages getCommonFieldNames() {
             return new jenkins.plugins.publish_over.view_defaults.BPTransfer.Messages();
         }

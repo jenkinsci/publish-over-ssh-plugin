@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_ssh.options;
 
+import org.kohsuke.accmod.restrictions.suppressions.SuppressRestrictedWarnings;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
@@ -57,6 +58,7 @@ public class SshOverrideParamPublishDefaults implements ParamPublishOptions, Des
             return "SshOverrideParamPublishDefaultsDescriptor - not visible ...";
         }
 
+        @SuppressRestrictedWarnings(jenkins.plugins.publish_over.view_defaults.ParamPublish.Messages.class)
         public jenkins.plugins.publish_over.view_defaults.ParamPublish.Messages getCommonFieldNames() {
             return new jenkins.plugins.publish_over.view_defaults.ParamPublish.Messages();
         }

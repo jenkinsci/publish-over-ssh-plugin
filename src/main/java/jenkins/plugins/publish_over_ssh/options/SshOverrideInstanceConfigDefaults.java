@@ -24,6 +24,7 @@
 
 package jenkins.plugins.publish_over_ssh.options;
 
+import org.kohsuke.accmod.restrictions.suppressions.SuppressRestrictedWarnings;
 import hudson.Extension;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
@@ -69,6 +70,7 @@ public class SshOverrideInstanceConfigDefaults implements InstanceConfigOptions,
             return "SshOverrideInstanceConfigDefaultsDescriptor - not visible ...";
         }
 
+        @SuppressRestrictedWarnings(jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages.class)
         public jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages getCommonFieldNames() {
             return new jenkins.plugins.publish_over.view_defaults.BPInstanceConfig.Messages();
         }
