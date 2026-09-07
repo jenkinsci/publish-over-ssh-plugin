@@ -30,8 +30,6 @@ import hudson.model.Describable;
 import hudson.model.Descriptor;
 import hudson.util.FormValidation;
 import jenkins.model.Jenkins;
-import org.kohsuke.accmod.Restricted;
-import org.kohsuke.accmod.restrictions.NoExternalUse;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -126,7 +124,6 @@ public class SshOverrideTransferDefaults implements SshTransferOptions, Describa
     }
 
     @DataBoundSetter
-    @Restricted(value = NoExternalUse.class)
     public void setUseAgentForwarding(boolean value) {
         useAgentForwarding = value;
     }

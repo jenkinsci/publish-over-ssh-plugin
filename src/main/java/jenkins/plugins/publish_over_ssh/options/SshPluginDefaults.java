@@ -33,6 +33,7 @@ import jenkins.plugins.publish_over.options.PublisherLabelOptions;
 import jenkins.plugins.publish_over.options.PublisherOptions;
 import jenkins.plugins.publish_over.options.RetryOptions;
 import jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import java.lang.reflect.Proxy;
@@ -77,6 +78,7 @@ public final class SshPluginDefaults extends SshDefaults {
     }
 
     @Extension
+    @Symbol("pluginDefaults")
     public static final class SshPluginDefaultsDescriptor extends SshDefaultsDescriptor {
 
         @SuppressRestrictedWarnings(jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages.class)

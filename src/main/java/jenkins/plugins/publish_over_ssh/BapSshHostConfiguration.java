@@ -97,7 +97,7 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
     public BapSshHostConfiguration(final String name, final String hostname, final String username, final String encryptedPassword,
                                    final String remoteRootDir, final int port, final int timeout, final boolean overrideKey, final String keyPath,
                                    final String key, final boolean disableExec, final boolean avoidSameFileUploads,
-                                   final String proxyHost, final int proxyPort, final String proxyUser, final String secretProxyPassword, final String proxyType) {
+                                   final String proxyHost, final int proxyPort, final String proxyUser, final Secret secretProxyPassword, final String proxyType) {
         // CSON: ParameterNumberCheck
         super(name, hostname, username, null, remoteRootDir, port);
         this.timeout = timeout;
@@ -109,8 +109,23 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         this.proxyPort = proxyPort;
         this.proxyUser = proxyUser;
         this.proxyType = proxyType;
-        this.secretProxyPassword = Secret.fromString(secretProxyPassword);
-        this.proxyPassword = secretProxyPassword;
+        this.secretProxyPassword = secretProxyPassword;
+    }
+
+    /**
+     * @deprecated use {@link #BapSshHostConfiguration(String, String, String, String, String, int, int, boolean, String,
+     * String, boolean, boolean, String, int, String, Secret, String)}
+     */
+    // CSOFF: ParameterNumberCheck
+    @Deprecated
+    @SuppressWarnings("PMD.ExcessiveParameterList")
+    public BapSshHostConfiguration(final String name, final String hostname, final String username, final String encryptedPassword,
+                                   final String remoteRootDir, final int port, final int timeout, final boolean overrideKey, final String keyPath,
+                                   final String key, final boolean disableExec, final boolean avoidSameFileUploads,
+                                   final String proxyHost, final int proxyPort, final String proxyUser, final String secretProxyPassword, final String proxyType) {
+        // CSON: ParameterNumberCheck
+        this(name, hostname, username, encryptedPassword, remoteRootDir, port, timeout, overrideKey, keyPath, key, disableExec,
+                avoidSameFileUploads, proxyHost, proxyPort, proxyUser, Secret.fromString(secretProxyPassword), proxyType);
     }
 
     @DataBoundSetter
@@ -201,6 +216,10 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
 
     public String getProxyUser() { return proxyUser; }
 
+    /**
+     * @deprecated use {@link #getSecretProxyPassword()}
+     */
+    @Deprecated
     public String getProxyPassword() {
         return Secret.toString(this.secretProxyPassword);
     }
@@ -229,7 +248,10 @@ public class BapSshHostConfiguration extends BPHostConfiguration<BapSshClient, B
         this.proxyUser = proxyUser;
     }
 
-    @DataBoundSetter
+    /**
+     * @deprecated use {@link #setSecretProxyPassword(Secret)}
+     */
+    @Deprecated
     public void setProxyPassword(String proxyPassword) {
         this.secretProxyPassword = Secret.fromString(proxyPassword);
     }

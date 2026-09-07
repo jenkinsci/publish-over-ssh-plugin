@@ -32,6 +32,7 @@ import jenkins.plugins.publish_over.options.PublisherLabelOptions;
 import jenkins.plugins.publish_over.options.PublisherOptions;
 import jenkins.plugins.publish_over.options.RetryOptions;
 import jenkins.plugins.publish_over.view_defaults.manage_jenkins.Messages;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 public class SshOverrideDefaults extends SshDefaults {
@@ -108,6 +109,7 @@ public class SshOverrideDefaults extends SshDefaults {
     }
 
     @Extension
+    @Symbol("overrideDefaults")
     public static class SshOverrideDefaultsDescriptor extends SshDefaultsDescriptor {
 
         private static final SshPluginDefaults PLUGIN_DEFAULTS = new SshPluginDefaults();

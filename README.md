@@ -161,6 +161,89 @@ on the server you want to connect to.
 * Add more server configurations (if required)
 * Save
 
+## Configuration as Code (JCasC)
+
+All of the system configuration described above (the default key, SSH server host configurations, and the plugin/override defaults) can be managed with the [Jenkins Configuration as Code plugin](https://plugins.jenkins.io/configuration-as-code/) instead of the UI. This requires the Configuration as Code plugin version `1963.v24e046127a_3f` or later.
+
+Host configurations and defaults live under `unclassified.sshPublisher`:
+
+```yaml
+unclassified:
+  sshPublisher:
+    commonConfig:
+      encryptedPassphrase: "${SSH_PASSPHRASE}"
+      key: "${SSH_KEY}"
+      keyPath: ""
+      disableAllExec: false
+    hostConfigurations:
+      - name: "key-host"
+        hostname: "files.example.com"
+        username: "jenkins"
+        remoteRootDir: "/srv/app"
+        port: 2222
+        timeout: 60000
+        jumpHost: "bastion.example.com"
+        sftpPipelineDepth: 32
+        disableExec: true
+        avoidSameFileUploads: true
+        overrideKey: true
+        encryptedPassword: "${SSH_HOST_PASSPHRASE}"
+        keyPath: "/var/lib/jenkins/.ssh/id_deploy"
+      - name: "proxy-host"
+        hostname: "proxy.example.com"
+        username: "jenkins"
+        remoteRootDir: "/data"
+        proxyType: "socks5"
+        proxyHost: "proxy.internal.example.com"
+        proxyPort: 1080
+        proxyUser: "proxyuser"
+        secretProxyPassword: "${PROXY_PASSWORD}"
+    defaults:
+      overrideDefaults:
+        overrideInstanceConfig:
+          alwaysPublishFromMaster: true
+          continueOnError: true
+          failOnError: true
+        overrideParamPublish:
+          parameterName: "SSH_PUBLISH"
+        overridePublisher:
+          configName: "key-host"
+          useWorkspaceInPromotion: true
+          usePromotionTimestamp: true
+          verbose: true
+        overridePublisherLabel:
+          label: "release"
+        overrideRetry:
+          retries: 4
+          retryDelay: 15000
+        overrideTransfer:
+          sourceFiles: "target/*.jar"
+          excludes: "target/*-sources.jar"
+          removePrefix: "target"
+          remoteDirectory: "builds"
+          flatten: true
+          remoteDirectorySDF: true
+          cleanRemote: true
+          execCommand: "sudo systemctl restart app"
+          execTimeout: 90000
+          usePty: true
+          useAgentForwarding: true
+          keepFilePermissions: true
+          noDefaultExcludes: true
+          makeEmptyDirs: true
+          patternSeparator: "[, ]+"
+```
+
+Notes:
+
+-   `hostConfigurations` replaces the whole list of SSH servers on every apply. `commonConfig` is used by every host unless a host sets `overrideKey: true` together with its own `encryptedPassword`/`key`/`keyPath`.
+-   `encryptedPassphrase`, `encryptedPassword` and `secretProxyPassword` accept plain text (encrypted on save) or a [JCasC secret source](https://github.com/jenkinsci/configuration-as-code-plugin/blob/master/docs/features/secrets.adoc) reference such as `${SSH_PASSPHRASE}` so the credential isn't committed in plain text. When exporting the current configuration with the "View Configuration" feature, these values are emitted back as already-encrypted values and never in plain text.
+-   `key` (the private key body), on both `commonConfig` and any host, can reference a [JCasC secret source](https://github.com/jenkinsci/configuration-as-code-plugin/blob/master/docs/features/secrets.adoc) such as `${SSH_HOST_KEY}` on import - JCasC resolves secret sources in every string value, not just the fields named above. Unlike `encryptedPassword`/`encryptedPassphrase`/`secretProxyPassword`, `key` is **not** backed by Jenkins' `Secret` type, so it cannot hold an already-encrypted `{...}` value and it is always re-exported as plain text, exactly as it is in the existing XML configuration. Use a secret source reference on import, or prefer `keyPath` (a path to a key file on the controller) if you do not want private key material appearing in exported YAML.
+-   `defaults` accepts either `pluginDefaults: {}` (use the global publish-over defaults unchanged) or `overrideDefaults:` (override one or more of the six option groups shown above) - only set the groups you want to override, the rest fall back to the plugin defaults.
+-   Proxy authentication uses `secretProxyPassword`. The legacy `proxyPassword` field is deprecated and is not part of the YAML model.
+
+See [jenkinsci/publish-over-ssh-plugin#90](https://github.com/jenkinsci/publish-over-ssh-plugin/issues/90) and [jenkinsci/publish-over-ssh-plugin#301](https://github.com/jenkinsci/publish-over-ssh-plugin/issues/301) for the original feature requests.
+
 ## Use SSH during a build
 
 This plugin includes a builder which enables the use of the publisher
