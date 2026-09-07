@@ -1,0 +1,69 @@
+unclassified:
+  sshPublisher:
+    commonConfig:
+      encryptedPassphrase: "common-passphrase"
+      key: |
+        -----BEGIN OPENSSH PRIVATE KEY-----
+        synthetic-test-key-not-real
+        -----END OPENSSH PRIVATE KEY-----
+      keyPath: ""
+      disableAllExec: false
+    hostConfigurations:
+      - name: "key-host"
+        hostname: "key.example.test"
+        username: "deploy"
+        remoteRootDir: "/srv/app"
+        port: 2222
+        timeout: 60000
+        jumpHost: "bastion.example.test"
+        sftpPipelineDepth: 32
+        disableExec: true
+        avoidSameFileUploads: true
+        overrideKey: true
+        encryptedPassword: "host-passphrase"
+        keyPath: "/var/lib/jenkins/.ssh/id_deploy"
+      - name: "proxy-host"
+        hostname: "proxy.example.test"
+        username: "jenkins"
+        remoteRootDir: "/data"
+        port: 22
+        timeout: 300000
+        proxyType: "socks5"
+        proxyHost: "proxy.internal.test"
+        proxyPort: 1080
+        proxyUser: "proxyuser"
+        secretProxyPassword: "proxy-secret"
+    defaults:
+      overrideDefaults:
+        overrideInstanceConfig:
+          alwaysPublishFromMaster: true
+          continueOnError: true
+          failOnError: true
+        overrideParamPublish:
+          parameterName: "SSH_PUBLISH"
+        overridePublisher:
+          configName: "key-host"
+          useWorkspaceInPromotion: true
+          usePromotionTimestamp: true
+          verbose: true
+        overridePublisherLabel:
+          label: "release"
+        overrideRetry:
+          retries: 4
+          retryDelay: 15000
+        overrideTransfer:
+          sourceFiles: "target/*.jar"
+          excludes: "target/*-sources.jar"
+          removePrefix: "target"
+          remoteDirectory: "builds"
+          flatten: true
+          remoteDirectorySDF: true
+          cleanRemote: true
+          execCommand: "sudo systemctl restart app"
+          execTimeout: 90000
+          usePty: true
+          useAgentForwarding: true
+          keepFilePermissions: true
+          noDefaultExcludes: true
+          makeEmptyDirs: true
+          patternSeparator: "[, ]+"

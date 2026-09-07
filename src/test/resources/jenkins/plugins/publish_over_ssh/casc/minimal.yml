@@ -1,0 +1,9 @@
+unclassified:
+  sshPublisher:
+    hostConfigurations:
+      - name: "only-host"
+        hostname: "only.example.test"
+        username: "jenkins"
+        remoteRootDir: ""
+    defaults:
+      pluginDefaults: {}

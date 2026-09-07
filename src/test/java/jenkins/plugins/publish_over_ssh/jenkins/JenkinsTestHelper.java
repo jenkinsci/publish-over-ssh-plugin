@@ -24,17 +24,13 @@
 
 package jenkins.plugins.publish_over_ssh.jenkins;
 
-import hudson.util.CopyOnWriteList;
+import hudson.util.Secret;
+import java.util.Arrays;
 import jenkins.model.Jenkins;
 import jenkins.plugins.publish_over_ssh.BapSshCommonConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshHostConfiguration;
 import jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin;
 import jenkins.plugins.publish_over_ssh.descriptor.BapSshPublisherPluginDescriptor;
-
-import java.lang.reflect.Field;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 
 public class JenkinsTestHelper {
 
@@ -61,7 +57,7 @@ public class JenkinsTestHelper {
         toFill.setProxyHost(proxyHost);
         toFill.setProxyPort(proxyPort);
         toFill.setProxyUser(proxyUser);
-        toFill.setProxyPassword(proxyPassword);
+        toFill.setSecretProxyPassword(Secret.fromString(proxyPassword));
         return toFill;
     }
 
@@ -73,35 +69,11 @@ public class JenkinsTestHelper {
     }
 
 
-    public void setGlobalConfig(final BapSshCommonConfiguration commonConfig, final BapSshHostConfiguration... newHostConfigurations)
-                                                                                throws NoSuchFieldException, IllegalAccessException {
-        for (BapSshHostConfiguration hostConfig : newHostConfigurations) {
-            hostConfig.setCommonConfig(commonConfig);
-        }
-        final CopyOnWriteList<BapSshHostConfiguration> hostConfigurations = getHostConfigurations();
-        hostConfigurations.replaceBy(newHostConfigurations);
-        Jenkins.get().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class).setCommonConfig(commonConfig);
-    }
-
-    public CopyOnWriteList<BapSshHostConfiguration> getHostConfigurations() throws NoSuchFieldException, IllegalAccessException {
-        final Field hostConfigurations = BapSshPublisherPluginDescriptor.class.getDeclaredField("hostConfigurations");
-        try {
-            return AccessController.doPrivileged(new GetMeTheHostConfigurations(hostConfigurations));
-        } catch (PrivilegedActionException pae) {
-            throw (IllegalAccessException) pae.getException();
-        }
-    }
-
-    private static final class GetMeTheHostConfigurations implements PrivilegedExceptionAction<CopyOnWriteList<BapSshHostConfiguration>> {
-        private final Field hostConfigurations;
-        GetMeTheHostConfigurations(final Field hostConfigurations) {
-            this.hostConfigurations = hostConfigurations;
-        }
-        public CopyOnWriteList<BapSshHostConfiguration> run() throws IllegalAccessException {
-            hostConfigurations.setAccessible(true);
-            return (CopyOnWriteList<BapSshHostConfiguration>) hostConfigurations.get(Jenkins.get().getDescriptorByType(
-                                                            BapSshPublisherPlugin.Descriptor.class));
-        }
+    public void setGlobalConfig(final BapSshCommonConfiguration commonConfig, final BapSshHostConfiguration... newHostConfigurations) {
+        final BapSshPublisherPluginDescriptor descriptor =
+                Jenkins.get().getDescriptorByType(BapSshPublisherPlugin.Descriptor.class);
+        descriptor.setCommonConfig(commonConfig);
+        descriptor.setHostConfigurations(Arrays.asList(newHostConfigurations));
     }
 
 }

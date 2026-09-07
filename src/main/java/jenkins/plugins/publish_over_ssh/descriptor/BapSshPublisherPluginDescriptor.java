@@ -61,6 +61,7 @@ import jenkins.plugins.publish_over_ssh.Messages;
 import jenkins.plugins.publish_over_ssh.options.SshDefaults;
 import jenkins.plugins.publish_over_ssh.options.SshPluginDefaults;
 import net.sf.json.JSONObject;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.interceptor.RequirePOST;
 
 @SuppressWarnings("PMD.TooManyMethods")
@@ -87,10 +88,23 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
     }
 
     public BapSshCommonConfiguration getCommonConfig() { return commonConfig; }
-    public void setCommonConfig(final BapSshCommonConfiguration commonConfig) { this.commonConfig = commonConfig; }
+
+    @DataBoundSetter
+    public void setCommonConfig(final BapSshCommonConfiguration commonConfig) {
+        this.commonConfig = commonConfig;
+        // keep every host in sync, whatever order JCasC applies attributes in
+        for (BapSshHostConfiguration hostConfig : hostConfigurations) {
+            hostConfig.setCommonConfig(commonConfig);
+        }
+    }
 
     public SshDefaults getDefaults() {
         return defaults;
+    }
+
+    @DataBoundSetter
+    public void setDefaults(final SshDefaults defaults) {
+        this.defaults = defaults == null ? new SshPluginDefaults() : defaults;
     }
 
     @Override
@@ -124,6 +138,21 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
     }
 
     /**
+     * Replaces the whole list of host configurations. The current common configuration is injected into every host.
+     *
+     * @param hostConfigurations the new list of host configurations.
+     */
+    @DataBoundSetter
+    public void setHostConfigurations(final List<BapSshHostConfiguration> hostConfigurations) {
+        final List<BapSshHostConfiguration> newConfigurations =
+                hostConfigurations == null ? new ArrayList<>() : new ArrayList<>(hostConfigurations);
+        for (BapSshHostConfiguration hostConfig : newConfigurations) {
+            hostConfig.setCommonConfig(commonConfig);
+        }
+        this.hostConfigurations.replaceBy(newConfigurations);
+    }
+
+    /**
      * Add a Host Configuration to the list of configurations.
      *
      * @param configuration Host Configuration to add. The common configuration will be automatically set.
@@ -147,15 +176,10 @@ public class BapSshPublisherPluginDescriptor extends BuildStepDescriptor<Publish
 
     @Override
     public boolean configure(final StaplerRequest2 request, final JSONObject formData) {
-        final List<BapSshHostConfiguration> newConfigurations = request.bindJSONToList(BapSshHostConfiguration.class,
-                                                                                                                formData.get("instance"));
-        commonConfig = request.bindJSON(BapSshCommonConfiguration.class, formData.getJSONObject("commonConfig"));
-        for (BapSshHostConfiguration hostConfig : newConfigurations) {
-            hostConfig.setCommonConfig(commonConfig);
-        }
-        hostConfigurations.replaceBy(newConfigurations);
+        setCommonConfig(request.bindJSON(BapSshCommonConfiguration.class, formData.getJSONObject("commonConfig")));
+        setHostConfigurations(request.bindJSONToList(BapSshHostConfiguration.class, formData.get("instance")));
         if (isEnableOverrideDefaults())
-            defaults = request.bindJSON(SshDefaults.class, formData.getJSONObject("defaults"));
+            setDefaults(request.bindJSON(SshDefaults.class, formData.getJSONObject("defaults")));
         save();
         return true;
     }
